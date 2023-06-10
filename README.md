@@ -169,6 +169,45 @@ Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning D
 
 ## Leaderboard
 
+### Comparison of Multimodal Large Language Models on 2D computer vision tasks
+
+| Task                  | Dataset                         | Metric     | SOTA           | LLaVA                        | MiniGPT4                    | mPLUG-owl         | LAMM                                  |
+| --------------------- | ------------------------------- | ---------- | -------------- | ---------------------------- | --------------------------- | ----------------- | ------------------------------------- |
+| Classification        | CIFAR10                         | Acc ↑      | 99.5           | **60.83**                    | 46.22                       | 42.5              | 34.5                                  |
+| Detection             | VOC2012                         | mAP ↑      | 97.2           | 1.42                         | 0.92                        | 0.158             | **<u>4.82</u>**                       |
+| VQA                   | SQAimage<br />AI2D              | Acc ↑      | 92.53<br />N/A | 40.5<br />18.13              | 43.43<br />Failed           | 36.39<br />19.31  | **<u>47.15</u>**<br />**<u>19.5</u>** |
+| Image Caption         | flickr30k                       | BLEU4 ↑    | 30.1           | **<u>6.65</u>**              | 5.1                         | 2.74              | 0.70                                  |
+| F-g clasification     | UCMerced                        | Acc ↑      | 100            | **<u>47</u>**                | 33.6                        | 32.5              | 13                                    |
+| Counting              | FSC147                          | MAE ↓      | 10.79          | 56.2                         | Failed                      | 60.67             | **<u>53.97</u>**                      |
+| OCR                   | SVT                             | Word Acc ↑ | 97.9           | **<u>37.78</u>**             | 16.97                       | 30.39             | 4.2                                   |
+| Facial Classification | CelebA(Smile)<br />CelebA(Hair) | Acc ↑      | N/A<br />N/A   | Failed<br />**<u>46.42</u>** | **<u>66.36</u>**<br />43.47 | Failed<br />40.93 | 51.3<br />30.48                       |
+| Keypoints Detection   | LSP                             | PCK ↑      | 99.5           | Failed                       | Failed                      | Failed            | Failed                                |
+
+### Results of LAMM model on selected 2D vision tasks
+
+| Task                       | Dataset  | LAMM(Zero-Shot) | LAMM(Finetune) |
+| -------------------------- | -------- | --------------- | -------------- |
+| Classification **(Acc)**   | CIFAR10  | 34.5            | 91.2           |
+| Object Detection **(Acc)** | VOC2012  | 4.82            | 13.48          |
+| VQA **(mAP@0.5)**          | SQAimage | 47.15           | 74.27          |
+
+### Results of 3D tasks by LAMM
+
+| Task                                         | Dataset   | SOTA  | LAMM (Zero-Shot) | LAMM (Finetune) |
+| -------------------------------------------- | --------- | ----- | ---------------- | --------------- |
+| 3D Object Detection **(mAP@0.5)**            | ScanNet   | 63.2  | 9.3              | 11.89           |
+| Visual Grounding **(mAP@0.5)**               | ScanRefer | 54.59 | Failed           | 3.38            |
+| 3D VQA **(Acc of multiple choice prolblem)** | ScanQA    | N/A   | 26.54            | 99.89           |
+
+### Comparison of results of Binary Locating Metric and GPT Metric of existing MLLMs
+
+|                   | LLaVA | MiniGPT4 | mPLUG-owl | LAMM            |
+| ----------------- | ----- | -------- | --------- | --------------- |
+| Binary-Loc Metric | 14.73 | 13.12    | 4.42      | **<u>31.2</u>** |
+| GPT Metric        | 11    | -        | -         | **<u>89</u>**   |
+
+
+
 
 ## Citation
 
