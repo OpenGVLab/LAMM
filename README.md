@@ -12,6 +12,7 @@
 📆[2023-06-11]
 
 👋🏻 LAMM is available for Research community!
+Try out the [Interactive Demo](https://huggingface.co/spaces/openlamm/LAMM) on Huggingface! (Time to build app depends on the server load)
 
 ![LAMM](./images/LAMM_Imagewall.png)
 
@@ -98,15 +99,13 @@ For more details, please check the [LAMM-Dataset](./docs/DATASET.md).
     conda create -n lamm python=3.10 -y
     conda activate lamm
 ```
-For 2D experiments
+For 2D experiments, install required packages
 ```bash
     pip install -r requirements.txt
+    or 
+    conda env update -n lamm --file environment.yml
 ```
-or 
-```bash
-    conda env update -n my_env --file environment.yml
-```
-For 3D experiments, you need to compile PointNet ops
+For 3D experiments, you need to compile PointNet operation additionally.
 ```Bash
     cd src/model/EPCL/third_party/pointnet2/
     python setup.py install
@@ -118,7 +117,7 @@ For 3D experiments, you need to compile PointNet ops
 
 ## Data & Model Preparation
 - Data
-    Follow instructions [here](./doc/DATASET.md) to prepare the data for 2D and 3D tasks. Put downloaded data in `./data` folder.
+    Follow instructions [Here](./docs/DATASET.md) to prepare the data for 2D and 3D tasks. Put downloaded data in `./data` folder.
     ```
     ├── data
     │   ├── 2D_Instruct  
@@ -132,7 +131,8 @@ To prepare the pre-trained Vicuna model, please follow the instructions provided
 
 - LAMM: LAMM Models
 Download LAMM checkpoints from [Here](https://github.com/OpenLAMM/LAMM/tree/main#lamm-models). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
-Or you can train your own LAMM model by following the instructions [Here](https://github.com/OpenLAMM/LAMM/tree/main#Training)
+
+Or you can train your own LAMM model by following the instructions [Here](https://github.com/OpenLAMM/LAMM/tree/main#Training)!
 
 ## Training
 - 2D Models Training
@@ -188,3 +188,4 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 ```
 
 ## License & Acknowledgement
+The project is CC BY NC 4.0 (allowing only non-commercial use) and models trained using the dataset should not be used outside of research purposes. The checkpoints are also CC BY NC 4.0 (allowing only non-commercial use).
