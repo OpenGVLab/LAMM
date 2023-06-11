@@ -2,26 +2,24 @@
 
 Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark]()
 
+[Demo](https://huggingface.co/spaces/openlamm/LAMM)
+
 ---
 ## News
 
 
-## Demo
+### Demo
 
 
+### Checkpoint
 
-## Getting Started
+- 7B lora32 98k
+- 7B lora32 186k
+- 
 
-### Installation
+---
 
-
-### Inference
-
-
-### Training
-
-
-## LAMM-Dataset 
+## LAMM Dataset 
 ![LAMM-Dataset](./images/LAMM-Dataset.png)
 **LAMM-Dataset** includes an image instruction-tuning dataset containing **186,098** image-language instruction-response pairs and a point cloud instruction-tuning dataset with **10,262** point cloud-language instruction-response pairs. We collect images and point clouds from publicly available datasets and use the GPT API and self-instruction methods to generate instructions and responses based on the original labels from these datasets. The resulting LAMM-Dataset has three appealing properties: 
 1) Existing multi-modal instruction tuning datasets mainly focus on holistic and rough information. To emphasize fine-grained and dense information, we add more visual information, such as visual relationships and fine-grained categories as input for the GPT API. 
@@ -167,7 +165,11 @@ Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning D
 </p>
 </details>
 
-## Leaderboard
+---
+
+## LAMM Benchmark
+![](./images/LAMM-benchmark.png)
+### Leaderboard
 
 ### Comparison of Multimodal Large Language Models on 2D computer vision tasks
 
@@ -206,10 +208,28 @@ Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning D
 | Binary-Loc Metric | 14.73 | 13.12    | 4.42      | **<u>31.2</u>** |
 | GPT Metric        | 11    | -        | -         | **<u>89</u>**   |
 
+---
+
+## Framework
+
+### Installation
+```
+    conda create -n lamm python=3.10 -y
+    conda activate lamm
+    pip install -r requirements.txt
+```
+
+
+### Training
+
+
+### Inference
 
 
 
 ## Citation
-
+```
+    # bib code
+```
 
 ## License & Acknowledgement
