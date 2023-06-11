@@ -1,17 +1,17 @@
-# LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark
+# 🐏LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark
 
 Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark]()
 
 <p align="left">
-    <a href="https://openlamm.github.io/" target="_blank">Project Page</a> •  <a href="https://huggingface.co/spaces/openlamm/LAMM" target="_blank">Online Demo</a> •   <a href="https://github.com/OpenLAMM/LAMM#lamm-dataset" target="_blank">Data</a> •  <a href="https://github.com/yxuansu/PandaGPT/blob/main/README.md#24-prepare-delta-weights-of-pandagpt" target="_blank">Model</a>
+    <a href="https://openlamm.github.io/" target="_blank">🌏 Project Page</a> •  <a href="https://huggingface.co/spaces/openlamm/LAMM" target="_blank">🤗 Demo</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-dataset" target="_blank">📀 Data</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-benchmark" target="_blank">📊 Benchmark</a> • <a href="https://github.com/OpenLAMM/LAMM#checkpoints" target="_blank">▶️ Checkpoints</a>
 </p>
 
 ---
 
 ## News
-[2023-06-11]
+📆[2023-06-11]
 
-LAMM is available for Research community!
+👋🏻 LAMM is available for Research community!
 
 ---
 
