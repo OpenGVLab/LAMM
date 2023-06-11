@@ -12,7 +12,8 @@
 📆[2023-06-11]
 
 👋🏻 LAMM is available for Research community!
-Try out the [Interactive Demo](https://huggingface.co/spaces/openlamm/LAMM) on Huggingface! (Time to build app depends on the server load)
+
+🔁Try out the [Interactive Demo](https://huggingface.co/spaces/openlamm/LAMM) on Huggingface! (Time to build app depends on the server load)
 
 ![LAMM](./images/LAMM_Imagewall.png)
 
@@ -40,8 +41,9 @@ For more details, please check the [LAMM-Dataset](./docs/DATASET.md).
 
 # Leaderboard
 
-<details><summary> Comparison of Multimodal Large Language Models on 2D computer vision tasks </summary>
+<details><summary> Comparison of Multimodal Large Language Models on 2D computer vision tasks.</summary>
 <p>
+ Bold fonts for the best results.
 
 | Task                  | Dataset                         | Metric     | SOTA           | LLaVA                        | MiniGPT4                    | mPLUG-owl         | LAMM                                  |
 | --------------------- | ------------------------------- | ---------- | -------------- | ---------------------------- | --------------------------- | ----------------- | ------------------------------------- |
