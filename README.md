@@ -93,15 +93,81 @@ For more details, please check the [LAMM-Dataset](./docs/DATASET.md).
 # Framework
 ![](./images/LAMM-Framework.png)
 ## Installation
-```
+
+```bash
     conda create -n lamm python=3.10 -y
     conda activate lamm
+```
+For 2D experiments
+```bash
     pip install -r requirements.txt
 ```
+or 
+```bash
+    conda env update -n my_env --file environment.yml
+```
+For 3D experiments, you need to compile PointNet ops
+```Bash
+    cd src/model/EPCL/third_party/pointnet2/
+    python setup.py install
+    cd ../../utils/
+    pip install cython
+    python cython_compile.py build_ext --inplace
+```
+
+
+## Data & Model Preparation
+- Data
+    Follow instructions [here](./doc/DATASET.md) to prepare the data for 2D and 3D tasks. Put downloaded data in `./data` folder.
+    ```
+    ├── data
+    │   ├── 2D_Instruct  
+    │   ├── 2D_Benchmark
+    │   ├── 3D_Instruct
+    │   ├── 3D_Benchmark
+    ```
+- Vicuna Models
+To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
+
+
+- LAMM: LAMM Models
+Download LAMM checkpoints from [Here](https://github.com/OpenLAMM/LAMM/tree/main#lamm-models). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
+Or you can train your own LAMM model by following the instructions [Here](https://github.com/OpenLAMM/LAMM/tree/main#Training)
 
 ## Training
+- 2D Models Training
+    ```Bash
+    cd src
+    sh scripts/train_lamm2d.sh
+    or
+    sh scripts/train_lamm2d_slurm.sh       # for slurm
+    ```
+- 3D Models Training
+    ```Bash
+    cd src
+    sh scripts/train_lamm3d.sh
+    or
+    sh scripts/train_lamm3d_slurm.sh       # for slurm
+    ```
+You need to dive into scripts to change data path and other hyper-parameters.
 
-## Pre-trained Model Preparation
+## Inference
+
+- Inference trained models on 2D tasks
+    ```Bash
+    cd src
+    sh scripts/inference.sh
+    or
+    sh scripts/inference_slurm.sh       # for slurm
+    ```
+- Evaluation 2D tasks in LAMM Benchmark
+    ```Bash
+    sh scripts/LAMM_2D_Evaluation.sh
+    or 
+    sh scripts/LAMM_2D_Evaluation_slurm.sh  # for slurm
+    ```
+You may need to dive into scripts to change datasets to evaluation & checkpoints folder to load.
+
 ### LAMM Models
 
 | # Training Samples  | LLM Size | Link |
@@ -111,7 +177,6 @@ For more details, please check the [LAMM-Dataset](./docs/DATASET.md).
 | 98K | 13B           | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) |
 | 186K | 13B           | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
 
-## Inference
 
 
 ---

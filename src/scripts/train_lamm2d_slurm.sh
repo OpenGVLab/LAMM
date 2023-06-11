@@ -1,8 +1,9 @@
 #!/bin/bash
 numgpu=4
 
-exp=$1
-partition=$2
+partition=$1
+exp=$2
+dataname=$3
 
 now=$(date +"%Y%m%d_%H%M%S")
 mkdir -p ../ckpt/${exp}/log_rest/
@@ -10,7 +11,7 @@ srun -p ${partition} -J ${exp} --gres=gpu:${numgpu} --ntasks-per-node 1 --kill-o
 torchrun --nnodes=1 --nproc_per_node=${numgpu} --master_port=25440 train.py \
     --stage 1 \
     --cfg ./config/train.yaml \
-    --data_path  ../data/2D_Instruct/meta_file/LAMM_instruct_186k.json \
+    --data_path  ../data/2D_Instruct/meta_file/${dataname}.json \
     --vision_root_path ../data/2D_Instruct/ \
     --max_tgt_len 400 \
     --vision_type pcl \
