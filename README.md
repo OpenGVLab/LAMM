@@ -1,25 +1,34 @@
-# LAMM
+# LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark
 
 Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark]()
 
-[Demo](https://huggingface.co/spaces/openlamm/LAMM)
+<p align="left">
+    <a href="https://openlamm.github.io/" target="_blank">Project Page</a> •  <a href="https://huggingface.co/spaces/openlamm/LAMM" target="_blank">Online Demo</a> •   <a href="https://github.com/OpenLAMM/LAMM#lamm-dataset" target="_blank">Data</a> •  <a href="https://github.com/yxuansu/PandaGPT/blob/main/README.md#24-prepare-delta-weights-of-pandagpt" target="_blank">Model</a>
+</p>
 
 ---
+
 ## News
+[2023-06-11]
 
-
-### Demo
-
-
-### Checkpoint
-
-- 7B lora32 98k
-- 7B lora32 186k
-- 
+LAMM is available for Research community!
 
 ---
 
-## LAMM Dataset 
+## Checkpoints
+
+| # Training Samples  | LLM Size | Link |
+| -------------------------- | -------- | --------------- |
+| 98K  | 7B            | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
+| 186K  | 7B            | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
+| 98K | 13B           | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) |
+| 186K | 13B           | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
+
+
+
+# LAMM Dataset 
+---
+
 ![LAMM-Dataset](./images/LAMM-Dataset.png)
 **LAMM-Dataset** includes an image instruction-tuning dataset containing **186,098** image-language instruction-response pairs and a point cloud instruction-tuning dataset with **10,262** point cloud-language instruction-response pairs. We collect images and point clouds from publicly available datasets and use the GPT API and self-instruction methods to generate instructions and responses based on the original labels from these datasets. The resulting LAMM-Dataset has three appealing properties: 
 1) Existing multi-modal instruction tuning datasets mainly focus on holistic and rough information. To emphasize fine-grained and dense information, we add more visual information, such as visual relationships and fine-grained categories as input for the GPT API. 
@@ -167,7 +176,8 @@ Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning D
 
 ---
 
-## LAMM Benchmark
+# LAMM Benchmark
+---
 ![](./images/LAMM-benchmark.png)
 ### Leaderboard
 
@@ -208,10 +218,9 @@ Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning D
 | Binary-Loc Metric | 14.73 | 13.12    | 4.42      | **<u>31.2</u>** |
 | GPT Metric        | 11    | -        | -         | **<u>89</u>**   |
 
----
 
 ## Framework
-
+---
 ### Installation
 ```
     conda create -n lamm python=3.10 -y
@@ -222,12 +231,15 @@ Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning D
 
 ### Training
 
+### Pre-trained Model Preparation
 
 ### Inference
 
 
+---
 
 ## Citation
+
 ```
     # bib code
 ```
