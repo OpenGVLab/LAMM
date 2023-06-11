@@ -1,0 +1,32 @@
+# source file related
+*.pyc
+*.o
+
+
+
+*.so
+*.egg
+*.egg-info
+*.pyx
+*.txt
+
+
+# training related
+*.log
+*.pth
+*.pt
+*.model
+*.0
+
+# result related
+./answer*
+./ckpt/*
+./ckpt3d/*
+
+*.jsonl
+
+
+# assets related
+
+
+# package related
