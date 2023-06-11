@@ -6,14 +6,13 @@ Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning D
     <a href="https://openlamm.github.io/" target="_blank">🌏 Project Page</a> •  <a href="https://huggingface.co/spaces/openlamm/LAMM" target="_blank">🤗 Demo</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-dataset" target="_blank">📀 Data</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-benchmark" target="_blank">📊 Benchmark</a> • <a href="https://github.com/OpenLAMM/LAMM#checkpoints" target="_blank">▶️ Checkpoints</a>
 </p>
 
----
+
 
 ## News
 📆[2023-06-11]
 
 👋🏻 LAMM is available for Research community!
 
----
 
 ## Checkpoints
 
@@ -27,7 +26,6 @@ Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning D
 
 
 # LAMM Dataset 
----
 
 ![LAMM-Dataset](./images/LAMM-Dataset.png)
 **LAMM-Dataset** includes an image instruction-tuning dataset containing **186,098** image-language instruction-response pairs and a point cloud instruction-tuning dataset with **10,262** point cloud-language instruction-response pairs. We collect images and point clouds from publicly available datasets and use the GPT API and self-instruction methods to generate instructions and responses based on the original labels from these datasets. The resulting LAMM-Dataset has three appealing properties: 
@@ -174,12 +172,13 @@ Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning D
 </p>
 </details>
 
----
+
 
 # LAMM Benchmark
----
+
 ![](./images/LAMM-benchmark.png)
-### Leaderboard
+
+## Leaderboard
 
 ### Comparison of Multimodal Large Language Models on 2D computer vision tasks
 
@@ -219,21 +218,20 @@ Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning D
 | GPT Metric        | 11    | -        | -         | **<u>89</u>**   |
 
 
-## Framework
----
-### Installation
+# Framework
+
+## Installation
 ```
     conda create -n lamm python=3.10 -y
     conda activate lamm
     pip install -r requirements.txt
 ```
 
+## Training
 
-### Training
+## Pre-trained Model Preparation
 
-### Pre-trained Model Preparation
-
-### Inference
+## Inference
 
 
 ---
