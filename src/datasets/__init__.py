@@ -1,7 +1,7 @@
 from header import *
 from .samplers import DistributedBatchSampler
 from .dataset import *
-
+from .LAMM_banchmark2D_dataset import LAMM_EVAL_2D
 
 def load_lamm_dataset(args):
     """load LAMM datasets
@@ -28,3 +28,17 @@ def load_lamm_dataset(args):
         pin_memory=True,
     )
     return dataset, dataloader, sampler
+
+
+
+def load_2Deval_dataset(base_data_path,
+                        dataset_name,
+                        mode = 'common',
+                        load_img = True,
+                        batch_size = 1):
+    dataset = LAMM_EVAL_2D(base_data_path,
+                           dataset_name,
+                           mode,
+                           load_img)
+    dataloader = DataLoader(dataset=dataset, batch_size=batch_size,shuffle=False,num_workers=2, drop_last=False,collate_fn=collate_fn)
+    return dataloader
