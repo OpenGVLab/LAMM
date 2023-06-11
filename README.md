@@ -219,7 +219,7 @@ Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning D
 
 
 # Framework
-
+![](./images/LAMM-Framework.png)
 ## Installation
 ```
     conda create -n lamm python=3.10 -y
