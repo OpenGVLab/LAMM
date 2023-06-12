@@ -2,18 +2,24 @@
 
 ![LAMM](./images/lamm.png)
 <p align="center">
-    <a href="https://openlamm.github.io/" target="_blank">🌏 Project Page</a> •  <a href="https://huggingface.co/spaces/openlamm/LAMM" target="_blank">🤗 Demo</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-dataset" target="_blank">📀 Data</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-benchmark" target="_blank">📊 Benchmark</a> • <a href="https://github.com/OpenLAMM/LAMM/blob/main/README.md#pre-trained-model-preparation" target="_blank">▶️ LAMM Models</a>
+    <a href="https://openlamm.github.io/" target="_blank">🌏 Project Page</a> •  <a href="https://huggingface.co/spaces/openlamm/LAMM" target="_blank">🤗 Demo</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-dataset" target="_blank">📀 Data</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-benchmark" target="_blank">📊 Benchmark</a> • <a href="https://github.com/OpenLAMM/LAMM/blob/main/README.md#pre-trained-model-preparation" target="_blank">📦 LAMM Models</a>
 </p>
 
 #### Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark]()
 
 
 ## News
-📆[2023-06-11]
+📆[**2023-06-12**]
+
+🤖 GPT Evaluation part available.
+
+📨 Our Paper will release tomorrow. Please stay tuned!
+
+📆[**2023-06-11**]
 
 👋🏻 LAMM is available for Research community!
 
-🔁Try out the [Interactive Demo](https://huggingface.co/spaces/openlamm/LAMM) on Huggingface! (Time to build app depends on the server load)
+🔁 Try out the [Interactive Demo](https://huggingface.co/spaces/openlamm/LAMM) on Huggingface! (Time to build app depends on the server load)
 
 ![LAMM](./images/LAMM_Imagewall.png)
 
@@ -192,7 +198,11 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 ## Citation
 
 ```
-    # bib code
+    @misc{yin2023lamm,
+        title={LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark}, 
+        author={Zhenfei Yin, Jiong Wang, Jianjian Cao, Zhelun Shi, Dingning Liu, Mukai Li, Lu Sheng, Lei Bai, Xiaoshui Huang, Zhiyong Wang, Wanli Ouyang, Jing Shao},
+        year={2023},
+      }
 ```
 
 ## License & Acknowledgement
