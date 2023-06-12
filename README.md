@@ -168,6 +168,12 @@ You need to dive into scripts to change data path and other hyper-parameters.
     or 
     sh scripts/LAMM_2D_Evaluation_slurm.sh  # for slurm
     ```
+- GPT Metric
+
+    Make sure that you have finished the inference of all the evaluation dataset.
+    ```Bash
+    sh scripts/GPT_metric.sh
+    ```
 You may need to dive into scripts to change datasets to evaluation & checkpoints folder to load.
 
 ### LAMM Models
