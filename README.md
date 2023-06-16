@@ -9,6 +9,10 @@
 
 
 ## News
+📆[**2023-06-16**]
+
+⭐ LAMM dataset is available for Research community!
+
 📆[**2023-06-12**]
 
 🤖 GPT Evaluation part available.
@@ -17,7 +21,7 @@
 
 📆[**2023-06-11**]
 
-👋🏻 LAMM is available for Research community!
+👋🏻 LAMM code is available for Research community!
 
 🔁 Try out the [Interactive Demo](https://huggingface.co/spaces/openlamm/LAMM) on Huggingface! (Time to build app depends on the server load)
 
@@ -27,23 +31,152 @@
 Large language models have become a potential pathway toward achieving artificial general intelligence. Recent works on multi-modal large language models have demonstrated their effectiveness in handling visual modalities. In this work, we extend the research of MLLMs to point clouds and present the LAMM-Dataset and LAMM-Benchmark for 2D image and 3D point cloud understanding. We also establish an extensible framework to facilitate the extension of MLLMs to additional modalities.
 Our main contribution is three-fold: 1) We present the LAMM-Dataset and LAMM-Benchmark, which cover almost all high-level vision tasks for 2D and 3D vision. Extensive experiments validate the effectiveness of our dataset and benchmark. 2) We demonstrate the detailed methods of constructing instruction-tuning datasets and benchmarks for MLLMs, which will enable future research on MLLMs to scale up and extend to other domains, tasks, and modalities faster. 3) We provide a primary but potential MLLM training framework optimized for modalities' extension. We also provide baseline models, comprehensive experimental observations, and analysis to accelerate future research. 
 
-# LAMM Dataset 
+# LAMM Dataset
 
-![LAMM-Dataset](./images/LAMM-Dataset.png)
-**LAMM-Dataset** includes an image instruction-tuning dataset containing **186,098** image-language instruction-response pairs and a point cloud instruction-tuning dataset with **10,262** point cloud-language instruction-response pairs. We collect images and point clouds from publicly available datasets and use the GPT API and self-instruction methods to generate instructions and responses based on the original labels from these datasets. The resulting LAMM-Dataset has three appealing properties: 
-- Existing multi-modal instruction tuning datasets mainly focus on holistic and rough information. To emphasize fine-grained and dense information, we add more visual information, such as visual relationships and fine-grained categories as input for the GPT API. 
-- We observe that existing MLLMs may struggle to understand vision task instructions. To address this, we designed a method to convert vision task annotations into instruction-response pairs, which enhances MLLMs' understanding and generalization of vision task instructions. 
-- LAMM-Dataset also includes data pairs for commonsense knowledge question answering by incorporating a hierarchical knowledge graph label system from the Bamboo dataset and the corresponding Wikipedia description.
+LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which contains 186K language-image instruction-response pairs, and 10K lanuage-3D instruction-response pairs.In LAMM-Dataset, the instruction-response pairs are gathered from 8 image datasets and 4 point cloud datasets. Here we design four type of multi-modal instruction-response pairs, 
+- C1: n-round daily dialogue focuses on multi-modal daily conversations. 
+- C2: n-round factual knowledge dialogue aims at factual knowledge reasoning. 
+- C3: 1-round detailed description aims to elaborate images and 3D scenes in texts. 
+- C4: 1-round visual task dialogue transfers various vision tasks into instruction-response pairs, aiming at enhancing generalizability towards domain tasks in other modalities.
 
-For more details, please check the [LAMM-Dataset](./docs/DATASET.md).
+# LAMM Benchmark 
 
-# LAMM Benchmark
-
-![](./images/LAMM-benchmark.png)
+<!-- ![](./images/LAMM-benchmark.png) -->
 
 **LAMM-Benchmark** evaluates 9 common image tasks, using a total of 11 datasets with over **62,439** samples, and 3 common point cloud tasks, by utilizing 3 datasets with over **12,788** data samples, while existing works only provide quantitative results on fine-tuning and evaluating specific datasets such as ScienceQA, and most works only conduct demonstration or user studies. 
 - We are the very first attempt to establish a benchmark for MLLMs. We conducted a comprehensive benchmark to quantify the zero-shot and fine-tuning performance of existing multi-modal language models on various computer vision tasks and compare them against state-of-the-art methods of these tasks, including classification, object detection, pose estimation, visual question answering, facial classification, optical character recognition, object counting. 
 - We also attempted two novel evaluation strategies designed explicitly for MLLMs. Specifically, as for text generation, we established a scoring logic based on the GPT API. As for tasks involving interactions between points and images, such as object detection and pose estimation, we proposed an object-locating evaluation method.
+
+
+# Downloads
+ If you would like to download the entire LAMM Dataset and LAMM Benchmrak, you can do so from the opendatalab website using the provided [LAMM](https://opendatalab.com/LAMM/download) link. Here is the table illustrating the correspondence between each Meta file and image collection in the LAMM dataset:
+<details><summary> Dataset partition </summary>
+
+- 2D_Instruct data 
+
+    |  Meta file name  | size  |  Image file name |  size |  
+    |  ----  | ----  |  ----  | ---- |   
+    | [daily_dialogue_49k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Instruct/meta_file/daily_dialogue_49k.json)  | 107M | coco_images.zip | 7.8G |   
+    | [detailed_description_49k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Instruct/meta_file/detailed_description_49k.json)  | 63M |  coco_images.zip | 7.8G |    
+    | [factual_knowledge_dialogue_42k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Instruct/meta_file/factual_knowledge_dialogue_42k.json) | 80M | bamboo_images.zip | 5.4G |  
+    | [vision_task_dialogue_46k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Instruct/meta_file/vision_task_dialogue_46k.json) | 62M | coco_images.zip, bamboo_images.zip, locount_images.zip, textvqa_images.zip | 9.2G |  
+
+- 2D_Benchmark data
+
+    |  Meta file name  | size  |  Image file name | size |  
+    |  ----  | ----  |  ----  | ----  |  
+    | [Caption_flickr30k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Caption_flickr30k.json)  | 598K | flickr30k_images.zip | 559M |     
+    | [Classification_CIFAR10.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Classification_CIFAR10.json)  | 2.6M | cifar10_images.zip  | 8.9M  |  
+    | [Counting_FSC147.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Counting_FSC147.json) | 7.3M | fsc147_images.zip   |  44M |  
+    | [Detection_VOC2012.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Detection_VOC2012.json) | 6.4M | voc2012_images.zip  | 196M  |  
+    | [Facial_Classification_CelebA(Hair).json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Facial_Classification_CelebA(Hair).json) | 2.4M | celeba_images.zip  |  566M |  
+    | [Facial_Classification_CelebA(Smile).json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Facial_Classification_CelebA(Smile).json) | 3.7M |  celeba_images.zip  |  566M |  
+    | [Fine-grained_Classification_UCMerced.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Fine-grained_Classification_UCMerced.json) | 676K | ucmerced_images.zip  | 317M  |  
+    | [Keypoints_Dectection_LSP.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Keypoints_Dectection_LSP.json) | 3.9M |  fsc147_images.zip   |  44M |   
+    | [Locating_FSC147.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Locating_FSC147.json) | 7.5M | fsc147_images.zip   |  44M |  
+    | [Locating_LSP.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Locating_LSP.json) | 3.9M | lsp_images.zip  |  9.9M |  
+    | [Locating_VOC2012.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Locating_VOC2012.json) | 6.0M | voc2012_images.zip  | 196M  |  
+    | [OCR_SVT.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/OCR_SVT.json) | 68K |  svt_images.zip  | 82M  |  
+    | [VQA_AI2D.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/VQA_AI2D.json) | 2.1M | ai2d_images.zip  | 559M  |  
+    | [VQA_SQAimage.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/VQA_SQAimage.json) | 3.6M |  sqaimage_images.zip  | 127M  |  
+
+- 3D_Instruct data
+
+    |  Meta file name  | size  |  Image file name  | size  |  
+    |  ----  | ----  | ----  | ----  | 
+    |  [LAMM_3dinstruct_10k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Instruct/meta_file/LAMM_3dinstruct_10k.json)  | 19M  | 3rscan_pcls.zip  | 720M  |  
+    |  [LAMM_3dinstruct_10k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Instruct/meta_file/LAMM_3dinstruct_10k.json)  | 19M  | shapenet_pcls.zip  | 209M  |  
+
+- 3D_Benchmark data 
+
+    |  Meta file name  | size  |  Image file name  | size  |  
+    |  ----  | ----  |  ----  | ----  |   
+    |  [Detection_ScanNet.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Benchmark/meta_file/Detection_ScanNet.json)  | 1.7M  | scannet_pcls.zip  | 246M  | 
+    |  [VG_ScanRefer.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Benchmark/meta_file/VG_ScanRefer.json)  | 3.7M  | scannet_pcls.zip  | 246M  | 
+    |  [VQA_ScanQA_multiplechoice.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Benchmark/meta_file/VQA_ScanQA_multiplechoice.json)  | 859K  | scannet_pcls.zip  | 246M  | 
+
+</p>
+</details> 
+
+<details><summary> Dataset Structure </summary>
+
+    ├── 2D_Instruct  
+    │   ├── coco_images.zip  
+    │   ├── bamboo_images.zip  
+    │   ├── textvqa_images.zip  
+    │   ├── locount_images.zip  
+    │   ├── meta_file  
+    │   │   ├── daily_dialogue_49k.json  
+    │   │   ├── detailed_description_49k.json  
+    │   │   ├── factual_knowledge_dialogue_42k.json  
+    │   │   └── vision_task_dialogue_46k.json  
+        ├── 2D_Benchmark  
+    │   ├── ai2d_images.zip  
+    │   ├── celeba_images.zip  
+    │   ├── cifar10_images.zip  
+    │   ├── flickr30k_images.zip  
+    │   ├── fsc147_images.zip  
+    │   ├── lsp_images.zip  
+    │   ├── sqaimage_images.zip  
+    │   ├── svt_images.zip  
+    │   ├── ucmerced_images.zip  
+    │   ├── voc2012_images.zip  
+    │   ├── meta_file  
+    │   │   ├── Caption_flickr30k.json  
+    │   │   ├── Classification_CIFAR10.json  
+    │   │   ├── Counting_FSC147.json  
+    │   │   ├── Detection_VOC2012.json  
+    │   │   ├── Facial_Classification_CelebA(Hair).json  
+    │   │   ├── Facial_Classification_CelebA(Smile).json  
+    │   │   ├── Fine-grained_Classification_UCMerced.json  
+    │   │   ├── Keypoints_Dectection_LSP.json  
+    │   │   ├── Locating_FSC147.json  
+    │   │   ├── Locating_LSP.json  
+    │   │   ├── Locating_VOC2012.json  
+    │   │   ├── OCR_SVT.json  
+    │   │   ├── VQA_AI2D.json  
+    │   │   └── VQA_SQAimage.json  
+    ├── 3D_Instruct  
+    │   ├── 3rscan_pcls.zip  
+    │   ├── shapenet_pcls.zip  
+    │   ├── meta_file  
+    │   │   └── LAMM_3dinstruct_10k.json  
+    └── 3D_Benchmark  
+        ├── scannet_pcls.zip  
+        ├── meta_file  
+        │   ├── Detection_ScanNet.json  
+        │   ├── VG_ScanRefer.json  
+        │   └── VQA_ScanQA_multiplechoice.json
+
+</p>
+</details> 
+
+<details><summary> Meta file format </summary>
+
+```json
+{
+    "id": "000000019028",  # image id
+    "image": "coco_images/000000019028.jpg", # image path
+    "conversations": [
+        {
+            "from": "human",  # instruction
+            "value": "How is the kitchen in the image furnished?"
+        },
+        {
+            "from": "gpt",  # response
+            "value": "The kitchen in the image is furnished with white cabinets and white appliances. There is a dishwasher, a stove, and a sink. On the stove, a blue towel hangs on the handle. A cutting board is placed on the dishwasher. There are also additional elements like a bowl of apples on the counter and a beige rug on the floor."
+        }
+    ],
+    "task_type": "conversation",  # task type
+    "src_image": "coco2017" # original dataset
+}
+```
+
+</p>
+</details> 
+
+**Notes**：(a) If you want to work with a specific subset of the LAMM dataset, you will need to download both the corresponding meta file and the image collection. (b) if you prefer to download the data from the official website yourself, you can still organize it in the same way as we have and run it successfully. For example, during the 2D instruction tuning stage, if you only want to run the daily_dialogue_49k.json file, you can download the [coco2017](http://images.cocodataset.org/zips/train2017.zip) dataset and organize it accordingly.
+
 
 # Leaderboard
 
@@ -125,7 +258,7 @@ For 3D experiments, you need to compile PointNet operation additionally.
 
 ## Data & Model Preparation
 - Data
-    Follow instructions [Here](./docs/DATASET.md) to prepare the data for 2D and 3D tasks. Put downloaded data in `./data` folder.
+    Follow above instructions   to download and prepare the data for 2D and 3D tasks. Put downloaded data in `./data` folder.
     ```
     ├── data
     │   ├── 2D_Instruct  
