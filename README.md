@@ -48,7 +48,9 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
 - We also attempted two novel evaluation strategies designed explicitly for MLLMs. Specifically, as for text generation, we established a scoring logic based on the GPT API. As for tasks involving interactions between points and images, such as object detection and pose estimation, we proposed an object-locating evaluation method.
 
 
-# Downloads
+
+# Downloads 
+
  If you would like to download the entire LAMM Dataset and LAMM Benchmrak, you can do so from the opendatalab website using the provided [LAMM](https://opendatalab.com/LAMM/download) link. Here is the table illustrating the correspondence between each Meta file and image collection in the LAMM dataset:
 <details><summary> Dataset partition </summary>
 
@@ -105,12 +107,12 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
     │   ├── bamboo_images.zip  
     │   ├── textvqa_images.zip  
     │   ├── locount_images.zip  
-    │   ├── meta_file  
-    │   │   ├── daily_dialogue_49k.json  
-    │   │   ├── detailed_description_49k.json  
-    │   │   ├── factual_knowledge_dialogue_42k.json  
-    │   │   └── vision_task_dialogue_46k.json  
-        ├── 2D_Benchmark  
+    │   └── meta_file  
+    │       ├── daily_dialogue_49k.json  
+    │       ├── detailed_description_49k.json  
+    │       ├── factual_knowledge_dialogue_42k.json  
+    │       └── vision_task_dialogue_46k.json  
+    ├── 2D_Benchmark  
     │   ├── ai2d_images.zip  
     │   ├── celeba_images.zip  
     │   ├── cifar10_images.zip  
@@ -121,32 +123,32 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
     │   ├── svt_images.zip  
     │   ├── ucmerced_images.zip  
     │   ├── voc2012_images.zip  
-    │   ├── meta_file  
-    │   │   ├── Caption_flickr30k.json  
-    │   │   ├── Classification_CIFAR10.json  
-    │   │   ├── Counting_FSC147.json  
-    │   │   ├── Detection_VOC2012.json  
-    │   │   ├── Facial_Classification_CelebA(Hair).json  
-    │   │   ├── Facial_Classification_CelebA(Smile).json  
-    │   │   ├── Fine-grained_Classification_UCMerced.json  
-    │   │   ├── Keypoints_Dectection_LSP.json  
-    │   │   ├── Locating_FSC147.json  
-    │   │   ├── Locating_LSP.json  
-    │   │   ├── Locating_VOC2012.json  
-    │   │   ├── OCR_SVT.json  
-    │   │   ├── VQA_AI2D.json  
-    │   │   └── VQA_SQAimage.json  
+    │   └── meta_file  
+    │       ├── Caption_flickr30k.json  
+    │       ├── Classification_CIFAR10.json  
+    │       ├── Counting_FSC147.json  
+    │       ├── Detection_VOC2012.json  
+    │       ├── Facial_Classification_CelebA(Hair).json  
+    │       ├── Facial_Classification_CelebA(Smile).json  
+    │       ├── Fine-grained_Classification_UCMerced.json  
+    │       ├── Keypoints_Dectection_LSP.json  
+    │       ├── Locating_FSC147.json  
+    │       ├── Locating_LSP.json  
+    │       ├── Locating_VOC2012.json  
+    │       ├── OCR_SVT.json  
+    │       ├── VQA_AI2D.json  
+    │       └── VQA_SQAimage.json  
     ├── 3D_Instruct  
     │   ├── 3rscan_pcls.zip  
     │   ├── shapenet_pcls.zip  
-    │   ├── meta_file  
-    │   │   └── LAMM_3dinstruct_10k.json  
+    │   └── meta_file  
+    │       └── LAMM_3dinstruct_10k.json  
     └── 3D_Benchmark  
         ├── scannet_pcls.zip  
-        ├── meta_file  
-        │   ├── Detection_ScanNet.json  
-        │   ├── VG_ScanRefer.json  
-        │   └── VQA_ScanQA_multiplechoice.json
+        └── meta_file  
+            ├── Detection_ScanNet.json  
+            ├── VG_ScanRefer.json  
+            └── VQA_ScanQA_multiplechoice.json
 
 </p>
 </details> 
@@ -258,7 +260,8 @@ For 3D experiments, you need to compile PointNet operation additionally.
 
 ## Data & Model Preparation
 - Data
-    Follow above instructions   to download and prepare the data for 2D and 3D tasks. Put downloaded data in `./data` folder.
+    
+    Follow [Download](#downloads) to download and prepare the data for 2D and 3D tasks. Put downloaded data in `./data` folder.
     ```
     ├── data
     │   ├── 2D_Instruct  
@@ -267,13 +270,15 @@ For 3D experiments, you need to compile PointNet operation additionally.
     │   ├── 3D_Benchmark
     ```
 - Vicuna Models
-To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
+
+    To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
 
 
 - LAMM: LAMM Models
-Download LAMM checkpoints from [Here](https://github.com/OpenLAMM/LAMM/tree/main#lamm-models). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
 
-Or you can train your own LAMM model by following the instructions [Here](https://github.com/OpenLAMM/LAMM/tree/main#Training)!
+    Download LAMM checkpoints from [Here](https://github.com/OpenLAMM/LAMM/tree/main#lamm-models). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
+
+    Or you can train your own LAMM model by following the instructions [Here](https://github.com/OpenLAMM/LAMM/tree/main#Training)!
 
 ## Training
 - 2D Models Training
@@ -292,24 +297,42 @@ Or you can train your own LAMM model by following the instructions [Here](https:
     ```
 You need to dive into scripts to change data path and other hyper-parameters.
 
-## Inference
+## LAMM-Benchmark
+
 
 - Inference trained models on 2D tasks
     ```Bash
     cd src
     sh scripts/inference.sh
+    ```
     or
+    ``` Bash
     sh scripts/inference_slurm.sh       # for slurm
     ```
-- Evaluation 2D tasks in LAMM Benchmark
+- Evaluation on 2D tasks
     ```Bash
     sh scripts/LAMM_2D_Evaluation.sh
+    ```
+
     or 
+    ```Bash
     sh scripts/LAMM_2D_Evaluation_slurm.sh  # for slurm
     ```
+
+- Evaluation for other MLLM models. 
+    
+    Please refer to [LLaVA](#https://github.com/haotian-liu/LLaVA), [MiniGPT-4](#https://github.com/Vision-CAIR/MiniGPT-4) and [mPLUG-owl](#https://github.com/X-PLUG/mPLUG-Owl) for inference respectively. Save the answers in `./answers`. And then run `common_eval_2d.py` for evaluation. For example, to evaluate LLaVA on VOC2012:
+    ```Bash
+    python common_eval_2d.py \
+    --dataset-name VOC2012 \
+    --answer-file ./answers/LLaVA \
+    --base-data-path ./data/LAMM-Dataset/2D_Benchmark \
+    2>&1 | tee ./results/LLaVA/eval_VOC2012.log
+    ```
+
 - GPT Metric
 
-    Make sure that you have finished the inference of all the evaluation dataset.
+    Make sure that you have finished the inference of all the evaluation dataset for both your model/LAMM model and the MLLM model to compare. For example, to rank LAMM and LLaVA: 
     ```Bash
     sh scripts/GPT_metric.sh
     ```
