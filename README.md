@@ -2,28 +2,38 @@
 
 ![LAMM](./images/lamm.png)
 <p align="center">
-    <a href="https://openlamm.github.io/" target="_blank">🌏 Project Page</a> •  <a href="https://huggingface.co/spaces/openlamm/LAMM" target="_blank">🤗 Demo</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-dataset" target="_blank">📀 Data</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-benchmark" target="_blank">📊 Benchmark</a> • <a href="https://github.com/OpenLAMM/LAMM/blob/main/README.md#pre-trained-model-preparation" target="_blank">📦 LAMM Models</a>
+    <a href="https://openlamm.github.io/" target="_blank">🌏 Project Page</a> • <a href="https://huggingface.co/spaces/openlamm/LAMM" target="_blank">🤗 Demo</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-dataset" target="_blank">🎞️ Video</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-dataset" target="_blank">📀 Data</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-benchmark" target="_blank">📊 Benchmark</a> • <a href="https://github.com/OpenLAMM/LAMM/blob/main/README.md#pre-trained-model-preparation" target="_blank">📦 LAMM Models</a>
 </p>
 
 #### Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark]()
 
 
-## News
+## Updates
+📆**Coming Soon**
+
+1. Code for less GPU memory will be released soon.
+
+📆[**2023-06-19**]
+
+1. [Full paper]() is online.
+2. More demo online in [video]().
+
 📆[**2023-06-16**]
 
-⭐ LAMM dataset is available for Research community!
+1. [LAMM dataset](https://github.com/OpenLAMM/LAMM#lamm-dataset) is available for Research community!
 
 📆[**2023-06-12**]
 
-🤖 GPT Evaluation part available.
+1. GPT Evaluation part available.
 
-📨 Our Paper will release tomorrow. Please stay tuned!
+2. Our Paper will release tomorrow. Please stay tuned!
 
 📆[**2023-06-11**]
 
-👋🏻 LAMM code is available for Research community!
+1. LAMM code is available for Research community!
 
-🔁 Try out the [Interactive Demo](https://huggingface.co/spaces/openlamm/LAMM) on Huggingface! (Time to build app depends on the server load)
+2. Try out the [Interactive Demo](https://huggingface.co/spaces/openlamm/LAMM) on Huggingface! (Time to build app depends on the server load)
+
 
 ![LAMM](./images/LAMM_Imagewall.png)
 
@@ -31,7 +41,7 @@
 Large language models have become a potential pathway toward achieving artificial general intelligence. Recent works on multi-modal large language models have demonstrated their effectiveness in handling visual modalities. In this work, we extend the research of MLLMs to point clouds and present the LAMM-Dataset and LAMM-Benchmark for 2D image and 3D point cloud understanding. We also establish an extensible framework to facilitate the extension of MLLMs to additional modalities.
 Our main contribution is three-fold: 1) We present the LAMM-Dataset and LAMM-Benchmark, which cover almost all high-level vision tasks for 2D and 3D vision. Extensive experiments validate the effectiveness of our dataset and benchmark. 2) We demonstrate the detailed methods of constructing instruction-tuning datasets and benchmarks for MLLMs, which will enable future research on MLLMs to scale up and extend to other domains, tasks, and modalities faster. 3) We provide a primary but potential MLLM training framework optimized for modalities' extension. We also provide baseline models, comprehensive experimental observations, and analysis to accelerate future research. 
 
-# LAMM Dataset
+# LAMM-Dataset
 
 LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which contains 186K language-image instruction-response pairs, and 10K lanuage-3D instruction-response pairs.In LAMM-Dataset, the instruction-response pairs are gathered from 8 image datasets and 4 point cloud datasets. Here we design four type of multi-modal instruction-response pairs, 
 - C1: n-round daily dialogue focuses on multi-modal daily conversations. 
@@ -39,7 +49,7 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
 - C3: 1-round detailed description aims to elaborate images and 3D scenes in texts. 
 - C4: 1-round visual task dialogue transfers various vision tasks into instruction-response pairs, aiming at enhancing generalizability towards domain tasks in other modalities.
 
-# LAMM Benchmark 
+# LAMM-Benchmark 
 
 <!-- ![](./images/LAMM-benchmark.png) -->
 
@@ -49,10 +59,12 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
 
 
 
-# Downloads 
+# Download 
+
+Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
 
  If you would like to download the entire LAMM Dataset and LAMM Benchmrak, you can do so from the opendatalab website using the provided [LAMM](https://opendatalab.com/LAMM/download) link. Here is the table illustrating the correspondence between each Meta file and image collection in the LAMM dataset:
-<details><summary> Dataset partition </summary>
+<details><summary> Instruction Data For Training</summary>
 
 - 2D_Instruct data 
 
@@ -62,6 +74,17 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
     | [detailed_description_49k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Instruct/meta_file/detailed_description_49k.json)  | 63M |  coco_images.zip | 7.8G |    
     | [factual_knowledge_dialogue_42k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Instruct/meta_file/factual_knowledge_dialogue_42k.json) | 80M | bamboo_images.zip | 5.4G |  
     | [vision_task_dialogue_46k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Instruct/meta_file/vision_task_dialogue_46k.json) | 62M | coco_images.zip, bamboo_images.zip, locount_images.zip, textvqa_images.zip | 9.2G |  
+
+- 3D_Instruct data
+
+    |  Meta file name  | size  |  Image file name  | size  |  
+    |  ----  | ----  | ----  | ----  | 
+    |  [LAMM_3dinstruct_10k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Instruct/meta_file/LAMM_3dinstruct_10k.json)  | 19M  | 3rscan_pcls.zip  | 720M  |  
+    |  [LAMM_3dinstruct_10k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Instruct/meta_file/LAMM_3dinstruct_10k.json)  | 19M  | shapenet_pcls.zip  | 209M  |  
+
+</p>
+</details> 
+<details><summary> Benchmark Data For Evaluation</summary>
 
 - 2D_Benchmark data
 
@@ -81,13 +104,6 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
     | [OCR_SVT.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/OCR_SVT.json) | 68K |  svt_images.zip  | 82M  |  
     | [VQA_AI2D.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/VQA_AI2D.json) | 2.1M | ai2d_images.zip  | 559M  |  
     | [VQA_SQAimage.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/VQA_SQAimage.json) | 3.6M |  sqaimage_images.zip  | 127M  |  
-
-- 3D_Instruct data
-
-    |  Meta file name  | size  |  Image file name  | size  |  
-    |  ----  | ----  | ----  | ----  | 
-    |  [LAMM_3dinstruct_10k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Instruct/meta_file/LAMM_3dinstruct_10k.json)  | 19M  | 3rscan_pcls.zip  | 720M  |  
-    |  [LAMM_3dinstruct_10k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Instruct/meta_file/LAMM_3dinstruct_10k.json)  | 19M  | shapenet_pcls.zip  | 209M  |  
 
 - 3D_Benchmark data 
 
@@ -155,8 +171,10 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
 
 <details><summary> Meta file format </summary>
 
+- For images
 ```json
-{
+[
+    {
     "id": "000000019028",  # image id
     "image": "coco_images/000000019028.jpg", # image path
     "conversations": [
@@ -171,13 +189,44 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
     ],
     "task_type": "conversation",  # task type
     "src_image": "coco2017" # original dataset
-}
+    },
+    {
+        ...
+    }
+]
+```
+- For point cloud
+```json
+[
+    {
+        "pcl": "shapenet_pcls/04256520_cb71cb7b36dbcb6f826fc8d57346a2e4_4096.npy",
+        "conversations": [
+                {
+                    "from": "human",
+                    "value": "What scenario does this point cloud belong to according to the model\u2019s prediction?"
+                },
+                {
+                    "from": "gpt",
+                    "value": "Through meticulous analysis, it becomes evident that the point cloud aligns with the characteristics of sofa,couch,lounge s       cenario."
+                }
+            ],
+        "task_type": "classification3d",
+        "src_dataset": "ShapeNet",
+        "src_id": "04256520_cb71cb7b36dbcb6f826fc8d57346a2e4"
+    },
+    {
+        ...
+    }
+]
 ```
 
 </p>
 </details> 
 
-**Notes**：(a) If you want to work with a specific subset of the LAMM dataset, you will need to download both the corresponding meta file and the image collection. (b) if you prefer to download the data from the official website yourself, you can still organize it in the same way as we have and run it successfully. For example, during the 2D instruction tuning stage, if you only want to run the daily_dialogue_49k.json file, you can download the [coco2017](http://images.cocodataset.org/zips/train2017.zip) dataset and organize it accordingly.
+**Notes**：
+
+1.  If you want to work with a specific subset of the LAMM dataset, you will need to download both the corresponding meta file and the image collection. 
+2. if you prefer to download the data from the official website yourself, you can still organize it in the same way as we have and run it successfully. For example, during the 2D instruction tuning stage, if you only want to run the daily_dialogue_49k.json file, you can download the [coco2017](http://images.cocodataset.org/zips/train2017.zip) dataset and organize it accordingly.
 
 
 # Leaderboard
@@ -186,7 +235,7 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
 <p>
  Bold fonts for the best results.
 
-| Task                  | Dataset                         | Metric     | SOTA           | LLaVA                        | MiniGPT4                    | mPLUG-owl         | LAMM                                  |
+| Task                  | Dataset                         | Metric     | SOTA           | [LLaVA](https://github.com/haotian-liu/LLaVA)                        | [MiniGPT4](https://github.com/Vision-CAIR/MiniGPT-4)                    | [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl)         | LAMM                                  |
 | --------------------- | ------------------------------- | ---------- | -------------- | ---------------------------- | --------------------------- | ----------------- | ------------------------------------- |
 | Classification        | CIFAR10                         | Acc ↑      | 99.5           | **60.83**                    | 46.22                       | 42.5              | 34.5                                  |
 | Detection             | VOC2012                         | mAP ↑      | 97.2           | 1.42                         | 0.92                        | 0.158             | **<u>4.82</u>**                       |
@@ -227,7 +276,7 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
 <details><summary> Comparison of results of Binary Locating Metric and GPT Metric of existing MLLMs </summary>
 <p>
 
-|                   | LLaVA | MiniGPT4 | mPLUG-owl | LAMM            |
+|                   | [LLaVA](https://github.com/haotian-liu/LLaVA) | [MiniGPT4](https://github.com/Vision-CAIR/MiniGPT-4) | [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl) | LAMM            |
 | ----------------- | ----- | -------- | --------- | --------------- |
 | Binary-Loc Metric | 14.73 | 13.12    | 4.42      | **<u>31.2</u>** |
 | GPT Metric        | 11    | -        | -         | **<u>89</u>**   |
@@ -235,7 +284,7 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
 </details>
 
 # Framework
-![](./images/LAMM-Framework.png)
+<!-- ![](./images/LAMM-Framework.png) -->
 ## Installation
 
 ```bash
@@ -257,7 +306,6 @@ For 3D experiments, you need to compile PointNet operation additionally.
     python cython_compile.py build_ext --inplace
 ```
 
-
 ## Data & Model Preparation
 - Data
     
@@ -274,7 +322,7 @@ For 3D experiments, you need to compile PointNet operation additionally.
     To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
 
 
-- LAMM: LAMM Models
+- LAMM Models
 
     Download LAMM checkpoints from [Here](https://github.com/OpenLAMM/LAMM/tree/main#lamm-models). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
 
@@ -298,7 +346,6 @@ For 3D experiments, you need to compile PointNet operation additionally.
 You need to dive into scripts to change data path and other hyper-parameters.
 
 ## LAMM-Benchmark
-
 
 - Inference trained models on 2D tasks
     ```Bash
@@ -338,14 +385,14 @@ You need to dive into scripts to change data path and other hyper-parameters.
     ```
 You may need to dive into scripts to change datasets to evaluation & checkpoints folder to load.
 
-### LAMM Models
+# LAMM Model Zoo
 
-| # Training Samples  | LLM Size | Link |
-| -------------------------- | -------- | --------------- |
-| 98K  | 7B            | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
-| 186K  | 7B            | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
-| 98K | 13B           | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) |
-| 186K | 13B           | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
+| # Training Samples  | LLM | Training Data | Link |
+| -------------------------- | -------- | -------- | --------------- |
+| 98K  | 7B            | daily dialogue & desctiption | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
+| 186K  | 7B            | ALL LAMM 2D Instruction Data | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
+| 98K | 13B           | daily dialogue & desctiption | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) | -------- |
+| 186K | 13B           | ALL LAMM 2D Instruction Data | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
 
 
 
