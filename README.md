@@ -226,6 +226,7 @@ For 3D experiments, you need to compile PointNet operation additionally.
         ├── 2D_Instruct  
         ├── 3D_Instruct
     ```
+
 - Vicuna Models
 
     To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
@@ -330,6 +331,7 @@ You need to dive into scripts to change data path and other hyper-parameters.
 </details>
 
 <details><summary> Model Preparation </summary>
+
 - Vicuna Models
 
     To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
