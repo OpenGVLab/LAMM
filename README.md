@@ -49,15 +49,6 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
 - C3: 1-round detailed description aims to elaborate images and 3D scenes in texts. 
 - C4: 1-round visual task dialogue transfers various vision tasks into instruction-response pairs, aiming at enhancing generalizability towards domain tasks in other modalities.
 
-# LAMM-Benchmark 
-
-<!-- ![](./images/LAMM-benchmark.png) -->
-
-**LAMM-Benchmark** evaluates 9 common image tasks, using a total of 11 datasets with over **62,439** samples, and 3 common point cloud tasks, by utilizing 3 datasets with over **12,788** data samples, while existing works only provide quantitative results on fine-tuning and evaluating specific datasets such as ScienceQA, and most works only conduct demonstration or user studies. 
-- We are the very first attempt to establish a benchmark for MLLMs. We conducted a comprehensive benchmark to quantify the zero-shot and fine-tuning performance of existing multi-modal language models on various computer vision tasks and compare them against state-of-the-art methods of these tasks, including classification, object detection, pose estimation, visual question answering, facial classification, optical character recognition, object counting. 
-- We also attempted two novel evaluation strategies designed explicitly for MLLMs. Specifically, as for text generation, we established a scoring logic based on the GPT API. As for tasks involving interactions between points and images, such as object detection and pose estimation, we proposed an object-locating evaluation method.
-
-
 
 # Download 
 
@@ -84,41 +75,11 @@ Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
 
 </p>
 </details> 
-<details><summary> Benchmark Data For Evaluation</summary>
 
-- 2D_Benchmark data
-
-    |  Meta file name  | size  |  Image file name | size |  
-    |  ----  | ----  |  ----  | ----  |  
-    | [Caption_flickr30k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Caption_flickr30k.json)  | 598K | flickr30k_images.zip | 559M |     
-    | [Classification_CIFAR10.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Classification_CIFAR10.json)  | 2.6M | cifar10_images.zip  | 8.9M  |  
-    | [Counting_FSC147.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Counting_FSC147.json) | 7.3M | fsc147_images.zip   |  44M |  
-    | [Detection_VOC2012.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Detection_VOC2012.json) | 6.4M | voc2012_images.zip  | 196M  |  
-    | [Facial_Classification_CelebA(Hair).json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Facial_Classification_CelebA(Hair).json) | 2.4M | celeba_images.zip  |  566M |  
-    | [Facial_Classification_CelebA(Smile).json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Facial_Classification_CelebA(Smile).json) | 3.7M |  celeba_images.zip  |  566M |  
-    | [Fine-grained_Classification_UCMerced.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Fine-grained_Classification_UCMerced.json) | 676K | ucmerced_images.zip  | 317M  |  
-    | [Keypoints_Dectection_LSP.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Keypoints_Dectection_LSP.json) | 3.9M |  fsc147_images.zip   |  44M |   
-    | [Locating_FSC147.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Locating_FSC147.json) | 7.5M | fsc147_images.zip   |  44M |  
-    | [Locating_LSP.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Locating_LSP.json) | 3.9M | lsp_images.zip  |  9.9M |  
-    | [Locating_VOC2012.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Locating_VOC2012.json) | 6.0M | voc2012_images.zip  | 196M  |  
-    | [OCR_SVT.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/OCR_SVT.json) | 68K |  svt_images.zip  | 82M  |  
-    | [VQA_AI2D.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/VQA_AI2D.json) | 2.1M | ai2d_images.zip  | 559M  |  
-    | [VQA_SQAimage.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/VQA_SQAimage.json) | 3.6M |  sqaimage_images.zip  | 127M  |  
-
-- 3D_Benchmark data 
-
-    |  Meta file name  | size  |  Image file name  | size  |  
-    |  ----  | ----  |  ----  | ----  |   
-    |  [Detection_ScanNet.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Benchmark/meta_file/Detection_ScanNet.json)  | 1.7M  | scannet_pcls.zip  | 246M  | 
-    |  [VG_ScanRefer.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Benchmark/meta_file/VG_ScanRefer.json)  | 3.7M  | scannet_pcls.zip  | 246M  | 
-    |  [VQA_ScanQA_multiplechoice.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Benchmark/meta_file/VQA_ScanQA_multiplechoice.json)  | 859K  | scannet_pcls.zip  | 246M  | 
-
-</p>
-</details> 
 
 <details><summary> Dataset Structure </summary>
 
-    ├── 2D_Instruct  
+    └── 2D_Instruct  
     │   ├── coco_images.zip  
     │   ├── bamboo_images.zip  
     │   ├── textvqa_images.zip  
@@ -128,43 +89,11 @@ Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
     │       ├── detailed_description_49k.json  
     │       ├── factual_knowledge_dialogue_42k.json  
     │       └── vision_task_dialogue_46k.json  
-    ├── 2D_Benchmark  
-    │   ├── ai2d_images.zip  
-    │   ├── celeba_images.zip  
-    │   ├── cifar10_images.zip  
-    │   ├── flickr30k_images.zip  
-    │   ├── fsc147_images.zip  
-    │   ├── lsp_images.zip  
-    │   ├── sqaimage_images.zip  
-    │   ├── svt_images.zip  
-    │   ├── ucmerced_images.zip  
-    │   ├── voc2012_images.zip  
-    │   └── meta_file  
-    │       ├── Caption_flickr30k.json  
-    │       ├── Classification_CIFAR10.json  
-    │       ├── Counting_FSC147.json  
-    │       ├── Detection_VOC2012.json  
-    │       ├── Facial_Classification_CelebA(Hair).json  
-    │       ├── Facial_Classification_CelebA(Smile).json  
-    │       ├── Fine-grained_Classification_UCMerced.json  
-    │       ├── Keypoints_Dectection_LSP.json  
-    │       ├── Locating_FSC147.json  
-    │       ├── Locating_LSP.json  
-    │       ├── Locating_VOC2012.json  
-    │       ├── OCR_SVT.json  
-    │       ├── VQA_AI2D.json  
-    │       └── VQA_SQAimage.json  
-    ├── 3D_Instruct  
-    │   ├── 3rscan_pcls.zip  
-    │   ├── shapenet_pcls.zip  
-    │   └── meta_file  
-    │       └── LAMM_3dinstruct_10k.json  
-    └── 3D_Benchmark  
-        ├── scannet_pcls.zip  
-        └── meta_file  
-            ├── Detection_ScanNet.json  
-            ├── VG_ScanRefer.json  
-            └── VQA_ScanQA_multiplechoice.json
+    └── 3D_Instruct  
+        ├── 3rscan_pcls.zip  
+        ├── shapenet_pcls.zip  
+        └── meta_file  
+            └── LAMM_3dinstruct_10k.json  
 
 </p>
 </details> 
@@ -229,25 +158,7 @@ Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
 2. if you prefer to download the data from the official website yourself, you can still organize it in the same way as we have and run it successfully. For example, during the 2D instruction tuning stage, if you only want to run the daily_dialogue_49k.json file, you can download the [coco2017](http://images.cocodataset.org/zips/train2017.zip) dataset and organize it accordingly.
 
 
-# Leaderboard
 
-<details><summary> Comparison of Multimodal Large Language Models on 2D computer vision tasks.</summary>
-<p>
- Bold fonts for the best results.
-
-| Task                  | Dataset                         | Metric     | SOTA           | [LLaVA](https://github.com/haotian-liu/LLaVA)                        | [MiniGPT4](https://github.com/Vision-CAIR/MiniGPT-4)                    | [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl)         | LAMM                                  |
-| --------------------- | ------------------------------- | ---------- | -------------- | ---------------------------- | --------------------------- | ----------------- | ------------------------------------- |
-| Classification        | CIFAR10                         | Acc ↑      | 99.5           | **60.83**                    | 46.22                       | 42.5              | 34.5                                  |
-| Detection             | VOC2012                         | mAP ↑      | 97.2           | 1.42                         | 0.92                        | 0.158             | **<u>4.82</u>**                       |
-| VQA                   | SQAimage<br />AI2D              | Acc ↑      | 92.53<br />N/A | 40.5<br />18.13              | 43.43<br />Failed           | 36.39<br />19.31  | **<u>47.15</u>**<br />**<u>19.5</u>** |
-| Image Caption         | flickr30k                       | BLEU4 ↑    | 30.1           | **<u>6.65</u>**              | 5.1                         | 2.74              | 0.70                                  |
-| F-g clasification     | UCMerced                        | Acc ↑      | 100            | **<u>47</u>**                | 33.6                        | 32.5              | 13                                    |
-| Counting              | FSC147                          | MAE ↓      | 10.79          | 56.2                         | Failed                      | 60.67             | **<u>53.97</u>**                      |
-| OCR                   | SVT                             | Word Acc ↑ | 97.9           | **<u>37.78</u>**             | 16.97                       | 30.39             | 4.2                                   |
-| Facial Classification | CelebA(Smile)<br />CelebA(Hair) | Acc ↑      | N/A<br />N/A   | Failed<br />**<u>46.42</u>** | **<u>66.36</u>**<br />43.47 | Failed<br />40.93 | 51.3<br />30.48                       |
-| Keypoints Detection   | LSP                             | PCK ↑      | 99.5           | Failed                       | Failed                      | Failed            | Failed                                |
-</p>
-</details>
 
 
 
@@ -312,10 +223,8 @@ For 3D experiments, you need to compile PointNet operation additionally.
     Follow [Download](#downloads) to download and prepare the data for 2D and 3D tasks. Put downloaded data in `./data` folder.
     ```
     ├── data
-    │   ├── 2D_Instruct  
-    │   ├── 2D_Benchmark
-    │   ├── 3D_Instruct
-    │   ├── 3D_Benchmark
+        ├── 2D_Instruct  
+        ├── 3D_Instruct
     ```
 - Vicuna Models
 
@@ -345,8 +254,101 @@ For 3D experiments, you need to compile PointNet operation additionally.
     ```
 You need to dive into scripts to change data path and other hyper-parameters.
 
-## LAMM-Benchmark
+# LAMM-Benchmark
 
+**LAMM-Benchmark** evaluates 9 common image tasks, using a total of 11 datasets with over **62,439** samples, and 3 common point cloud tasks, by utilizing 3 datasets with over **12,788** data samples, while existing works only provide quantitative results on fine-tuning and evaluating specific datasets such as ScienceQA, and most works only conduct demonstration or user studies. 
+- We are the very first attempt to establish a benchmark for MLLMs. We conducted a comprehensive benchmark to quantify the zero-shot and fine-tuning performance of existing multi-modal language models on various computer vision tasks and compare them against state-of-the-art methods of these tasks, including classification, object detection, pose estimation, visual question answering, facial classification, optical character recognition, object counting. 
+- We also attempted two novel evaluation strategies designed explicitly for MLLMs. Specifically, as for text generation, we established a scoring logic based on the GPT API. As for tasks involving interactions between points and images, such as object detection and pose estimation, we proposed an object-locating evaluation method.
+
+## Data & Model Preparation
+<details><summary> Benchmark Data For Evaluation</summary>
+
+- 2D_Benchmark data
+
+    |  Meta file name  | size  |  Image file name | size |  
+    |  ----  | ----  |  ----  | ----  |  
+    | [Caption_flickr30k.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Caption_flickr30k.json)  | 598K | flickr30k_images.zip | 559M |     
+    | [Classification_CIFAR10.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Classification_CIFAR10.json)  | 2.6M | cifar10_images.zip  | 8.9M  |  
+    | [Counting_FSC147.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Counting_FSC147.json) | 7.3M | fsc147_images.zip   |  44M |  
+    | [Detection_VOC2012.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Detection_VOC2012.json) | 6.4M | voc2012_images.zip  | 196M  |  
+    | [Facial_Classification_CelebA(Hair).json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Facial_Classification_CelebA(Hair).json) | 2.4M | celeba_images.zip  |  566M |  
+    | [Facial_Classification_CelebA(Smile).json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Facial_Classification_CelebA(Smile).json) | 3.7M |  celeba_images.zip  |  566M |  
+    | [Fine-grained_Classification_UCMerced.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Fine-grained_Classification_UCMerced.json) | 676K | ucmerced_images.zip  | 317M  |  
+    | [Keypoints_Dectection_LSP.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Keypoints_Dectection_LSP.json) | 3.9M |  fsc147_images.zip   |  44M |   
+    | [Locating_FSC147.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Locating_FSC147.json) | 7.5M | fsc147_images.zip   |  44M |  
+    | [Locating_LSP.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Locating_LSP.json) | 3.9M | lsp_images.zip  |  9.9M |  
+    | [Locating_VOC2012.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/Locating_VOC2012.json) | 6.0M | voc2012_images.zip  | 196M  |  
+    | [OCR_SVT.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/OCR_SVT.json) | 68K |  svt_images.zip  | 82M  |  
+    | [VQA_AI2D.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/VQA_AI2D.json) | 2.1M | ai2d_images.zip  | 559M  |  
+    | [VQA_SQAimage.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/2D_Benchmark/meta_file/VQA_SQAimage.json) | 3.6M |  sqaimage_images.zip  | 127M  |  
+
+- 3D_Benchmark data 
+
+    |  Meta file name  | size  |  Image file name  | size  |  
+    |  ----  | ----  |  ----  | ----  |   
+    |  [Detection_ScanNet.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Benchmark/meta_file/Detection_ScanNet.json)  | 1.7M  | scannet_pcls.zip  | 246M  | 
+    |  [VG_ScanRefer.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Benchmark/meta_file/VG_ScanRefer.json)  | 3.7M  | scannet_pcls.zip  | 246M  | 
+    |  [VQA_ScanQA_multiplechoice.json](https://huggingface.co/datasets/caojianjian/LAMM/blob/main/3D_Benchmark/meta_file/VQA_ScanQA_multiplechoice.json)  | 859K  | scannet_pcls.zip  | 246M  | 
+
+</p>
+</details> 
+
+<details><summary> Dataset Structure </summary>
+
+    ├── 2D_Benchmark  
+    │   ├── ai2d_images.zip  
+    │   ├── celeba_images.zip  
+    │   ├── cifar10_images.zip  
+    │   ├── flickr30k_images.zip  
+    │   ├── fsc147_images.zip  
+    │   ├── lsp_images.zip  
+    │   ├── sqaimage_images.zip  
+    │   ├── svt_images.zip  
+    │   ├── ucmerced_images.zip  
+    │   ├── voc2012_images.zip  
+    │   └── meta_file  
+    │       ├── Caption_flickr30k.json  
+    │       ├── Classification_CIFAR10.json  
+    │       ├── Counting_FSC147.json  
+    │       ├── Detection_VOC2012.json  
+    │       ├── Facial_Classification_CelebA(Hair).json  
+    │       ├── Facial_Classification_CelebA(Smile).json  
+    │       ├── Fine-grained_Classification_UCMerced.json  
+    │       ├── Keypoints_Dectection_LSP.json  
+    │       ├── Locating_FSC147.json  
+    │       ├── Locating_LSP.json  
+    │       ├── Locating_VOC2012.json  
+    │       ├── OCR_SVT.json  
+    │       ├── VQA_AI2D.json  
+    │       └── VQA_SQAimage.json  
+    └── 3D_Benchmark  
+        ├── scannet_pcls.zip  
+        └── meta_file  
+            ├── Detection_ScanNet.json  
+            ├── VG_ScanRefer.json  
+            └── VQA_ScanQA_multiplechoice.json
+</details>
+
+<details><summary> Model Preparation </summary>
+- Vicuna Models
+
+    To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
+
+
+- LAMM Models
+
+    Download LAMM checkpoints from [Here](https://github.com/OpenLAMM/LAMM/tree/main#lamm-models). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
+
+    Or you can train your own LAMM model by following the instructions [Here](https://github.com/OpenLAMM/LAMM/tree/main#Training)!
+
+- Other Models
+    - [LLaVA](https://github.com/haotian-liu/LLaVA)
+    - [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4)
+    - [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl)
+</details>
+
+
+## Evaluating 
 - Inference trained models on 2D tasks
     ```Bash
     cd src
@@ -368,7 +370,7 @@ You need to dive into scripts to change data path and other hyper-parameters.
 
 - Evaluation for other MLLM models. 
     
-    Please refer to [LLaVA](#https://github.com/haotian-liu/LLaVA), [MiniGPT-4](#https://github.com/Vision-CAIR/MiniGPT-4) and [mPLUG-owl](#https://github.com/X-PLUG/mPLUG-Owl) for inference respectively. Save the answers in `./answers`. And then run `common_eval_2d.py` for evaluation. For example, to evaluate LLaVA on VOC2012:
+    Please refer to [LLaVA](https://github.com/haotian-liu/LLaVA), [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4) and [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl) for inference respectively. Save the answers in `./answers`. And then run `common_eval_2d.py` for evaluation. For example, to evaluate LLaVA on VOC2012:
     ```Bash
     python common_eval_2d.py \
     --dataset-name VOC2012 \
@@ -384,6 +386,27 @@ You need to dive into scripts to change data path and other hyper-parameters.
     sh scripts/GPT_metric.sh
     ```
 You may need to dive into scripts to change datasets to evaluation & checkpoints folder to load.
+
+## Leaderboard
+
+<details><summary> Comparison of Multimodal Large Language Models on 2D computer vision tasks.</summary>
+<p>
+ Bold fonts for the best results.
+
+| Task                  | Dataset                         | Metric     | SOTA           | [LLaVA](https://github.com/haotian-liu/LLaVA)                        | [MiniGPT4](https://github.com/Vision-CAIR/MiniGPT-4)                    | [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl)         | LAMM                                  |
+| --------------------- | ------------------------------- | ---------- | -------------- | ---------------------------- | --------------------------- | ----------------- | ------------------------------------- |
+| Classification        | CIFAR10                         | Acc ↑      | 99.5           | **60.83**                    | 46.22                       | 42.5              | 34.5                                  |
+| Detection             | VOC2012                         | mAP ↑      | 97.2           | 1.42                         | 0.92                        | 0.158             | **<u>4.82</u>**                       |
+| VQA                   | SQAimage<br />AI2D              | Acc ↑      | 92.53<br />N/A | 40.5<br />18.13              | 43.43<br />Failed           | 36.39<br />19.31  | **<u>47.15</u>**<br />**<u>19.5</u>** |
+| Image Caption         | flickr30k                       | BLEU4 ↑    | 30.1           | **<u>6.65</u>**              | 5.1                         | 2.74              | 0.70                                  |
+| F-g clasification     | UCMerced                        | Acc ↑      | 100            | **<u>47</u>**                | 33.6                        | 32.5              | 13                                    |
+| Counting              | FSC147                          | MAE ↓      | 10.79          | 56.2                         | Failed                      | 60.67             | **<u>53.97</u>**                      |
+| OCR                   | SVT                             | Word Acc ↑ | 97.9           | **<u>37.78</u>**             | 16.97                       | 30.39             | 4.2                                   |
+| Facial Classification | CelebA(Smile)<br />CelebA(Hair) | Acc ↑      | N/A<br />N/A   | Failed<br />**<u>46.42</u>** | **<u>66.36</u>**<br />43.47 | Failed<br />40.93 | 51.3<br />30.48                       |
+| Keypoints Detection   | LSP                             | PCK ↑      | 99.5           | Failed                       | Failed                      | Failed            | Failed                                |
+</p>
+</details>
+
 
 # LAMM Model Zoo
 
