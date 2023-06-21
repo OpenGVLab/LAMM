@@ -7,7 +7,7 @@
 *.so
 *.egg
 *.egg-info
-*.txt
+
 
 
 # training related
