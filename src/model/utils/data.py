@@ -29,7 +29,7 @@ DEFAULT_AUDIO_FRAME_SHIFT_MS = 10  # in milliseconds
 BPE_PATH = "../CLIP/bpe_simple_vocab_16e6.txt.gz"
 
 
-def load_and_transform_vision_data(image_paths, device, client=None):
+def load_and_transform_vision_data(image_paths, device):
     if image_paths is None:
         return None
 
@@ -51,8 +51,6 @@ def load_and_transform_vision_data(image_paths, device, client=None):
         if os.path.exists(image_path):
             with open(image_path, "rb") as fopen:
                 image = Image.open(fopen).convert("RGB")
-        elif image_path.startswith("s3://") and client is not None:
-            image = Image.open(io.BytesIO(client.get(image_path))).convert("RGB")
         elif image_path.startswith("http"):
             image = Image.open(requests.get(image_path, stream=True).raw).convert("RGB")
         else:
