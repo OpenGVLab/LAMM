@@ -7,7 +7,6 @@
 *.so
 *.egg
 *.egg-info
-*.pyx
 *.txt
 
 

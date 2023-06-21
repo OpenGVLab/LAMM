@@ -15,8 +15,8 @@
 
 📆[**2023-06-19**]
 
-1. [Full paper]() is online.
-2. More demo online in [video]().
+1. [Full paper with Appendix](https://arxiv.org/abs/2306.06687) is online.
+<!-- 2. More demo online in [video](). -->
 
 📆[**2023-06-16**]
 
@@ -54,7 +54,7 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
 
 Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
 
- If you would like to download the entire LAMM Dataset and LAMM Benchmrak, you can do so from the opendatalab website using the provided [LAMM](https://opendatalab.com/LAMM/download) link. Here is the table illustrating the correspondence between each Meta file and image collection in the LAMM dataset:
+ If you would like to download the entire LAMM Dataset and LAMM Benchmark, you can do so from the opendatalab website using the provided [LAMM](https://opendatalab.com/LAMM/download) link. Here is the table illustrating the correspondence between each Meta file and image collection in the LAMM dataset:
 <details><summary> Instruction Data For Training</summary>
 
 - 2D_Instruct data 
@@ -158,43 +158,7 @@ Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
 2. if you prefer to download the data from the official website yourself, you can still organize it in the same way as we have and run it successfully. For example, during the 2D instruction tuning stage, if you only want to run the daily_dialogue_49k.json file, you can download the [coco2017](http://images.cocodataset.org/zips/train2017.zip) dataset and organize it accordingly.
 
 
-
-
-
-
-<details><summary> Results of LAMM model on selected 2D vision tasks </summary>
-<p>
-
-| Task                       | Dataset  | LAMM(Zero-Shot) | LAMM(Finetune) |
-| -------------------------- | -------- | --------------- | -------------- |
-| Classification **(Acc)**   | CIFAR10  | 34.5            | 91.2           |
-| Object Detection **(Acc)** | VOC2012  | 4.82            | 13.48          |
-| VQA **(mAP@0.5)**          | SQAimage | 47.15           | 74.27          |
-</p>
-</details>
-
-<details><summary> Results of 3D tasks by LAMM </summary>
-<p>
-
-| Task                                         | Dataset   | SOTA  | LAMM (Zero-Shot) | LAMM (Finetune) |
-| -------------------------------------------- | --------- | ----- | ---------------- | --------------- |
-| 3D Object Detection **(mAP@0.5)**            | ScanNet   | 63.2  | 9.3              | 11.89           |
-| Visual Grounding **(mAP@0.5)**               | ScanRefer | 54.59 | Failed           | 3.38            |
-| 3D VQA **(Acc of multiple choice prolblem)** | ScanQA    | N/A   | 26.54            | 99.89           |
-</p>
-</details>
-
-<details><summary> Comparison of results of Binary Locating Metric and GPT Metric of existing MLLMs </summary>
-<p>
-
-|                   | [LLaVA](https://github.com/haotian-liu/LLaVA) | [MiniGPT4](https://github.com/Vision-CAIR/MiniGPT-4) | [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl) | LAMM            |
-| ----------------- | ----- | -------- | --------- | --------------- |
-| Binary-Loc Metric | 14.73 | 13.12    | 4.42      | **<u>31.2</u>** |
-| GPT Metric        | 11    | -        | -         | **<u>89</u>**   |
-</p>
-</details>
-
-# Framework
+# LAMM-Framework
 <!-- ![](./images/LAMM-Framework.png) -->
 ## Installation
 
@@ -202,25 +166,28 @@ Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
     conda create -n lamm python=3.10 -y
     conda activate lamm
 ```
-For 2D experiments, install required packages
+Install required packages
 ```bash
     pip install -r requirements.txt
-    or 
-    conda env update -n lamm --file environment.yml
-```
-For 3D experiments, you need to compile PointNet operation additionally.
-```Bash
+
+    # Optional; For 3D experiments ONLY
     cd src/model/EPCL/third_party/pointnet2/
     python setup.py install
     cd ../../utils/
     pip install cython
     python cython_compile.py build_ext --inplace
+    
 ```
+<!-- For 3D experiments, you need to compile PointNet operation additionally.
+```Bash
+    # or 
+    # conda env update -n lamm --file environment.yml
+``` -->
 
-## Data & Model Preparation
+## Data & Model Preparation for Training
 - Data
     
-    Follow [Download](#downloads) to download and prepare the data for 2D and 3D tasks. Put downloaded data in `./data` folder.
+    Follow [Download](https://github.com/OpenLAMM/LAMM/tree/readme#download) to download and prepare the data for 2D and 3D tasks. Put downloaded data in `./data` folder.
     ```
     ├── data
         ├── 2D_Instruct  
@@ -231,12 +198,10 @@ For 3D experiments, you need to compile PointNet operation additionally.
 
     To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
 
+- EPCL Model
 
-- LAMM Models
+    Download Pre-trained EPCL model to tokenize point cloud from [Here](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
 
-    Download LAMM checkpoints from [Here](https://github.com/OpenLAMM/LAMM/tree/main#lamm-models). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
-
-    Or you can train your own LAMM model by following the instructions [Here](https://github.com/OpenLAMM/LAMM/tree/main#Training)!
 
 ## Training
 - 2D Models Training
@@ -261,7 +226,7 @@ You need to dive into scripts to change data path and other hyper-parameters.
 - We are the very first attempt to establish a benchmark for MLLMs. We conducted a comprehensive benchmark to quantify the zero-shot and fine-tuning performance of existing multi-modal language models on various computer vision tasks and compare them against state-of-the-art methods of these tasks, including classification, object detection, pose estimation, visual question answering, facial classification, optical character recognition, object counting. 
 - We also attempted two novel evaluation strategies designed explicitly for MLLMs. Specifically, as for text generation, we established a scoring logic based on the GPT API. As for tasks involving interactions between points and images, such as object detection and pose estimation, we proposed an object-locating evaluation method.
 
-## Data & Model Preparation
+## Data & Model Preparation for LAMM-Benchmark
 <details><summary> Benchmark Data For Evaluation</summary>
 
 - 2D_Benchmark data
@@ -336,6 +301,9 @@ You need to dive into scripts to change data path and other hyper-parameters.
 
     To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
 
+- EPCL Model
+
+    Download Pre-trained EPCL model to tokenize point cloud from [Here](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
 
 - LAMM Models
 
@@ -391,6 +359,41 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 
 ## Leaderboard
 
+
+
+<details><summary> Results of LAMM model on selected 2D vision tasks </summary>
+<p>
+
+| Task                       | Dataset  | LAMM(Zero-Shot) | LAMM(Finetune) |
+| -------------------------- | -------- | --------------- | -------------- |
+| Classification **(Acc)**   | CIFAR10  | 34.5            | 91.2           |
+| Object Detection **(Acc)** | VOC2012  | 4.82            | 13.48          |
+| VQA **(mAP@0.5)**          | SQAimage | 47.15           | 74.27          |
+</p>
+</details>
+
+<details><summary> Results of 3D tasks by LAMM </summary>
+<p>
+
+| Task                                         | Dataset   | SOTA  | LAMM (Zero-Shot) | LAMM (Finetune) |
+| -------------------------------------------- | --------- | ----- | ---------------- | --------------- |
+| 3D Object Detection **(mAP@0.5)**            | ScanNet   | 63.2  | 9.3              | 11.89           |
+| Visual Grounding **(mAP@0.5)**               | ScanRefer | 54.59 | Failed           | 3.38            |
+| 3D VQA **(Acc of multiple choice prolblem)** | ScanQA    | N/A   | 26.54            | 99.89           |
+</p>
+</details>
+
+<details><summary> Comparison of results of Binary Locating Metric and GPT Metric of existing MLLMs </summary>
+<p>
+
+|                   | [LLaVA](https://github.com/haotian-liu/LLaVA) | [MiniGPT4](https://github.com/Vision-CAIR/MiniGPT-4) | [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl) | LAMM            |
+| ----------------- | ----- | -------- | --------- | --------------- |
+| Binary-Loc Metric | 14.73 | 13.12    | 4.42      | **<u>31.2</u>** |
+| GPT Metric        | 11    | -        | -         | **<u>89</u>**   |
+</p>
+</details>
+
+
 <details><summary> Comparison of Multimodal Large Language Models on 2D computer vision tasks.</summary>
 <p>
  Bold fonts for the best results.
@@ -412,12 +415,12 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 
 # LAMM Model Zoo
 
-| # Training Samples  | LLM | Training Data | Link |
-| -------------------------- | -------- | -------- | --------------- |
-| 98K  | 7B            | daily dialogue & desctiption | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
-| 186K  | 7B            | ALL LAMM 2D Instruction Data | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
-| 98K | 13B           | daily dialogue & desctiption | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) | -------- |
-| 186K | 13B           | ALL LAMM 2D Instruction Data | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
+| # Training Samples  | LLM | Training Data | Lora Rank | Link |
+| -------------------------- | -------- | -------- | ---- | --------------- |
+| 98K  | Vicuna7B            | daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
+| 186K  | Vicuna7B            | ALL LAMM 2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
+| 98K | Vicuna13B           | daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) | -------- |
+| 186K | Vicuna13B           | ALL LAMM 2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
 
 
 
@@ -426,11 +429,12 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 ## Citation
 
 ```
-    @misc{yin2023lamm,
-        title={LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark}, 
-        author={Zhenfei Yin, Jiong Wang, Jianjian Cao, Zhelun Shi, Dingning Liu, Mukai Li, Lu Sheng, Lei Bai, Xiaoshui Huang, Zhiyong Wang, Wanli Ouyang, Jing Shao},
-        year={2023},
-      }
+    @article{yin2023lamm,
+        title={LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark},
+        author={Yin, Zhenfei and Wang, Jiong and Cao, Jianjian and Shi, Zhelun and Liu, Dingning and Li, Mukai and Sheng, Lu and Bai, Lei and Huang, Xiaoshui and Wang, Zhiyong and others},
+        journal={arXiv preprint arXiv:2306.06687},
+        year={2023}
+}
 ```
 
 ## License & Acknowledgement
