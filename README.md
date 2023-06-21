@@ -54,7 +54,7 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
 
 Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
 
- If you would like to download the entire LAMM Dataset and LAMM Benchmrak, you can do so from the opendatalab website using the provided [LAMM](https://opendatalab.com/LAMM/download) link. Here is the table illustrating the correspondence between each Meta file and image collection in the LAMM dataset:
+ If you would like to download the entire LAMM Dataset and LAMM Benchmark, you can do so from the opendatalab website using the provided [LAMM](https://opendatalab.com/LAMM/download) link. Here is the table illustrating the correspondence between each Meta file and image collection in the LAMM dataset:
 <details><summary> Instruction Data For Training</summary>
 
 - 2D_Instruct data 
@@ -158,10 +158,7 @@ Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
 2. if you prefer to download the data from the official website yourself, you can still organize it in the same way as we have and run it successfully. For example, during the 2D instruction tuning stage, if you only want to run the daily_dialogue_49k.json file, you can download the [coco2017](http://images.cocodataset.org/zips/train2017.zip) dataset and organize it accordingly.
 
 
-
-
-
-# Framework
+# LAMM-Framework
 <!-- ![](./images/LAMM-Framework.png) -->
 ## Installation
 
@@ -173,7 +170,7 @@ Install required packages
 ```bash
     pip install -r requirements.txt
 
-    # Optional for 3D experiments ONLY
+    # Optional; For 3D experiments ONLY
     cd src/model/EPCL/third_party/pointnet2/
     python setup.py install
     cd ../../utils/
@@ -190,7 +187,7 @@ Install required packages
 ## Data & Model Preparation for Training
 - Data
     
-    Follow [Download](#downloads) to download and prepare the data for 2D and 3D tasks. Put downloaded data in `./data` folder.
+    Follow [Download](https://github.com/OpenLAMM/LAMM/tree/readme#download) to download and prepare the data for 2D and 3D tasks. Put downloaded data in `./data` folder.
     ```
     ├── data
         ├── 2D_Instruct  
@@ -202,6 +199,7 @@ Install required packages
     To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
 
 - EPCL Model
+
     Download Pre-trained EPCL model to tokenize point cloud from [Here](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
 
 
@@ -304,6 +302,7 @@ You need to dive into scripts to change data path and other hyper-parameters.
     To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
 
 - EPCL Model
+
     Download Pre-trained EPCL model to tokenize point cloud from [Here](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
 
 - LAMM Models
@@ -416,12 +415,12 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 
 # LAMM Model Zoo
 
-| # Training Samples  | LLM | Training Data | Link |
-| -------------------------- | -------- | -------- | --------------- |
-| 98K  | Vicuna7B            | daily dialogue & desctiption | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
-| 186K  | Vicuna7B            | ALL LAMM 2D Instruction Data | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
-| 98K | Vicuna13B           | daily dialogue & desctiption | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) | -------- |
-| 186K | Vicuna13B           | ALL LAMM 2D Instruction Data | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
+| # Training Samples  | LLM | Training Data | Lora Rank | Link |
+| -------------------------- | -------- | -------- | ---- | --------------- |
+| 98K  | Vicuna7B            | daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
+| 186K  | Vicuna7B            | ALL LAMM 2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
+| 98K | Vicuna13B           | daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) | -------- |
+| 186K | Vicuna13B           | ALL LAMM 2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
 
 
 
