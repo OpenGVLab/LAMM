@@ -4,9 +4,10 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
 - C2: n-round factual knowledge dialogue aims at factual knowledge reasoning. 
 - C3: 1-round detailed description aims to elaborate images and 3D scenes in texts. 
 - C4: 1-round visual task dialogue transfers various vision tasks into instruction-response pairs, aiming at enhancing generalizability towards domain tasks in other modalities.
-   
+
 
 #  Dataset Statistics
+Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
 - ## 2D_Instruct data  
 
     <!-- |  Data file name  | size  |  Image file name | size |
