@@ -3,6 +3,15 @@ from .samplers import DistributedBatchSampler
 from .dataset import *
 from .LAMM_banchmark2D_dataset import LAMM_EVAL_2D
 
+
+def collate_fn(batch):
+    res = dict()
+    keys = batch[0].keys()
+    for key in keys:
+        res[key] = [data[key] for data in batch]
+    return res
+
+
 def load_lamm_dataset(args):
     """load LAMM datasets
 
@@ -28,7 +37,6 @@ def load_lamm_dataset(args):
         pin_memory=True,
     )
     return dataset, dataloader, sampler
-
 
 
 def load_2Deval_dataset(base_data_path,
