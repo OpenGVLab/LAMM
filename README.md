@@ -13,7 +13,7 @@
 
 1. Code for less GPU memory will be released soon.
 
-📆[**2023-06-19**]
+📆[**2023-06-20**]
 
 1. [Full paper with Appendix](https://arxiv.org/abs/2306.06687) is online.
 <!-- 2. More demo online in [video](). -->
