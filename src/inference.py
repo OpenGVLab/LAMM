@@ -13,10 +13,29 @@ answers_file = ''
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', type=str, default='openllama_peft')
-    parser.add_argument('--encoder_pretrain', type=str, default='imagebind')
-    parser.add_argument('--encoder_ckpt_path', type=str, default='/mnt/petrelfs/caojianjian/code/wangjiong/PandaGPT/model_zoo/imagebind_ckpt')
-    parser.add_argument('--vicuna_ckpt_path', type=str, default='/mnt/petrelfs/caojianjian/code/wangjiong/PandaGPT/model_zoo/vicuna_ckpt/13b_v0')
-    parser.add_argument('--delta_ckpt_path', type=str, default='/mnt/petrelfs/caojianjian/code/wangjiong/PandaGPT/code/ckpt/pandagpt_release_13b_v0/pytorch_model.pt')
+    parser.add_argument(
+        "--encoder_pretrain",
+        type=str,
+        default="clip",
+        choices=("clip", "epcl"),
+        help="Vision Pretrain Model",
+    )
+    parser.add_argument(
+        "--encoder_ckpt_path",
+        type=str,
+        help="path of vision pretrained model; CLIP use default path in cache",
+    )
+    parser.add_argument(
+        "--vicuna_ckpt_path",
+        type=str,
+        required=True,
+        help="path of LLM, default: Vicuna",
+    )
+    parser.add_argument(
+        "--delta_ckpt_path",
+        type=str,
+        help="path of delta parameters from previous stage; Only matter for stage 2",
+    )
     parser.add_argument('--stage', type=int, default=2,)
     # LoRA configurations
     parser.add_argument('--lora_r', type=int, default=32)
@@ -48,7 +67,7 @@ def parse_args():
     
     assert os.path.exists(args.delta_ckpt_path), "delta checkpoint not exists!"
     assert os.path.exists(args.vicuna_ckpt_path), "vicuna checkpoint not exists!"
-    assert os.path.exists(args.encoder_ckpt_path), "imagebind checkpoint not exists!"
+    assert os.path.exists(args.encoder_ckpt_path), "vision encoder checkpoint not exists!"
     print(json.dumps(vars(args), indent=4, sort_keys=True))
     return args
 
