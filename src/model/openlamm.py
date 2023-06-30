@@ -26,7 +26,7 @@ VISION_TAGS = {
 }
 
 
-class StoppingCriteria(StoppingCriteria):
+class LAMMStoppingCriteria(StoppingCriteria):
     def __init__(self, stops, input_ids):
         """intialize stopping criteria
 
@@ -34,8 +34,8 @@ class StoppingCriteria(StoppingCriteria):
         :param list input_ids: input ids
         """
         super().__init__()
-        self.stops = [torch.tensor(stop).to("cuda:0") for stop in stops]
-        self.stop_flag = [0] * input_ids.shape[0]
+        self.stops = [torch.tensor(stop).to('cuda:0') for stop in stops]
+        self.stop_flag = [0]*input_ids.shape[0]
 
     def check_stop(self, input_ids):
         """check whether to stop generation
@@ -44,11 +44,11 @@ class StoppingCriteria(StoppingCriteria):
         :return bool: stop or not
         """
         for stop in self.stops:
-            if torch.all((stop == input_ids[-len(stop) :])).item():
+            if torch.all((stop == input_ids[-len(stop):])).item():
                 return True
         return False
 
-    def __call__(self, output_ids: torch.LongTensor, **kwargs) -> bool:
+    def __call__(self, output_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
         """call function of stop creteria
 
         :param torch.LongTensor output_ids: output token ids
@@ -554,7 +554,7 @@ class LAMMPEFTModel(nn.Module):
         if inputs["image_paths"]:
             image_embeds, _ = self.encode_image(inputs["image_paths"])
             features.append(image_embeds)
-        if inputs["images"]:  # image objects input in testing
+        if 'images' in inputs and inputs["images"]:  # image objects input in testing
             image_embeds, _ = self.encode_image_object(inputs["images"])
             return image_embeds
         if "pcl_paths" in inputs and inputs["pcl_paths"]:
@@ -641,7 +641,7 @@ class LAMMPEFTModel(nn.Module):
         """
         input_embeds = self.prepare_generation_embedding(inputs)
         stopping_criteria = StoppingCriteriaList(
-            [StoppingCriteria([[2277]], input_embeds)]
+            [LAMMStoppingCriteria([[2277]], input_embeds)]
         )
         outputs = self.llama_model.generate(
             inputs_embeds=input_embeds,
