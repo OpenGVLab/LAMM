@@ -1,43 +1,81 @@
 <!-- # 🐏LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark -->
 
-![LAMM](./images/lamm.png)
+![LAMM](./images/lamm-title.png)
 <p align="center">
-    <a href="https://openlamm.github.io/" target="_blank">🌏 Project Page</a> • <a href="https://huggingface.co/spaces/openlamm/LAMM" target="_blank">🤗 Demo</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-dataset" target="_blank">🎞️ Video</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-dataset" target="_blank">📀 Data</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-benchmark" target="_blank">📊 Benchmark</a> • <a href="https://github.com/OpenLAMM/LAMM/blob/main/README.md#pre-trained-model-preparation" target="_blank">📦 LAMM Models</a>
+    <font size='4'>
+    <a href="https://openlamm.github.io/" target="_blank">🌏 Project Page</a> • <a href="https://huggingface.co/spaces/openlamm/LAMM" target="_blank">🤗 Demo</a> • <a href="https://www.youtube.com/watch?v=M7XlIe8hhPk" target="_blank">▶️ YouTube </a> • <a href="https://www.bilibili.com/video/BV1kN411D7kt/?share_source=copy_web&vd_source=ab4c734425ed0114898300f2c037ac0b" target="_blank"> 📺 Bilibili <a href="https://opendatalab.com/LAMM" target="_blank">📀 Data</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-benchmark" target="_blank">📊 Benchmark</a> • <a href="https://huggingface.co/openlamm" target="_blank">📦 LAMM Models</a>
+    </font>
 </p>
 
-#### Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark]()
+### Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark](https://arxiv.org/abs/2306.06687)
 
+<!-- <a href="https://www.youtube.com/watch?v=M7XlIe8hhPk"><p><img src="./images/lamm-video.png"/></p></a>  -->
+[![](./images/lamm-video.png)](https://www.youtube.com/watch?v=M7XlIe8hhPk)
 
-## Updates
-📆**Coming Soon**
+# Updates
+📆 **Coming Soon**
 
 1. Code for less GPU memory will be released soon.
 
-📆[**2023-06-20**]
+
+📆 [**2023-06-30**]
+
+1. Watch demo video for LAMM at [Youtube](https://www.youtube.com/watch?v=M7XlIe8hhPk) and [Bilibili](https://www.bilibili.com/video/BV1kN411D7kt/?share_source=copy_web&vd_source=ab4c734425ed0114898300f2c037ac0b)!
+
+📆 [**2023-06-20**]
 
 1. [Full paper with Appendix](https://arxiv.org/abs/2306.06687) is online.
-<!-- 2. More demo online in [video](). -->
 
-📆[**2023-06-16**]
+📆 [**2023-06-16**]
 
 1. [LAMM dataset](https://github.com/OpenLAMM/LAMM#lamm-dataset) is available for Research community!
 
-📆[**2023-06-12**]
+📆 [**2023-06-12**]
 
 1. GPT Evaluation part available.
 
 2. Our Paper will release tomorrow. Please stay tuned!
 
-📆[**2023-06-11**]
+📆 [**2023-06-11**]
 
 1. LAMM code is available for Research community!
 
 2. Try out the [Interactive Demo](https://huggingface.co/spaces/openlamm/LAMM) on Huggingface! (Time to build app depends on the server load)
 
 
-![LAMM](./images/LAMM_Imagewall.png)
+# Demos
 
-## Overview
+## Online Demo
+
+For cases of 2D images, we provide an [online demo](https://huggingface.co/spaces/openlamm/LAMM) deployed on huggingface spaces.
+
+```
+Due to limitation of hardware capacity, online version only supports LLM of 7B parameters and load pretrained model takes few minutes.
+```
+
+<!-- <a href="https://huggingface.co/spaces/openlamm/LAMM"><p align="center"><img src="./images/LAMM_2d_demo.png" height=600px/></p></a>  -->
+[![](./images/LAMM_2d_demo.png)](https://huggingface.co/spaces/openlamm/LAMM)
+
+## CLI Demo
+
+We also provide a CLI demo for local test. 
+Point cloud data are required to be in format of `npy`, we suggest to use data from LAMM-Benchmark-3D.
+
+
+```bash
+    cd ./src
+    python cli_demo_pcl.py \
+        --model lamm_peft \
+        --vision_type pcl/image \
+        --encoder_pretrain epcl/clip \
+        --encoder_ckpt_path $EPCL_CKPT_PATH \
+        --vicuna_ckpt_path $LLM_CKPT_PATH \
+        --delta_ckpt_path $LAMM_CKPT_PATH
+```
+
+
+
+# Overview
 Large language models have become a potential pathway toward achieving artificial general intelligence. Recent works on multi-modal large language models have demonstrated their effectiveness in handling visual modalities. In this work, we extend the research of MLLMs to point clouds and present the LAMM-Dataset and LAMM-Benchmark for 2D image and 3D point cloud understanding. We also establish an extensible framework to facilitate the extension of MLLMs to additional modalities.
 Our main contribution is three-fold: 1) We present the LAMM-Dataset and LAMM-Benchmark, which cover almost all high-level vision tasks for 2D and 3D vision. Extensive experiments validate the effectiveness of our dataset and benchmark. 2) We demonstrate the detailed methods of constructing instruction-tuning datasets and benchmarks for MLLMs, which will enable future research on MLLMs to scale up and extend to other domains, tasks, and modalities faster. 3) We provide a primary but potential MLLM training framework optimized for modalities' extension. We also provide baseline models, comprehensive experimental observations, and analysis to accelerate future research. 
 
@@ -54,7 +92,7 @@ LAMM-Dataset is a comprehensive multi-modal instruction tuning dataset, which co
 
 Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
 
- If you would like to download the entire LAMM Dataset and LAMM Benchmark, you can do so from the opendatalab website using the provided [LAMM](https://opendatalab.com/LAMM/download) link. Here is the table illustrating the correspondence between each Meta file and image collection in the LAMM dataset:
+ If you would like to download the entire LAMM Dataset and LAMM Benchmark, you can do so from the opendatalab website using the provided [LAMM link](https://opendatalab.com/LAMM/download). Here is the table illustrating the correspondence between each Meta file and image collection in the LAMM dataset:
 <details><summary> Instruction Data For Training</summary>
 
 - 2D_Instruct data 
@@ -155,7 +193,7 @@ Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
 **Notes**：
 
 1.  If you want to work with a specific subset of the LAMM dataset, you will need to download both the corresponding meta file and the image collection. 
-2. if you prefer to download the data from the official website yourself, you can still organize it in the same way as we have and run it successfully. For example, during the 2D instruction tuning stage, if you only want to run the daily_dialogue_49k.json file, you can download the [coco2017](http://images.cocodataset.org/zips/train2017.zip) dataset and organize it accordingly.
+2. if you prefer to download the data from the official website yourself, you can still organize it in the same way as we have and run it successfully. For example, during the 2D instruction tuning stage, if you only want to run the daily_dialogue_49k.json file, you can download the [COCO2017](http://images.cocodataset.org/zips/train2017.zip) dataset and organize it accordingly.
 
 
 # LAMM-Framework
@@ -194,11 +232,11 @@ Install required packages
         ├── 3D_Instruct
     ```
 
-- Vicuna Models
+- Language Model: Vicuna
 
     To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
 
-- EPCL Model
+- 3D Encoder: EPCL
 
     Download Pre-trained EPCL model to tokenize point cloud from [Here](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
 
@@ -297,11 +335,11 @@ You need to dive into scripts to change data path and other hyper-parameters.
 
 <details><summary> Model Preparation </summary>
 
-- Vicuna Models
+- Language Model: Vicuna
 
     To prepare the pre-trained Vicuna model, please follow the instructions provided [Here](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights). Put the downloaded model in the `./model_zoo/vicuna_ckpt` folder.
 
-- EPCL Model
+- 3D Encoder: EPCL
 
     Download Pre-trained EPCL model to tokenize point cloud from [Here](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
 
@@ -415,12 +453,13 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 
 # LAMM Model Zoo
 
-| # Training Samples  | LLM | Training Data | Lora Rank | Link |
-| -------------------------- | -------- | -------- | ---- | --------------- |
-| 98K  | Vicuna7B            | daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
-| 186K  | Vicuna7B            | ALL LAMM 2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
-| 98K | Vicuna13B           | daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) | -------- |
-| 186K | Vicuna13B           | ALL LAMM 2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
+| # Training Samples  | Vision Encoder | LLM | Training Data | Lora Rank | Link |
+| -------------------------- | -------- | -------- | -------- | ---- | --------------- |
+| 98K  | CLIP-ViT-L | Vicuna7B            | LAMM-2D daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
+| 186K  | CLIP-ViT-L | Vicuna7B            | LAMM-2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
+| 98K | CLIP-ViT-L | Vicuna13B           | LAMM-2D daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) |
+| 186K | CLIP-ViT-L |  Vicuna13B           | LAMM-2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
+| 10K | [EPCL-ViT-L](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main) |  Vicuna13B           | LAMM-3D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm3d_13b_lora32_10k) |
 
 
 
@@ -437,5 +476,13 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 }
 ```
 
-## License & Acknowledgement
+---
+
+## License
 The project is CC BY NC 4.0 (allowing only non-commercial use) and models trained using the dataset should not be used outside of research purposes. The checkpoints are also CC BY NC 4.0 (allowing only non-commercial use).
+
+---
+## Acknowledgement
+We thank [Hongxing Fan](https://scholar.google.com/citations?user=Wnk95ccAAAAJ), [Zeren Chen](https://github.com/Zx55) for support of LAMM project. 
+
+We also thanks the great works including [CLIP](https://github.com/openai/CLIP), [EPCL](https://arxiv.org/abs/2212.04098), [LLaMA](https://github.com/facebookresearch/llama), [Vicuna](https://github.com/lm-sys/FastChat)

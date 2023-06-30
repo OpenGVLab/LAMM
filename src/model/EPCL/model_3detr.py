@@ -590,7 +590,7 @@ def build_epcl_encoder(
         use_task_emb=args.use_task_emb,
         vit_only=True,
     )
-    print("===> Loading\n", model)
+    print("===> Loading\n", model.__str__)
     match_keys = []
     for key in model.state_dict().keys():
         if key in ckpt["model"]:
