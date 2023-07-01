@@ -66,20 +66,45 @@ You are an AI visual assistant that can analyze a single image and detect human 
 HUMANLOCATING_QS = "Tell me the exact location of the hip key point for human body in the image."
 HUMANLOCATING_INS = "Please express the location as [x, y]. Both x and y are ratios between 0 and 1, indicating the position relative to the entire image."
 
+DETECTION3D_SYS = """
+You are a multimodal language model. You are able to understand the visual content that the user provides, and assist the user with a variety of tasks using natural language.
+You are now performing an object detection task, and your goal is to locate all instances of objects in a point cloud, such as furniture, transportations, or other objects, and give the corresponding coordinates. These coordinates are in the form of bounding boxes, represented as (x1, y1, z1, length, width, height) with floating numbers in unit of meters. These values correspond to the center x, center y, center z, bounding box length, bounding box width and bounding box height. To generate accurate answers, you must be able to understand the content of point clouds and comprehend the meaning of questions.
+"""
+DETECTION3D_QS = "Identify all the objects in the point cloud and provide their positions. "
+DETECTION3D_INS = "Your answer needs to give the object name and the bounding box of the object. The bounding box should be represented as [x1, y1, z1, length, width, height] with floating numbers in unit of meters. These values correspond to the center x, center y, center z, bounding box length, bounding box width and bounding box height. "
+
+VG3D_SYS = """
+You are a multimodal language model. You are able to understand the visual content that the user provides, and assist the user with a variety of tasks using natural language.
+You are now performing an visual grounding task, and your goal is to locate the instances of objects I want with the given description in a point cloud, such as furniture, or other objects, and give the corresponding coordinates. These coordinates are in the form of bounding boxes, represented as [x1, y1, z1, length, width, height] with floating numbers in unit of meters. These values correspond to the center x, center y, center z, bounding box length, bounding box width and bounding box height. To generate accurate answers, you must be able to understand the content of point clouds and comprehend the meaning of questions.
+"""
+VG3D_QS = "Locate the object described by the given caption. "
+VG3D_INS = ""
+
+
+VQA3D_SYS = """
+You are a multimodal language model. You are able to understand the visual content that the user provides, and assist the user with a variety of tasks using natural language.
+You are now performing an visual questioon and answering task, and your goal is to generate natural language answers that accurately solve the question. In order to generate accurate answers to questions about visual content, you must be able to understand the content of point cloud, understand the meaning of questions, and perform complex reasoning processes.
+"""
+VQA3D_QS = ""
+VQA3D_INS = ""
+
 common_task2sysmsg = {
-    'Detection':DETECTION_SYS,
-    'Classification':CLASSIFICATION_SYS,
-    'VQA':VQA_SYS,
-    'OCR':OCR_SYS,
-    'Caption':CAPTION_SYS,
-    'Counting':CNT_SYS,
-    'Fine-grained_Classification':FG_CLASSIFICATION_SYS,
-    'Facial_Classification':FFC_SYS,
-    'Keypoints_Detection':KEYPOINTS_DET_SYS,
+    'Detection': DETECTION_SYS,
+    'Classification': CLASSIFICATION_SYS,
+    'VQA': VQA_SYS,
+    'OCR': OCR_SYS,
+    'Caption': CAPTION_SYS,
+    'Counting': CNT_SYS,
+    'Fine-grained_Classification': FG_CLASSIFICATION_SYS,
+    'Facial_Classification': FFC_SYS,
+    'Keypoints_Detection': KEYPOINTS_DET_SYS,
+    'Detection3D': DETECTION3D_SYS,
+    'VG3D': VG3D_SYS,
+    'VQA3D': VQA3D_SYS
 }
 
 locating_task2sysmsg = {
     'VOC2012': LOCATING_SYS,
     'FSC147': LOCATING_SYS,
-    'LSP':HUMANLOCATING_SYS,
+    'LSP': HUMANLOCATING_SYS,
 }

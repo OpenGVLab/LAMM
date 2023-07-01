@@ -6,7 +6,8 @@ from datasets.utils import *
 from tqdm import tqdm
 from datasets import load_2Deval_dataset
 
-def detection_eval(dataset,pred_data):
+
+def detection_eval(dataset, pred_data, thres=0.5):
     score = 0
     cnt = 0
     for gt, pred in tqdm(zip(dataset, pred_data)):
@@ -18,11 +19,12 @@ def detection_eval(dataset,pred_data):
             if not classification_acc(object_info['label'], text):
                 continue
             for bbox in bboxes:
-                iou = cal_iou(object_info['bbox'],bbox)
-                if iou> 0.5:
+                iou = cal_iou(object_info['bbox'], bbox)
+                if iou > thres:
                     score += 1
                     break
     print(score/cnt)
+
 
 def SVT_eval(dataset,pred_data):
     score = 0.0
@@ -57,6 +59,7 @@ def FSC_eval(dataset,pred_data):
 
 
 CHOICE = ['A', 'B', 'C', 'D', 'E']
+
 
 def VQAvisionacc(dataset,pred_data):
     import re
@@ -107,6 +110,7 @@ def VQAvisionacc(dataset,pred_data):
         score+=tmp_score
     print('vision:{}'.format(score/len(dataset)))
     
+
 def BLEU4(dataset, pred_data):
     from nltk.translate.bleu_score import sentence_bleu
     score = 0.0
@@ -124,6 +128,7 @@ def BLEU4(dataset, pred_data):
         score += tmp_score
     print(score*100/len(dataset))
 
+
 def UCMerced_eval(dataset,pred_data):
     score = 0.0
     for gt, pred in tqdm(zip(dataset, pred_data)):
@@ -132,6 +137,7 @@ def UCMerced_eval(dataset,pred_data):
         if gt_label in pred_text:
             score+=1
     print(score/len(dataset))
+
 
 def CelebA_smile_eval(dataset,pred_data):
     score = 0.0
@@ -150,6 +156,7 @@ def CelebA_smile_eval(dataset,pred_data):
             
     print(score/len(dataset))
 
+
 def CelebA_hair_eval(dataset,pred_data):
     score = 0.0
     for gt, pred in tqdm(zip(dataset, pred_data)):
@@ -159,6 +166,7 @@ def CelebA_hair_eval(dataset,pred_data):
             score += 1.0
     print(score/len(dataset)) 
 
+
 def CIFAR10(dataset,pred_data):
     score = 0.0
     for gt, pred in tqdm(zip(dataset, pred_data)):
@@ -167,6 +175,7 @@ def CIFAR10(dataset,pred_data):
         if classification_acc(gt_label, pred_text):
             score += 1.0
     print(score/len(pred_data)) 
+
 
 def PCK(dataset, pred_data):
     score = 0
@@ -185,6 +194,7 @@ def PCK(dataset, pred_data):
         score += tmp_score/14
     print(score/len(pred_data))
 
+
 dataset2evalfunc = {
     'VOC2012': detection_eval,
     'SQAimage': VQAvisionacc,
@@ -200,8 +210,6 @@ dataset2evalfunc = {
 }
 
 
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset-name", required=True)
@@ -210,12 +218,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
    
     dataset_name = args.dataset_name 
-    load_img = dataset_name in ['FSC147', 'LSP']
+    load_data = dataset_name in ['FSC147', 'LSP']
     dataset = load_2Deval_dataset(
         args.base_data_path,
         dataset_name,
         'common',
-        load_img = load_img,
+        load_data = load_data,
         batch_size = 1
     ).dataset
 

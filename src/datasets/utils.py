@@ -7,6 +7,8 @@ import numpy as np
 from nltk.corpus import wordnet as wn
 import re
 num_pattern =  re.compile(r'[0-9]+\.?[0-9]*')
+
+
 def parse_entity(text):
     text = text.lower()
     words = word_tokenize(text)
@@ -15,6 +17,7 @@ def parse_entity(text):
     words = [wordnet.morphy(word) for word in words if word not in stops]
     return words
 
+
 def is_number(s):
     try: 
         float(s)
@@ -22,6 +25,7 @@ def is_number(s):
     except ValueError: 
         pass 
     return False
+
 
 def parse_num(num_list, split_char_a, split_char_b, text):
     flag = 0
@@ -45,6 +49,7 @@ def parse_num(num_list, split_char_a, split_char_b, text):
                     tmpnum = ''
     return num_list
 
+
 def cal_iou(bbox1, bbox2):
     ixmin = np.maximum(bbox1[0], bbox2[0])
     iymin = np.maximum(bbox1[1], bbox2[1])
@@ -61,6 +66,40 @@ def cal_iou(bbox1, bbox2):
     overlaps = inters / uni
     return overlaps
 
+
+
+def cal_iou_3d(bbox1, bbox2):
+    '''
+        box [x1, y1, z1, l, w, h]
+    '''
+    bbox1 = [
+        round(bbox1[0] - abs(bbox1[3]/2), 3), round(bbox1[1] - abs(bbox1[4]/2), 3), round(bbox1[2] - abs(bbox1[5]/2), 3), 
+        round(bbox1[0] + abs(bbox1[3]/2), 3), round(bbox1[1] + abs(bbox1[4]/2), 3), round(bbox1[2] + abs(bbox1[5])/2, 3)
+        ]
+    
+    bbox2 = [
+        round(bbox2[0]-abs(bbox2[3]/2),3), round(bbox2[1]-abs(bbox2[4]/2),3), round(bbox2[2]-abs(bbox2[5]/2),3), 
+        round(bbox2[0]+abs(bbox2[3]/2),3), round(bbox2[1]+abs(bbox2[4]/2),3), round(bbox2[2]+abs(bbox2[5])/2,3)
+        ]
+    
+    # intersection
+    x1, y1, z1 = max(bbox1[0], bbox2[0]), max(bbox1[1], bbox2[1]), max(bbox1[2], bbox2[2])
+    x2, y2, z2 = min(bbox1[3], bbox2[3]), min(bbox1[4], bbox2[4]), min(bbox1[5], bbox2[5])
+    inter_area = (x2 - x1) * (y2 - y1) * (z2 - z1)
+
+    # union
+    area1 = (bbox1[3] - bbox1[0]) * (bbox1[4] - bbox1[1]) * (bbox1[5] - bbox1[2])
+    area2 = (bbox2[3] - bbox2[0]) * (bbox2[4] - bbox2[1]) * (bbox2[5] - bbox2[2])
+    uni_area = area1 + area2 - inter_area
+    
+    iou = inter_area / uni_area
+    
+    if iou > 1 or iou < 0:
+        return 0
+    else:
+        return iou
+    
+
 def classification_acc(gt_text, pred_text):
     words = parse_entity(pred_text)
     syn_set = wn.synsets(gt_text)
@@ -72,6 +111,7 @@ def classification_acc(gt_text, pred_text):
         if syn in words:
             return True
     return False
+
 
 def parse_bbox(text):
     num_list = []
@@ -91,6 +131,25 @@ def parse_bbox(text):
             bbox_list.append(cur_bbox)
     return bbox_list
 
+
+def parse_bbox_3d(text):
+    num_list = []
+    num_list = parse_num(num_list, '[', ']', text)
+    num_list = parse_num(num_list, '(', ')', text)
+    
+    bbox_list = []
+    num_list = num_list[:(len(num_list) // 6) * 6]
+    if len(num_list) == 0:
+        str_list = num_pattern.findall(text)
+        num_list = [float(item) for item in str_list]
+        num_list = num_list[:(len(num_list)//6) * 6]
+    for i in range(0,len(num_list), 6):
+        cur_bbox = [num_list[j] for j in range(i, i + 6)]
+        
+        bbox_list.append(cur_bbox)
+    return bbox_list
+
+
 def parse_keypoints(text):
     num_list = []
     num_list = parse_num(num_list, '[', ']', text)
@@ -106,6 +165,7 @@ def parse_keypoints(text):
         keypoints_list.append(cur_kps)
     return keypoints_list
 
+
 def check_inside_bbox(keypoints_list, bbox):
     for keypoints in keypoints_list:
         x = keypoints[0]
@@ -115,15 +175,16 @@ def check_inside_bbox(keypoints_list, bbox):
     return False
 
 
-
 def point_distance(x, y):
     return np.sqrt(np.sum(np.square(x-y)))
+
 
 def correct_keypoints(keypoints_list, gt_joint, thr = 0.1):
     for keypoint in keypoints_list:
         if point_distance(np.array(keypoint),gt_joint) < thr:
             return True
     return False
+
 
 def parse_sentence(text):
     if '\"' in text:
@@ -134,10 +195,12 @@ def parse_sentence(text):
         return res[:-1]
     return text
 
+
 num_dict = {
     'no': 0, 'zero':0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6, 'seven': 7, 'eight': 8,
     'nine' : 9, 'ten':10, 'eleven':11 , 'twelve': 12, 'thirteen': 13, 'fourteen': 14, 'fifteen': 15, 'sixteen': 16, 'seventeen': 17, 'eighteen': 18, 'nineteen': 19, 'twenty': 20
 }
+
 
 def ennum2numerical(text):
     for word in text.split():

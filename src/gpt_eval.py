@@ -98,7 +98,7 @@ def GPT_Metric(base_data_path,
         gt_dataset = load_2Deval_dataset(base_data_path,
                                         dataset_name,
                                         'common',
-                                        load_img = False).dataset
+                                        load_data = False).dataset
         task_name = gt_dataset.task_name
         answer_file_name = task_name + '_' +dataset_name + '.json'
         gt_data_len = len(gt_dataset)
