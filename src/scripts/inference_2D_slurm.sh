@@ -1,15 +1,17 @@
-dataset=VOC2012
-exp=lamm_13b_lora_186k
+partition=$1
+exp=$2
+dataset=$3
+
 base_data_path=data/LAMM-Dataset/2D_Benchmark
 token_num=256
 layer=-2
-answerdir=answers
+answerdir=../answers
 mkdir -p ${answerdir}/${exp}
-results_path=results
+results_path=../results
 mkdir -p ${results_path}/${exp}
 
-srun --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
-    python inference.py \
+srun -p ${partition} --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
+    python inference_2d.py \
         --model lamm_peft \
         --encoder_pretrain clip \
         --vicuna_ckpt_path ./model_zoo/vicuna_ckpt/13b_v0 \

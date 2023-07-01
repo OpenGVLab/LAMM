@@ -590,14 +590,14 @@ def build_epcl_encoder(
         use_task_emb=args.use_task_emb,
         vit_only=True,
     )
-    print("===> Loading\n", model.__str__)
+    print("===> Loading EPCL encoder...\n")
     match_keys = []
     for key in model.state_dict().keys():
         if key in ckpt["model"]:
             match_keys.append(key)
     model.load_state_dict(ckpt["model"], strict=False)
     print(
-        f"===> Loaded\n {store_path}; {len(match_keys)} keys matched; {len(model.state_dict().keys())} keys in total."
+        f"===> Loaded\n\t {store_path}; {len(match_keys)} keys matched; {len(model.state_dict().keys())} keys in total."
     )
 
     return model.to(device)

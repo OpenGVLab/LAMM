@@ -10,6 +10,7 @@ from datasets import load_2Deval_dataset
 
 answers_file = ''
 
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', type=str, default='openllama_peft')
@@ -72,6 +73,12 @@ def parse_args():
     return args
 
 
+single_infernce_dataset = [
+    'FSC147','SQAimage','AI2D'
+]
+keypoints_definition = ["right ankle", "right knee", "right hip", "left hip", "left knee" ,"left ankle" ,"right wrist", "right elbow", "right shoulder", "left shoulder" ,"left elbow", "left wrist", "neck", "head top" ]
+
+
 def generate_conversation_text(args, input_list, history, sys_msg = None):
     """get all conversation text
 
@@ -91,6 +98,7 @@ def generate_conversation_text(args, input_list, history, sys_msg = None):
         prompts += "{} {}: {}\n".format(conv.sep, conv.roles[0], input)
         prompts_list.append(prompts)
     return prompts_list
+
 
 def predict(
     args,
@@ -115,10 +123,6 @@ def predict(
     history.append((input, response))
     return history
 
-single_infernce_dataset = [
-    'FSC147','SQAimage','AI2D'
-]
-keypoints_definition = ["right ankle", "right knee", "right hip", "left hip", "left knee" ,"left ankle" ,"right wrist", "right elbow", "right shoulder", "left shoulder" ,"left elbow", "left wrist", "neck", "head top" ]
 
 def default_response(args,
                     model,
@@ -139,8 +143,12 @@ def default_response(args,
     response = history[-1][1]
     ans_list = []
     for res in response:
-        ans_list.append(res.split('###')[0])
+        if '###' in res:
+            ans_list.append(res.split('###')[0])
+        elif '##' in res:
+            ans_list.append(res.split('##')[0])
     return ans_list
+
 
 def vqa_response(args,
                 model,
@@ -157,6 +165,7 @@ def vqa_response(args,
         all_answer_list.append(reasoning + '\n The answer is ' + option)
     return all_answer_list
 
+
 def kps_det_response(args,
                     model,
                     input,
@@ -169,6 +178,7 @@ def kps_det_response(args,
         for i in range(len(input)):
             answer_list[i][keypoint_name] = keypoint_answer_list[i]
     return answer_list
+
 
 def main(args):
     # TODO: support PCL

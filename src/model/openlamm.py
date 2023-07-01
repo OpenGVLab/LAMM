@@ -35,7 +35,7 @@ class LAMMStoppingCriteria(StoppingCriteria):
         """
         super().__init__()
         self.stops = [torch.tensor(stop).to('cuda:0') for stop in stops]
-        self.stop_flag = [0]*input_ids.shape[0]
+        self.stop_flag = [0] * input_ids.shape[0]
 
     def check_stop(self, input_ids):
         """check whether to stop generation
@@ -551,7 +551,7 @@ class LAMMPEFTModel(nn.Module):
         :return _type_: _description_
         """
         features = []
-        if inputs["image_paths"]:
+        if 'image_paths' in inputs and inputs["image_paths"]:
             image_embeds, _ = self.encode_image(inputs["image_paths"])
             features.append(image_embeds)
         if 'images' in inputs and inputs["images"]:  # image objects input in testing

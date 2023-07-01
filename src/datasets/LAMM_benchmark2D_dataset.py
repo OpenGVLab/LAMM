@@ -30,7 +30,7 @@ class LAMM_EVAL_2D(Dataset):
                  base_data_path,
                  dataset_name,
                  mode = 'common',
-                 load_img = True):
+                 load_data = True):
         assert mode in ['common','locating']
         self.base_data_path = base_data_path
         self.dataset_name = dataset_name
@@ -42,7 +42,7 @@ class LAMM_EVAL_2D(Dataset):
             self.system_msg = locating_task2sysmsg[self.dataset_name]
         json_path = os.path.join(base_data_path, 'meta_file', self.task_name + '_' + self.dataset_name + '.json')
         self.data = json.load(open(json_path,'rb'))
-        self.load_img = load_img
+        self.load_data = load_data
     
     def __len__(self):
         return len(self.data)
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         base_data_path= 'dataset/LAMM-Dataset/2D_Benchmark',
         dataset_name='SVT',
         mode='common',
-        load_img=True
+        load_data=True
     )
     print(dataset)
     data = dataset[0]

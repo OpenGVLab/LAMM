@@ -1,18 +1,21 @@
+partition=$1
+exp=$2
+
 common_dataset=(LSP SQAimage FSC147 VOC2012 SVT flickr30k UCMerced  CelebA\(Hair\) CelebA\(Smile\) CIFAR10 AI2D)
 locating_dataset=(VOC2012 LSP FSC147)
-exp=lamm_13b_lora_186k
+
 base_data_path=data/LAMM-Dataset/2D_Benchmark
 token_num=256
 layer=-2
-answerdir=answers
+answerdir=../answers
 mkdir -p ${answerdir}/${exp}
-results_path=results
+results_path=../results
 mkdir -p ${results_path}/${exp}
 
 
 for dataset in ${common_dataset[*]}; do
-    srun --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
-        python inference.py \
+    srun -p ${partition} --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
+        python inference_2d.py \
             --model lamm_peft \
             --encoder_pretrain clip \
             --vicuna_ckpt_path ./model_zoo/vicuna_ckpt/13b_v0 \
@@ -38,8 +41,8 @@ for dataset in ${common_dataset[*]}; do
 done
 
 for dataset in ${locating_dataset[*]}; do
-    srun --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
-        python inference.py \
+    srun -p ${partition} --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
+        python inference_2d.py \
             --model lamm_peft \
             --encoder_pretrain clip \
             --vicuna_ckpt_path ./model_zoo/vicuna_ckpt/13b_v0 \

@@ -4,15 +4,15 @@ exp=lamm_13b_lora_186k
 base_data_path=data/LAMM-Dataset/2D_Benchmark
 token_num=256
 layer=-2
-answerdir=answers
+answerdir=../answers
 mkdir -p ${answerdir}/${exp}
-results_path=results
+results_path=../results
 mkdir -p ${results_path}/${exp}
 
 
 for dataset in ${common_dataset[*]}; do
 
-    python inference.py \
+    python inference_2d.py \
         --model lamm_peft \
         --encoder_pretrain clip \
         --vicuna_ckpt_path ./model_zoo/vicuna_ckpt/13b_v0 \
@@ -38,7 +38,7 @@ for dataset in ${common_dataset[*]}; do
 done
 
 for dataset in ${locating_dataset[*]}; do
-    python inference.py \
+    python inference_2d.py \
         --model lamm_peft \
         --encoder_pretrain clip \
         --vicuna_ckpt_path ./model_zoo/vicuna_ckpt/13b_v0 \

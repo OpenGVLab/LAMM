@@ -1,7 +1,8 @@
 from header import *
 from .samplers import DistributedBatchSampler
 from .dataset import *
-from .LAMM_banchmark2D_dataset import LAMM_EVAL_2D
+from .LAMM_benchmark2D_dataset import LAMM_EVAL_2D
+from .LAMM_benchmark3D_dataset import LAMM_EVAL_3D
 
 
 def collate_fn(batch):
@@ -41,12 +42,25 @@ def load_lamm_dataset(args):
 
 def load_2Deval_dataset(base_data_path,
                         dataset_name,
-                        mode = 'common',
-                        load_img = True,
-                        batch_size = 1):
+                        mode='common',
+                        load_data=True,
+                        batch_size=1):
     dataset = LAMM_EVAL_2D(base_data_path,
                            dataset_name,
                            mode,
-                           load_img)
+                           load_data)
     dataloader = DataLoader(dataset=dataset, batch_size=batch_size,shuffle=False,num_workers=2, drop_last=False,collate_fn=collate_fn)
+    return dataloader
+
+
+def load_3Deval_dataset(base_data_path,
+                        dataset_name,
+                        mode='common',
+                        load_data=True,
+                        batch_size=1):
+    dataset = LAMM_EVAL_3D(base_data_path,
+                           dataset_name,
+                           mode,
+                           load_data)
+    dataloader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=False, num_workers=2, drop_last=False, collate_fn=collate_fn)
     return dataloader

@@ -356,17 +356,20 @@ You need to dive into scripts to change data path and other hyper-parameters.
 </details>
 
 
-## Evaluating 
-- Inference trained models on 2D tasks
+## Evaluation 
+
+- <details><summary>Inference trained models on 2D tasks</summary>
+
     ```Bash
     cd src
-    sh scripts/inference.sh
+    sh scripts/inference_2D.sh
     ```
     or
     ``` Bash
-    sh scripts/inference_slurm.sh       # for slurm
+    sh scripts/inference_2D_slurm.sh       # for slurm
     ```
-- Evaluation on 2D tasks
+- <details><summary>Inference & Evaluation on 2D tasks</summary>
+
     ```Bash
     sh scripts/LAMM_2D_Evaluation.sh
     ```
@@ -375,10 +378,34 @@ You need to dive into scripts to change data path and other hyper-parameters.
     ```Bash
     sh scripts/LAMM_2D_Evaluation_slurm.sh  # for slurm
     ```
+    </details>
+ 
+- <details><summary> Inference trained models on 3D tasks</summary>
+
+    ```Bash
+    cd src
+    sh scripts/inference_3D.sh
+    ```
+    or
+    ``` Bash
+    sh scripts/inference_3D_slurm.sh       # for slurm
+    ```
+    </details>
+- <details><summary> Inference & evaluation trained models on 3D tasks</summary>
+
+    ```Bash
+    sh scripts/LAMM_3D_Evaluation.sh
+    ```
+    or 
+    ```Bash
+    sh scripts/LAMM_3D_Evaluation_slurm.sh  # for slurm
+    ```
+    </details>
 
 - Evaluation for other MLLM models. 
-    
+
     Please refer to [LLaVA](https://github.com/haotian-liu/LLaVA), [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4) and [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl) for inference respectively. Save the answers in `./answers`. And then run `common_eval_2d.py` for evaluation. For example, to evaluate LLaVA on VOC2012:
+
     ```Bash
     python common_eval_2d.py \
     --dataset-name VOC2012 \

@@ -6,6 +6,7 @@ from datasets.utils import *
 from tqdm import tqdm
 from datasets import load_2Deval_dataset
 
+
 def inside_bbox_eval(dataset, pred_data):
     correct_cnt, total_cnt = 0,0
     for gt, pred in tqdm(zip(dataset, pred_data)):
@@ -23,6 +24,7 @@ def inside_bbox_eval(dataset, pred_data):
             if check_inside_bbox(keypoints, gt_bbox):
                 correct_cnt += 1
     return correct_cnt, total_cnt
+
 
 def inside_human_bbox_eval(dataset, pred_data):
     correct_cnt, total_cnt = 0,0
@@ -43,6 +45,7 @@ def inside_human_bbox_eval(dataset, pred_data):
             correct_cnt += 1
     return correct_cnt, total_cnt
 
+
 def point_distance_eval(dataset, pred_data):
     correct_cnt, total_cnt = 0,0
     for gt, pred in tqdm(zip(dataset, pred_data)):
@@ -59,11 +62,13 @@ def point_distance_eval(dataset, pred_data):
                 correct_cnt += 1
     return correct_cnt, total_cnt
 
+
 dataset2evalfunc = {
     'VOC2012': inside_bbox_eval,
     'LSP':inside_human_bbox_eval,
     'FSC147': point_distance_eval,
 }
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -74,12 +79,12 @@ if __name__ == '__main__':
     dataset_list = ['VOC2012', 'LSP', 'FSC147']
     total_correct, total_num = 0,0
     for dataset_name in dataset_list:
-        load_img = dataset_name in ['FSC147', 'LSP']
+        load_data = dataset_name in ['FSC147', 'LSP']
         dataset = load_2Deval_dataset(
             args.base_data_path,
             dataset_name,
             'locating',
-            load_img=load_img,
+            load_data=load_data,
             batch_size=1,
         ).dataset
         task_name = dataset.task_name
