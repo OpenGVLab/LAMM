@@ -331,37 +331,39 @@ class LAMMPEFTModel(nn.Module):
                 image_embeds = embeddings.reshape(-1, self.vision_hidden_size).to(
                     self.llama_model.dtype
                 )  # bsz*num vision token x 1024
-                inputs_llama = self.llama_proj(image_embeds).reshape(
-                    -1, self.num_vision_token, self.llama_model.config.hidden_size
-                )  # bsz x num_vision_token x llama_size
-                atts_llama = torch.ones(inputs_llama.size()[:-1], dtype=torch.long).to(
-                    self.device
-                )  # bsz x 1/256
+        inputs_llama = self.llama_proj(image_embeds).reshape(
+            -1, self.num_vision_token, self.llama_model.config.hidden_size
+        )  # bsz x num_vision_token x llama_size
+        atts_llama = torch.ones(inputs_llama.size()[:-1], dtype=torch.long).to(
+            self.device
+        )  # bsz x 1/256
         return inputs_llama, atts_llama
 
     def clip_encode_image(self, inputs):
         inputs = inputs.to(self.llama_model.dtype)  # clip requires torch.float32
-        with torch.no_grad():
-            if self.vision_feature_type == "global":
+    
+        if self.vision_feature_type == "global":
+            with torch.no_grad():
                 embeddings = self.visual_encoder(inputs)  # bsz x 768
-                image_embeds = embeddings.to(self.llama_model.dtype)
-                inputs_llama = self.llama_proj(image_embeds).unsqueeze(
-                    1
-                )  # bsz x 1 x llama_size
-            elif self.vision_feature_type == "local":
+            image_embeds = embeddings.to(self.llama_model.dtype)
+            inputs_llama = self.llama_proj(image_embeds).unsqueeze(
+                1
+            )  # bsz x 1 x llama_size
+        elif self.vision_feature_type == "local":
+            with torch.no_grad():
                 embeddings = self.visual_encoder.forward_patch_features(inputs)[
                     :, : self.num_vision_token
                 ]  # bsz x self.num_vision_token x 1024
-                image_embeds = embeddings.reshape(-1, self.vision_hidden_size).to(
-                    self.llama_model.dtype
-                )  # bsz*num vision token x 1024
-                inputs_llama = self.llama_proj(image_embeds).reshape(
-                    -1, self.num_vision_token, self.llama_model.config.hidden_size
-                )  # bsz x num_vision_token x llama_size
-            else:
-                raise NotImplementedError(
-                    "{} not Implemented".format(self.vision_feature_type)
-                )
+            image_embeds = embeddings.reshape(-1, self.vision_hidden_size).to(
+                self.llama_model.dtype
+            )  # bsz*num vision token x 1024
+            inputs_llama = self.llama_proj(image_embeds).reshape(
+                -1, self.num_vision_token, self.llama_model.config.hidden_size
+            )  # bsz x num_vision_token x llama_size
+        else:
+            raise NotImplementedError(
+                "{} not Implemented".format(self.vision_feature_type)
+            )
         return inputs_llama
 
     def load_and_transform_image_data_clip(self, image_paths, device):
