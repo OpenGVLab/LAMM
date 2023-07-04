@@ -1,6 +1,6 @@
 exp=$1
 common_dataset=(ScanNet ScanRefer ScanQA_multiplechoice)
-base_data_path=data/LAMM-Dataset/3D_Benchmark
+base_data_path=../data/3D_Benchmark
 visfeat_type=local
 token_num=256
 layer=-2

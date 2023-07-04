@@ -5,7 +5,7 @@ token_num=256
 layer=-2
 visfeat_type=local
 common_dataset=(ScanNet ScanRefer ScanQA_multiplechoice)
-base_data_path=data/LAMM-Dataset/3D_Benchmark
+base_data_path=../data/3D_Benchmark
 
 answerdir=../answers
 mkdir -p ${answerdir}/${exp}
