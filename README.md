@@ -256,7 +256,15 @@ Install required packages
     or
     sh scripts/train_lamm3d_slurm.sh       # for slurm
     ```
-You need to dive into scripts to change data path and other hyper-parameters.
+You need to dive into scripts to change data path and other hyper-parameters. 
+
+For your reference, GPU memory consumption for different models are shown as follows
+| Model Size | Sample Num/GPU | GPU Memory | 
+| :----------: | :---------------------: | :------------------: |
+|Vicuna7B | 1 | ~30GB |
+|Vicuna7B | 2 | ~46GB |
+|Vicuna13B | 1 | ~53GB |
+|Vicuna13B | 2 | ~70GB |
 
 # LAMM-Benchmark
 
@@ -481,7 +489,7 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 # LAMM Model Zoo
 
 | # Training Samples  | Vision Encoder | LLM | Training Data | Lora Rank | Link |
-| -------------------------- | -------- | -------- | -------- | ---- | --------------- |
+| -------------------------- | :--------: | :--------: | -------- | :----: | :---------------: |
 | 98K  | CLIP-ViT-L | Vicuna7B            | LAMM-2D daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
 | 186K  | CLIP-ViT-L | Vicuna7B            | LAMM-2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
 | 98K | CLIP-ViT-L | Vicuna13B           | LAMM-2D daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) |

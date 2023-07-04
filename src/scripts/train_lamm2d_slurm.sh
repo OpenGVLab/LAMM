@@ -17,7 +17,7 @@ torchrun --nnodes=1 --nproc_per_node=${numgpu} --master_port=25440 train.py \
     --data_path  ../data/2D_Instruct/meta_file/${dataname}.json \
     --vision_root_path ../data/2D_Instruct/ \
     --max_tgt_len 400 \
-    --vision_type pcl \
+    --vision_type image \
     --use_system \
     --model lamm_peft \
     --encoder_pretrain clip \

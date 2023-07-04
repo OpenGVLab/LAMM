@@ -2,7 +2,7 @@ partition=$1
 exp=$2
 dataset=$3
 
-base_data_path=data/LAMM-Dataset/2D_Benchmark
+base_data_path=../data/2D_Benchmark
 token_num=256
 layer=-2
 answerdir=../answers
@@ -14,8 +14,8 @@ srun -p ${partition} --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
     python inference_2d.py \
         --model lamm_peft \
         --encoder_pretrain clip \
-        --vicuna_ckpt_path ./model_zoo/vicuna_ckpt/13b_v0 \
-        --delta_ckpt_path ./model_zoo/lamm_ckpt/${exp}/pytorch_model.pt \
+        --vicuna_ckpt_path ../model_zoo/vicuna_ckpt/13b_v0 \
+        --delta_ckpt_path ../model_zoo/lamm_ckpt/${exp}/pytorch_model.pt \
         --max_tgt_len 400 \
         --lora_r 32 \
         --lora_alpha 32 \

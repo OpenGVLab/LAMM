@@ -143,10 +143,7 @@ def default_response(args,
     response = history[-1][1]
     ans_list = []
     for res in response:
-        if '###' in res:
-            ans_list.append(res.split('###')[0])
-        elif '##' in res:
-            ans_list.append(res.split('##')[0])
+        ans_list.append(res.split('###')[0])
     return ans_list
 
 
@@ -181,7 +178,6 @@ def kps_det_response(args,
 
 
 def main(args):
-    # TODO: support PCL
     # load model
     model = LAMMPEFTModel(**args.__dict__)
     delta_ckpt = torch.load(args.delta_ckpt_path, map_location=torch.device('cpu'))
@@ -230,7 +226,7 @@ def main(args):
             sys_msg=sys_msg,
         )
 
-        for id, output in zip(data_item['id'],answer_list):
+        for id, output in zip(data_item['id'], answer_list):
             ans_dict = {"id": id,
                         "text": output,
                         "delta_path": args.delta_ckpt_path
@@ -238,12 +234,11 @@ def main(args):
             ans_list.append(ans_dict)
             ans_file.write(json.dumps(ans_dict) + "\n")
             ans_file.flush()
-        break
 
     ans_file.close()
     # dump all
     ans_file = open(answers_file, "w")
-    ans_file.write(json.dumps(ans_list, indent=4))        
+    ans_file.write(json.dumps(ans_list, indent=4))
     ans_file.flush()
     ans_file.close()
     

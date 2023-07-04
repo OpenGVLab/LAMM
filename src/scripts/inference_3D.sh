@@ -1,6 +1,6 @@
 dataset=VOC2012
 exp=lamm_13b_lora_186k
-base_data_path=data/LAMM-Dataset/2D_Benchmark
+base_data_path=../data/2D_Benchmark
 token_num=256
 layer=-2
 answerdir=../answers
