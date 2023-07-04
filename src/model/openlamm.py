@@ -641,7 +641,7 @@ class LAMMPEFTModel(nn.Module):
         """
         input_embeds = self.prepare_generation_embedding(inputs)
         stopping_criteria = StoppingCriteriaList(
-            [LAMMStoppingCriteria([[2277]], input_embeds)]
+            [LAMMStoppingCriteria([[2277, 29937], [835]], input_embeds)]
         )
         outputs = self.llama_model.generate(
             inputs_embeds=input_embeds,

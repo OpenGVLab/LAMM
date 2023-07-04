@@ -152,10 +152,7 @@ def default_response(args,
     ans_list = []
     
     for res in response:
-        if '###' in res:
-            ans_list.append(res.split('###')[0])
-        elif '##' in res:
-            ans_list.append(res.split('##')[0])
+        ans_list.append(res.split('###')[0])
     return ans_list
 
 
@@ -177,7 +174,6 @@ def vqa_response(args,
 
 
 def main(args):
-    # TODO: support PCL
     # load model
     model = LAMMPEFTModel(**args.__dict__)
     delta_ckpt = torch.load(args.delta_ckpt_path, map_location=torch.device('cpu'))
