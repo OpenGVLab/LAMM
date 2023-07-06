@@ -73,9 +73,9 @@ def parse_args():
     return args
 
 
-single_infernce_dataset = [
-    'FSC147','SQAimage','AI2D'
-]
+# single_infernce_dataset = [
+#     'FSC147','SQAimage','AI2D'
+# ]
 keypoints_definition = ["right ankle", "right knee", "right hip", "left hip", "left knee" ,"left ankle" ,"right wrist", "right elbow", "right shoulder", "left shoulder" ,"left elbow", "left wrist", "neck", "head top" ]
 
 
