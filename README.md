@@ -18,6 +18,11 @@
 1. Code for less GPU memory will be released soon.
 
 
+📆 [**2023-07-06**]
+
+1. Evaluation code for both 2D and 3D tasks are ready.
+2. [3D Benchmark meta files](https://huggingface.co/datasets/openlamm/LAMM_Dataset/tree/main/3D_Benchmark/meta_file) updated! Please refresh it for 3D evaluation.
+
 📆 [**2023-06-30**]
 
 1. Watch demo video for LAMM at [Youtube](https://www.youtube.com/watch?v=M7XlIe8hhPk) and [Bilibili](https://www.bilibili.com/video/BV1kN411D7kt/?share_source=copy_web&vd_source=ab4c734425ed0114898300f2c037ac0b)!
@@ -28,7 +33,7 @@
 
 📆 [**2023-06-16**]
 
-1. [LAMM dataset](https://github.com/OpenLAMM/LAMM#lamm-dataset) is available for Research community!
+1. [LAMM dataset](#lamm-dataset) is available for Research community!
 
 📆 [**2023-06-12**]
 
@@ -261,10 +266,10 @@ You need to dive into scripts to change data path and other hyper-parameters.
 For your reference, GPU memory consumption for different models are shown as follows
 | Model Size | Sample Num/GPU | GPU Memory | 
 | :----------: | :---------------------: | :------------------: |
-|Vicuna7B | 1 | ~30GB |
-|Vicuna7B | 2 | ~46GB |
-|Vicuna13B | 1 | ~53GB |
-|Vicuna13B | 2 | ~70GB |
+|Vicuna_v0_7B | 1 | ~30GB |
+|Vicuna_v0_7B | 2 | ~46GB |
+|Vicuna_v0_13B | 1 | ~53GB |
+|Vicuna_v0_13B | 2 | ~70GB |
 
 # LAMM-Benchmark
 
@@ -490,10 +495,10 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 
 | # Training Samples  | Vision Encoder | LLM | Training Data | Lora Rank | Link |
 | -------------------------- | :--------: | :--------: | -------- | :----: | :---------------: |
-| 98K  | CLIP-ViT-L | Vicuna7B            | LAMM-2D daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
-| 186K  | CLIP-ViT-L | Vicuna7B            | LAMM-2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
-| 98K | CLIP-ViT-L | Vicuna13B           | LAMM-2D daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) |
-| 186K | CLIP-ViT-L |  Vicuna13B           | LAMM-2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
+| 98K  | CLIP-ViT-L | Vicuna_v0_7B            | LAMM-2D daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
+| 186K  | CLIP-ViT-L | Vicuna_v0_7B            | LAMM-2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
+| 98K | CLIP-ViT-L | Vicuna_v0_13B           | LAMM-2D daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) |
+| 186K | CLIP-ViT-L |  Vicuna_v0_13B           | LAMM-2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
 | 10K | [EPCL-ViT-L](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main) |  Vicuna13B           | LAMM-3D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm3d_13b_lora32_10k) |
 
 
