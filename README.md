@@ -21,7 +21,8 @@
 📆 [**2023-07-06**]
 
 1. Evaluation code for both 2D and 3D tasks are ready.
-2. [3D Benchmark meta files](https://huggingface.co/datasets/openlamm/LAMM_Dataset/tree/main/3D_Benchmark/meta_file) updated! Please refresh it for 3D evaluation.
+2. [3D Benchmark meta files](https://huggingface.co/datasets/openlamm/LAMM_Dataset/tree/main/3D_Benchmark/meta_file) updated! Please re-download it for 3D evaluation.
+3. Update scripts for [demo in command line](./src/cli_demo.py)
 
 📆 [**2023-06-30**]
 
@@ -69,11 +70,11 @@ Point cloud data are required to be in format of `npy`, we suggest to use data f
 
 ```bash
     cd ./src
-    python cli_demo_pcl.py \
+    python cli_demo.py \
         --model lamm_peft \
-        --vision_type pcl/image \
-        --encoder_pretrain epcl/clip \
-        --encoder_ckpt_path $EPCL_CKPT_PATH \
+        --vision_type pcl or image \
+        --encoder_pretrain epcl or clip \
+        --encoder_ckpt_path $EPCL_CKPT_PATH or '' \
         --vicuna_ckpt_path $LLM_CKPT_PATH \
         --delta_ckpt_path $LAMM_CKPT_PATH
 ```
