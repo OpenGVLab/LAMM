@@ -15,7 +15,7 @@ import torch.nn as nn
 import torchaudio
 import logging
 
-from .models.multimodal_preprocessors import SimpleTokenizer
+from .multimodal_preprocessors import SimpleTokenizer
 from PIL import Image
 from pytorchvideo import transforms as pv_transforms
 from pytorchvideo.data.clip_sampling import ConstantClipsPerVideoSampler

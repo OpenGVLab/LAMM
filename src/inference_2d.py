@@ -68,7 +68,7 @@ def parse_args():
     
     assert os.path.exists(args.delta_ckpt_path), "delta checkpoint not exists!"
     assert os.path.exists(args.vicuna_ckpt_path), "vicuna checkpoint not exists!"
-    assert os.path.exists(args.encoder_ckpt_path), "vision encoder checkpoint not exists!"
+    # assert os.path.exists(args.encoder_ckpt_path), "vision encoder checkpoint not exists!"
     print(json.dumps(vars(args), indent=4, sort_keys=True))
     return args
 

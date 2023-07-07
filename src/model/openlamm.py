@@ -15,6 +15,7 @@ from .EPCL import build_epcl_encoder
 
 from .modeling_llama import LlamaForCausalLM
 from .utils.pcl_utils import MEAN_COLOR_RGB, RandomCuboid, random_sampling
+from .utils.data import transform_vision_data
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -301,7 +302,7 @@ class LAMMPEFTModel(nn.Module):
     def encode_image_object(self, images):
         """encoder loaded image objects"""
         if self.encoder_pretrain == "clip":
-            inputs = data.transform_vision_data(
+            inputs = transform_vision_data(
                 images, self.device
             )  # bsz x 3 x 224 x 224
             inputs_llama = self.clip_encode_image(inputs)  # bsz x 1/256 x llama_size
