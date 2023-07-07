@@ -21,8 +21,8 @@
 📆 [**2023-07-06**]
 
 1. Evaluation code for both 2D and 3D tasks are ready.
-2. [3D Benchmark meta files](https://huggingface.co/datasets/openlamm/LAMM_Dataset/tree/main/3D_Benchmark/meta_file) updated! Please re-download it for 3D evaluation.
-3. Update scripts for [demo in command line](./src/cli_demo.py)
+2. [3D Benchmark meta files](https://huggingface.co/datasets/openlamm/LAMM_Dataset/tree/main/3D_Benchmark/meta_file) & [2D Instruction images files](https://opendatalab.com/LAMM/download) updated! Missing files and missing keys fixed. Please update accordingly.
+3. Update scripts for [demo in command line](./src/cli_demo.py).
 
 📆 [**2023-06-30**]
 
