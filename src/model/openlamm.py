@@ -596,21 +596,15 @@ class LAMMPEFTModel(nn.Module):
         ).expand(
             batch_size, -1, -1
         )  # bsz x s1 x embed_dim
-        p_after_tokens_list = []
-        for prompt in prompt_list:
-            text = f"{eov} " + prompt + "\n### Assistant:"
-            p_after_tokens = self.llama_tokenizer(
-                text, add_special_tokens=False, return_tensors="pt"
-            ).to(self.device)
-            p_after_tokens_list.append(p_after_tokens.input_ids.squeeze(0))
 
-        p_after_tokens = rnn.pad_sequence(
-            p_after_tokens_list,
-            batch_first=True,
-            padding_value=self.llama_tokenizer.pad_token_id,
-        )
-
-        p_after_embeds = self.llama_model.model.model.embed_tokens(p_after_tokens)
+        p_after_texts = [f"{eov} " + prompt + "\n### Assistant:" for prompt in prompt_list]
+        p_after_tokens = self.llama_tokenizer(
+            p_after_texts, 
+            padding="longest", return_length=True, # padding right
+            add_special_tokens=False, return_tensors="pt"
+        ).to(self.device)
+        p_after_masks_len = p_after_tokens.length.max() - p_after_tokens.length
+        p_after_embeds = self.llama_model.model.model.embed_tokens(p_after_tokens.input_ids)
 
         bos = (
             torch.ones(
@@ -627,7 +621,20 @@ class LAMMPEFTModel(nn.Module):
         inputs_embeds = torch.cat(
             [bos_embeds, p_before_embeds, feature_embeds, p_after_embeds], dim=1
         )  # bsz x (1+s1+NumVisionToken+s2) x embed_dim
-        return inputs_embeds
+        
+        # p_after_embeds are on right, so the pads are right, 
+        # we need to move all inputs_embeds to right,
+        # to make the pads on left
+        tokens_len = inputs_embeds.shape[1] - p_after_masks_len
+        new_inputs_embeds = torch.zeros_like(inputs_embeds)
+        inputs_embeds_masks = torch.zeros(inputs_embeds.shape[:-1], 
+                                         dtype=torch.int64, device=self.device)
+        for idx in range(batch_size):
+            inputs_embeds_masks[idx, -tokens_len[idx]:] = 1
+            new_inputs_embeds[idx, -tokens_len[idx]:, :] = inputs_embeds[idx, :tokens_len[idx], :]
+            new_inputs_embeds[idx, :-tokens_len[idx], :] = inputs_embeds[idx, tokens_len[idx]:, :]
+
+        return new_inputs_embeds, inputs_embeds_masks
 
     def generate(self, inputs):
         """
@@ -642,12 +649,13 @@ class LAMMPEFTModel(nn.Module):
             'modality_cache': save the image cache
         }
         """
-        input_embeds = self.prepare_generation_embedding(inputs)
+        input_embeds, input_masks = self.prepare_generation_embedding(inputs)
         stopping_criteria = StoppingCriteriaList(
             [LAMMStoppingCriteria([[2277, 29937], [835]], input_embeds)]
         )
         outputs = self.llama_model.generate(
             inputs_embeds=input_embeds,
+            attention_mask=input_masks,
             max_new_tokens=inputs["max_tgt_len"],
             top_p=inputs["top_p"],
             temperature=inputs["temperature"],
