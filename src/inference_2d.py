@@ -190,8 +190,8 @@ def main(args):
     dataset_name = args.dataset_name
     inference_mode = args.inference_mode
     batch_size = args.bs
-    if dataset_name in single_infernce_dataset:
-        batch_size = 1
+    # if dataset_name in single_infernce_dataset:
+    #     batch_size = 1
     dataloader = load_2Deval_dataset(
         args.base_data_path,
         args.dataset_name,
