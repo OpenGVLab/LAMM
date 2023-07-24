@@ -66,7 +66,6 @@ def point_distance_eval(dataset, pred_data):
 dataset2evalfunc = {
     'VOC2012': inside_bbox_eval,
     'LSP':inside_human_bbox_eval,
-    'FSC147': point_distance_eval,
 }
 
 
@@ -76,10 +75,10 @@ if __name__ == '__main__':
     parser.add_argument('--base-data-path', required=True)
     args = parser.parse_args()
     answer_base_dir = args.answer_dir
-    dataset_list = ['VOC2012', 'LSP', 'FSC147']
+    dataset_list = ['VOC2012', 'LSP']
     total_correct, total_num = 0,0
     for dataset_name in dataset_list:
-        load_data = dataset_name in ['FSC147', 'LSP']
+        load_data = dataset_name in ['VOC2012', 'LSP']
         dataset = load_2Deval_dataset(
             args.base_data_path,
             dataset_name,

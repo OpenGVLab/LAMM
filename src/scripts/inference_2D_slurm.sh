@@ -15,7 +15,7 @@ srun -p ${partition} --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
         --model lamm_peft \
         --encoder_pretrain clip \
         --vicuna_ckpt_path ../model_zoo/vicuna_ckpt/13b_v0 \
-        --delta_ckpt_path ../model_zoo/lamm_ckpt/${exp}/pytorch_model.pt \
+        --delta_ckpt_path ../ckpt/${exp}/pytorch_model.pt \
         --max_tgt_len 400 \
         --lora_r 32 \
         --lora_alpha 32 \

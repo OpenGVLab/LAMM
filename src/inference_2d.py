@@ -24,6 +24,7 @@ def parse_args():
     parser.add_argument(
         "--encoder_ckpt_path",
         type=str,
+        default="",
         help="path of vision pretrained model; CLIP use default path in cache",
     )
     parser.add_argument(
@@ -68,7 +69,7 @@ def parse_args():
     
     assert os.path.exists(args.delta_ckpt_path), "delta checkpoint not exists!"
     assert os.path.exists(args.vicuna_ckpt_path), "vicuna checkpoint not exists!"
-    # assert os.path.exists(args.encoder_ckpt_path), "vision encoder checkpoint not exists!"
+    assert len(args.encoder_ckpt_path) == 0 or os.path.exists(args.encoder_ckpt_path), "vision encoder checkpoint not exists!"
     print(json.dumps(vars(args), indent=4, sort_keys=True))
     return args
 

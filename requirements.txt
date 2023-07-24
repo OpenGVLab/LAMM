@@ -16,5 +16,12 @@ pytorchvideo
 fvcore
 decord==0.6.0
 tqdm==4.64.1
+setuptools==65.5.1
 transformers==4.29.1
 bigmodelvis
+nltk
+tensorboard
+cython
+plyfile
+trimesh
+sentencepiece

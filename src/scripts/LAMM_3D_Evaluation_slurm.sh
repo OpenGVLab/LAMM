@@ -20,7 +20,7 @@ for dataset in ${common_dataset[*]}; do
         --encoder_pretrain epcl \
         --encoder_ckpt_path ../model_zoo/epcl_ckpt/epcl_scannet_vit-L-14_256tokens_latest.pth \
         --vicuna_ckpt_path ../model_zoo/vicuna_ckpt/13b_v0 \
-        --delta_ckpt_path ../model_zoo/lamm_ckpt/${exp}/pytorch_model.pt \
+        --delta_ckpt_path ../ckpt/${exp}/pytorch_model.pt \
         --max_tgt_len 800 \
         --lora_r 32 \
         --lora_alpha 32 \
@@ -32,7 +32,7 @@ for dataset in ${common_dataset[*]}; do
         --dataset-name ${dataset} \
         --base-data-path ${base_data_path} \
         --inference-mode common \
-        --bs 1 \
+        --bs 32 \
         --answers-dir ${answerdir}/${exp} \
     
     python common_eval_3d.py \

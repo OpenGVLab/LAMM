@@ -23,10 +23,10 @@ def detection_eval(dataset, pred_data, thres=0.5):
                 if iou > thres:
                     score += 1
                     break
-    print(score/cnt)
+    print(score / cnt)
 
 
-def SVT_eval(dataset,pred_data):
+def SVT_eval(dataset, pred_data):
     score = 0.0
     for gt, pred in tqdm(zip(dataset, pred_data)):
         gt_word_list = gt['word_list']
@@ -35,13 +35,13 @@ def SVT_eval(dataset,pred_data):
         correct = 0
         for word in gt_word_list:
             if word.lower() in pred_word_list:
-                correct+=1
-        tmp_score = correct/len(gt_word_list)
+                correct += 1
+        tmp_score = correct / len(gt_word_list)
         score += tmp_score
-    print(score/len(dataset))
+    print(score / len(dataset))
 
 
-def FSC_eval(dataset,pred_data):
+def FSC_eval(dataset, pred_data):
     score, ten_score, ten_cnt = 0.0, 0.0, 0.0
     for gt, pred in zip(dataset, pred_data):
         gt_label = gt['num']
@@ -52,16 +52,16 @@ def FSC_eval(dataset,pred_data):
             num = 0
         MSE = abs(gt_label - num)
         score += MSE
-        if gt_label<10:
+        if gt_label < 10:
             ten_score += MSE
             ten_cnt += 1
-    print('total:{}, less than 10:{} '.format(score/len(dataset),ten_score/ten_cnt))
+    print('total:{}, less than 10:{} '.format(score / len(dataset), ten_score / ten_cnt))
 
 
 CHOICE = ['A', 'B', 'C', 'D', 'E']
 
 
-def VQAvisionacc(dataset,pred_data):
+def VQAvisionacc(dataset, pred_data):
     import re
     pattern_1 = re.compile(r'The answer is \(?[A-E]\)?\W|the answer is \(?[A-E]\)?\W')
     pattern_2 = re.compile(r'ANSWER: [A-E]')
@@ -107,8 +107,8 @@ def VQAvisionacc(dataset,pred_data):
                 tmp_score = 1.0
         elif check_text(pred_text, gt['gt_choices'], gt_choice):
             tmp_score = 1.0
-        score+=tmp_score
-    print('vision:{}'.format(score/len(dataset)))
+        score += tmp_score
+    print('vision: {}'.format(score / len(dataset)))
     
 
 def BLEU4(dataset, pred_data):
@@ -126,20 +126,20 @@ def BLEU4(dataset, pred_data):
         for caption in pred_captions:
             tmp_score = max(tmp_score, sentence_bleu(references, caption.split(), (1./4., 1./4., 1./4., 1./4.)) )
         score += tmp_score
-    print(score*100/len(dataset))
+    print(score * 100 / len(dataset))
 
 
-def UCMerced_eval(dataset,pred_data):
+def UCMerced_eval(dataset, pred_data):
     score = 0.0
     for gt, pred in tqdm(zip(dataset, pred_data)):
         gt_label = gt['label']
         pred_text = pred['text']
         if gt_label in pred_text:
-            score+=1
-    print(score/len(dataset))
+            score += 1
+    print(score / len(dataset))
 
 
-def CelebA_smile_eval(dataset,pred_data):
+def CelebA_smile_eval(dataset, pred_data):
     score = 0.0
     for gt, pred in tqdm(zip(dataset, pred_data)):
         gt_label = gt['attr']
@@ -153,28 +153,27 @@ def CelebA_smile_eval(dataset,pred_data):
             pred_label = '1'
         if pred_label == gt_label:
             score += 1.0
-            
-    print(score/len(dataset))
+    print(score / len(dataset))
 
 
-def CelebA_hair_eval(dataset,pred_data):
+def CelebA_hair_eval(dataset, pred_data):
     score = 0.0
     for gt, pred in tqdm(zip(dataset, pred_data)):
         gt_label = gt['attr']
         pred_text = pred['text']
         if classification_acc(gt_label, pred_text):
             score += 1.0
-    print(score/len(dataset)) 
+    print(score / len(dataset))
 
 
-def CIFAR10(dataset,pred_data):
+def CIFAR10(dataset, pred_data):
     score = 0.0
     for gt, pred in tqdm(zip(dataset, pred_data)):
         gt_label = gt['label']
         pred_text = pred['text']
         if classification_acc(gt_label, pred_text):
             score += 1.0
-    print(score/len(pred_data)) 
+    print(score / len(pred_data)) 
 
 
 def PCK(dataset, pred_data):
@@ -184,15 +183,15 @@ def PCK(dataset, pred_data):
         joints = gt['gt_joints']
         width, height = gt['image'].size
         joints = np.array(joints)
-        joints[:,:2] = joints[:,:2] / np.array([width, height])
+        joints[:, :2] = joints[:, :2] / np.array([width, height])
         tmp_score = 0.0
         for id, (_, value) in enumerate(pred_text.items()):
             keypoints = parse_keypoints(value)
             gt_joint = joints[id]
             if correct_keypoints(keypoints, gt_joint[:2]):
                 tmp_score + 1.0
-        score += tmp_score/14
-    print(score/len(pred_data))
+        score += tmp_score / 14
+    print(score / len(pred_data))
 
 
 dataset2evalfunc = {
@@ -244,4 +243,4 @@ if __name__ == "__main__":
         args.answer_file = os.path.join(args.answer_file, file_name)
         pred_data = json.load(open(args.answer_file, 'rb'))
     print(f'Eval [{args.answer_file}] on {dataset_name}')
-    eval_func(dataset,pred_data)
+    eval_func(dataset, pred_data)

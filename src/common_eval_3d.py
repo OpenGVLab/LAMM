@@ -35,7 +35,7 @@ def grounding3d_eval(dataset, pred_data, thres=0.5):
         if len(bboxes) < 1:
             continue
         bbox = bboxes[0]
-        iou = cal_iou_3d(gt['gt_bbox'], bbox)
+        iou = cal_iou_3d(gt['object'], bbox)
         if iou> thres:
             score += 1
     print(score/cnt)
