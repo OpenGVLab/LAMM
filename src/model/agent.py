@@ -63,23 +63,38 @@ class DeepSpeedAgent:
 
     def save_model(self, path, current_step):
         # only save trainable model parameters
-        param_grad_dic = {
-            k: v.requires_grad for (k, v) in self.ds_engine.module.named_parameters()
-        }
-        state_dict = self.ds_engine.module.state_dict()
-        checkpoint = OrderedDict()
-        for k, v in self.ds_engine.module.named_parameters():
-            if v.requires_grad:
-                checkpoint[k] = v
-        if current_step <= 0:
-            torch.save(checkpoint, f"{path}/pytorch_model.pt")
+        trainable_params = [ 
+            k for (k, v) in self.ds_engine.module.named_parameters() if v.requires_grad
+        ]
+        # get state dict on Rank 0 (NOTE: state_dict is still none in other processes)
+        state_dict = None
+        if self.ds_engine.zero_optimization_partition_weights():
+            if self.ds_engine.zero_gather_16bit_weights_on_model_save():
+                # consolidation is expensive in time and memory and therefore isn't a default
+                state_dict = self.ds_engine._zero3_consolidated_16bit_state_dict()
+            else:
+                raise NotImplementedError
         else:
-            torch.save(checkpoint, f"{path}/pytorch_model_ep{current_step}.pt")
-        # save tokenizer
-        self.model.llama_tokenizer.save_pretrained(path)
-        # save configuration
-        self.model.llama_model.config.save_pretrained(path)
-        print(f"[!] save model into {path}")
+            state_dict = self.ds_engine.module.state_dict()
+
+        # only save checkpoint in rank 0.
+        if deepspeed.comm.get_rank() == 0:
+            # get checkpoint
+            checkpoint = OrderedDict(
+                (k, state_dict[k]) for k in trainable_params
+            )
+
+            if current_step <= 0:
+                torch.save(checkpoint, f"{path}/pytorch_model.pt")
+            else:
+                torch.save(checkpoint, f"{path}/pytorch_model_ep{current_step}.pt")
+            # save tokenizer
+            self.model.llama_tokenizer.save_pretrained(path)
+            # save configuration
+            self.model.llama_model.config.save_pretrained(path)
+            print(f"[!] save model into {path}")
+        
+
 
     def load_stage_1_parameters(self, path):
         delta_ckpt = torch.load(path, map_location=torch.device("cpu"))
