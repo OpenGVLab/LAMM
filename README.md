@@ -206,9 +206,14 @@ Download LAMM-Dataset from [here](https://opendatalab.com/LAMM/download).
 <!-- ![](./images/LAMM-Framework.png) -->
 ## Installation
 
+Pre-requist Packages: `gcc <= 7.5.0; nvcc >= 11.1`
+
+
 ```bash
     conda create -n lamm python=3.10 -y
     conda activate lamm
+    # Choose different version of torch according to your 
+    conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
 ```
 Install required packages
 ```bash
@@ -220,13 +225,14 @@ Install required packages
     cd ../../utils/
     pip install cython
     python cython_compile.py build_ext --inplace
-    
 ```
-<!-- For 3D experiments, you need to compile PointNet operation additionally.
-```Bash
-    # or 
-    # conda env update -n lamm --file environment.yml
-``` -->
+Download required NLTK data
+```python
+    import nltk
+    nltk.download('stopwords')
+    nltk.download('punkt')
+    nltk.download('wordnet')
+```
 
 ## Data & Model Preparation for Training
 - Data
@@ -244,7 +250,7 @@ Install required packages
 
 - 3D Encoder: EPCL
 
-    Download Pre-trained EPCL model to tokenize point cloud from [Here](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
+    Download Pre-trained EPCL model to tokenize point cloud from [Here](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main). Put the downloaded models in the `./ckpt` folder.
 
 
 ## Training
@@ -355,11 +361,11 @@ For your reference, GPU memory consumption for different models are shown as fol
 
 - 3D Encoder: EPCL
 
-    Download Pre-trained EPCL model to tokenize point cloud from [Here](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
+    Download Pre-trained EPCL model to tokenize point cloud from [Here](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main). Put the downloaded models in the `./model_zoo/epcl_ckpt` folder.
 
 - LAMM Models
 
-    Download LAMM checkpoints from [Here](https://github.com/OpenLAMM/LAMM/tree/main#lamm-models). Put the downloaded models in the `./model_zoo/lamm_ckpt` folder.
+    Download LAMM model from [Here](https://github.com/OpenLAMM/LAMM/tree/main#lamm-models). Put the downloaded models in the `./ckpt` folder.
 
     Or you can train your own LAMM model by following the instructions [Here](https://github.com/OpenLAMM/LAMM/tree/main#Training)!
 
