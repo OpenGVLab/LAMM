@@ -278,6 +278,7 @@ class LAMMPEFTModel(nn.Module):
 
         self.max_tgt_len = args["max_tgt_len"]
         self.use_system = use_system
+        self.use_flash_attn = args['use_flash_attn']
         self.device = torch.cuda.current_device()
 
     def encode_image(self, image_paths):
@@ -534,6 +535,7 @@ class LAMMPEFTModel(nn.Module):
             attention_mask=attention_mask,
             return_dict=True,
             labels=targets,
+            use_cache=not self.use_flash_attn,
         )
         loss = outputs.loss
         # calculate the token accuarcy
