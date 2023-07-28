@@ -109,6 +109,13 @@ def parser_args():
         default=40000,
         help="number of points in each point cloud",
     )
+    # flash attention
+    parser.add_argument(
+        "--use_flash_attn",
+        default=False,
+        action="store_true",
+        help="whether to use flash attention to speed up",
+    )
     args = parser.parse_args()
 
     if args.vision_feature_type == "local":
@@ -184,6 +191,11 @@ def main(**args):
             filename=f'{args["log_path"]}/train_{time.asctime()}.log',
             filemode="w",
         )
+    
+    if args['use_flash_attn']:
+        from model.flash_attn_patch import replace_llama_attn_with_flash_attn
+        logging.info("⚡⚡⚡ enable flash attention.")
+        replace_llama_attn_with_flash_attn()
 
     train_data, train_iter, sampler = load_lamm_dataset(args)
 
