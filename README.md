@@ -234,6 +234,10 @@ Download required NLTK data
     nltk.download('wordnet')
 ```
 
+Optional:
+
+Install flash attention (v2) if you are tight in GPU memory. Please refer to [flash attention's installation](https://github.com/Dao-AILab/flash-attention/tree/main#installation-and-features)
+
 ## Data & Model Preparation for Training
 - Data
     
@@ -532,4 +536,4 @@ The project is CC BY NC 4.0 (allowing only non-commercial use) and models traine
 ## Acknowledgement
 We thank [Hongxing Fan](https://scholar.google.com/citations?user=Wnk95ccAAAAJ), [Zeren Chen](https://github.com/Zx55) for support of LAMM project. 
 
-We also thanks the great works including [CLIP](https://github.com/openai/CLIP), [EPCL](https://arxiv.org/abs/2212.04098), [LLaMA](https://github.com/facebookresearch/llama), [Vicuna](https://github.com/lm-sys/FastChat)
+We also thanks the great works including [CLIP](https://github.com/openai/CLIP), [EPCL](https://arxiv.org/abs/2212.04098), [LLaMA](https://github.com/facebookresearch/llama), [Vicuna](https://github.com/lm-sys/FastChat), [FlashAttention](https://github.com/Dao-AILab/flash-attention/)
