@@ -15,8 +15,11 @@
 # Updates
 📆 **Coming Soon**
 
-1. Code for less GPU memory will be released soon.
+1. Code for less GPU memory will be released soon. Please stay tuned.
 
+📆 [**2023-07-28**]
+
+1. Checkpoints of LAMM on [huggingface](https://huggingface.co/openlamm) updated on new code base. [LAMM Performance](#leaderboard) updated, Please check it out.
 
 📆 [**2023-07-06**]
 
@@ -451,9 +454,9 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 
 | Task                       | Dataset  | LAMM(Zero-Shot) | LAMM(Finetune) |
 | -------------------------- | -------- | --------------- | -------------- |
-| Classification **(Acc)**   | CIFAR10  | 34.5            | 91.2           |
-| Object Detection **(Acc)** | VOC2012  | 4.82            | 13.48          |
-| VQA **(mAP@0.5)**          | SQAimage | 47.15           | 74.27          |
+| Classification **(Acc)**   | CIFAR10  | 37.90            | 91.2           |
+| Object Detection **(Acc)** | VOC2012  | 7.20            | 13.48          |
+| VQA **(mAP@0.5)**          | SQAimage | 49.88           | 74.27          |
 </p>
 </details>
 
@@ -462,9 +465,9 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 
 | Task                                         | Dataset   | SOTA  | LAMM (Zero-Shot) | LAMM (Finetune) |
 | -------------------------------------------- | --------- | ----- | ---------------- | --------------- |
-| 3D Object Detection **(mAP@0.5)**            | ScanNet   | 63.2  | 9.3              | 11.89           |
+| 3D Object Detection **(mAP@0.5)**            | ScanNet   | 63.2  | 8.2              | 11.89           |
 | Visual Grounding **(mAP@0.5)**               | ScanRefer | 54.59 | Failed           | 3.38            |
-| 3D VQA **(Acc of multiple choice prolblem)** | ScanQA    | N/A   | 26.54            | 99.89           |
+| 3D VQA **(Acc of multiple choice prolblem)** | ScanQA    | N/A   | 24.90            | 99.89           |
 </p>
 </details>
 
@@ -473,7 +476,7 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 
 |                   | [LLaVA](https://github.com/haotian-liu/LLaVA) | [MiniGPT4](https://github.com/Vision-CAIR/MiniGPT-4) | [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl) | LAMM            |
 | ----------------- | ----- | -------- | --------- | --------------- |
-| Binary-Loc Metric | 14.73 | 13.12    | 4.42      | **<u>31.2</u>** |
+| Binary-Loc Metric | 14.73 | 13.12    | 4.42      | **<u>36.53</u>** |
 | GPT Metric        | 11    | -        | -         | **<u>89</u>**   |
 </p>
 </details>
@@ -485,14 +488,14 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 
 | Task                  | Dataset                         | Metric     | SOTA           | [LLaVA](https://github.com/haotian-liu/LLaVA)                        | [MiniGPT4](https://github.com/Vision-CAIR/MiniGPT-4)                    | [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl)         | LAMM                                  |
 | --------------------- | ------------------------------- | ---------- | -------------- | ---------------------------- | --------------------------- | ----------------- | ------------------------------------- |
-| Classification        | CIFAR10                         | Acc ↑      | 99.5           | **60.83**                    | 46.22                       | 42.5              | 34.5                                  |
-| Detection             | VOC2012                         | mAP ↑      | 97.2           | 1.42                         | 0.92                        | 0.158             | **<u>4.82</u>**                       |
-| VQA                   | SQAimage<br />AI2D              | Acc ↑      | 92.53<br />N/A | 40.5<br />18.13              | 43.43<br />Failed           | 36.39<br />19.31  | **<u>47.15</u>**<br />**<u>19.5</u>** |
-| Image Caption         | flickr30k                       | BLEU4 ↑    | 30.1           | **<u>6.65</u>**              | 5.1                         | 2.74              | 0.70                                  |
-| F-g clasification     | UCMerced                        | Acc ↑      | 100            | **<u>47</u>**                | 33.6                        | 32.5              | 13                                    |
-| Counting              | FSC147                          | MAE ↓      | 10.79          | 56.2                         | Failed                      | 60.67             | **<u>53.97</u>**                      |
-| OCR                   | SVT                             | Word Acc ↑ | 97.9           | **<u>37.78</u>**             | 16.97                       | 30.39             | 4.2                                   |
-| Facial Classification | CelebA(Smile)<br />CelebA(Hair) | Acc ↑      | N/A<br />N/A   | Failed<br />**<u>46.42</u>** | **<u>66.36</u>**<br />43.47 | Failed<br />40.93 | 51.3<br />30.48                       |
+| Classification        | CIFAR10                         | Acc ↑      | 99.5           | **60.83**                    | 46.22                       | 42.5              | 37.9                                  |
+| Detection             | VOC2012                         | mAP ↑      | 97.2           | 1.42                         | 0.92                        | 0.158             | **<u>7.20</u>**                       |
+| VQA                   | SQAimage<br />AI2D              | Acc ↑      | 92.53<br />N/A | 40.5<br />18.13              | 43.43<br />Failed           | 36.39<br />19.31  | **<u>49.88</u>**<br />**<u>20.92</u>** |
+| Image Caption         | flickr30k                       | BLEU4 ↑    | 30.1           | **<u>6.65</u>**              | 5.1                         | 2.74              | 2.56                                  |
+| F-g clasification     | UCMerced                        | Acc ↑      | 100            | **<u>47</u>**                | 33.6                        | 32.5              | 18.23                                    |
+| Counting              | FSC147                          | MAE ↓      | 10.79          | 56.2                         | Failed                      | 60.67             | **<u>46.88</u>**                      |
+| OCR                   | SVT                             | Word Acc ↑ | 97.9           | **<u>37.78</u>**             | 16.97                       | 30.39             | 29.14                                   |
+| Facial Classification | CelebA(Smile)<br />CelebA(Hair) | Acc ↑      | N/A<br />N/A   | Failed<br />46.42 | **<u>66.36</u>**<br />43.47 | Failed<br />40.93 | 57.60<br /> **<u>56.96</u>**                       |
 | Keypoints Detection   | LSP                             | PCK ↑      | 99.5           | Failed                       | Failed                      | Failed            | Failed                                |
 </p>
 </details>
@@ -530,6 +533,6 @@ The project is CC BY NC 4.0 (allowing only non-commercial use) and models traine
 
 ---
 ## Acknowledgement
-We thank [Hongxing Fan](https://scholar.google.com/citations?user=Wnk95ccAAAAJ), [Zeren Chen](https://github.com/Zx55) for support of LAMM project. 
+We thank [Hongxing Fan](https://scholar.google.com/citations?user=Wnk95ccAAAAJ), [Zeren Chen](https://github.com/Zx55), Zhen Wang for support of LAMM project. 
 
 We also thanks the great works including [CLIP](https://github.com/openai/CLIP), [EPCL](https://arxiv.org/abs/2212.04098), [LLaMA](https://github.com/facebookresearch/llama), [Vicuna](https://github.com/lm-sys/FastChat)
