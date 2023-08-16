@@ -23,7 +23,7 @@ def detection3d_eval(dataset, pred_data, thres=0.5):
                 if iou > thres:
                     score += 1
                     break
-    print(score/cnt)
+    print(score / cnt)
 
 def grounding3d_eval(dataset, pred_data, thres=0.5):
     score = 0
@@ -36,9 +36,13 @@ def grounding3d_eval(dataset, pred_data, thres=0.5):
             continue
         bbox = bboxes[0]
         iou = cal_iou_3d(gt['object'], bbox)
-        if iou> thres:
+        if iou > thres:
             score += 1
-    print(score/cnt)
+    print("Acc over {}: {}".format(thres, score / cnt))
+
+def grounding3d(dataset, pred_data):
+    grounding3d_eval(dataset, pred_data, thres=0.25)
+    grounding3d_eval(dataset, pred_data, thres=0.5)
 
 CHOICE = ['A', 'B', 'C', 'D', 'E', 'F']         # 6 choices in total
 
@@ -77,10 +81,10 @@ def VQAvisionacc(dataset,pred_data):
         res_1 = pattern_1.findall(pred_text)
         res_2 = pattern_2.findall(pred_text)
         res_3 = pattern_3.findall(pred_text)
-        if len(res_1) !=0 :
+        if len(res_1) != 0:
             if check_option(res_1, gt_char):
                 tmp_score = 1.0
-        elif len(res_2) !=0:
+        elif len(res_2) != 0:
             if check_pattern2(res_2, gt_char):
                 tmp_score = 1.0
         elif len(res_3) != 0:
@@ -88,13 +92,13 @@ def VQAvisionacc(dataset,pred_data):
                 tmp_score = 1.0
         elif check_text(pred_text, gt['gt_choices'], gt_choice):
             tmp_score = 1.0
-        score+=tmp_score
-    print('vision:{}'.format(score/len(dataset)))
+        score += tmp_score
+    print('vision: {}'.format(score / len(dataset)))
     
 
 dataset2evalfunc = {
     'ScanNet': detection3d_eval,
-    'ScanRefer': grounding3d_eval,
+    'ScanRefer': grounding3d,
     'ScanQA_multiplechoice': VQAvisionacc,
 }
 
