@@ -278,7 +278,7 @@ class LAMMPEFTModel(nn.Module):
 
         self.max_tgt_len = args["max_tgt_len"]
         self.use_system = use_system
-        self.use_flash_attn = args['use_flash_attn']
+        self.use_flash_attn = getattr(args, 'use_flash_attn', False)
         self.device = torch.cuda.current_device()
 
     def encode_image(self, image_paths):
