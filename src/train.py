@@ -116,7 +116,16 @@ def parser_args():
         action="store_true",
         help="whether to use flash attention to speed up",
     )
+    # xformers
+    parser.add_argument(
+        "--use_xformers",
+        default=False,
+        action="store_true",
+        help="whether to use xformers to speed up",
+    )
     args = parser.parse_args()
+
+    assert not (args.use_flash_attn and args.use_xformers), 'can only use one of flash attn and xformers.'
 
     if args.vision_feature_type == "local":
         args.num_vision_token = 256
@@ -196,6 +205,11 @@ def main(**args):
         from model.flash_attn_patch import replace_llama_attn_with_flash_attn
         logging.info("⚡⚡⚡ enable flash attention.")
         replace_llama_attn_with_flash_attn()
+
+    if args['use_xformers']:
+        from model.xformers_patch import replace_llama_attn_with_xformers_attn
+        logging.info("xxx enable xformers attention.")
+        replace_llama_attn_with_xformers_attn()
 
     train_data, train_iter, sampler = load_lamm_dataset(args)
 
