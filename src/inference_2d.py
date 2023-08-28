@@ -1,6 +1,7 @@
 import os
 from model.openlamm import LAMMPEFTModel
 import torch
+from torch import distributed as dist
 import json
 import argparse
 from conversations import conv_templates
@@ -56,6 +57,7 @@ def parse_args():
     parser.add_argument("--inference-mode", default='common')
     parser.add_argument("--bs", type=int,default=1)
     parser.add_argument("--answers-dir", required=True)
+    parser.add_argument("--use-lightllm", default=False, action="store_true", help="whether to use lightllm in inference to speed up",)
     args = parser.parse_args()
 
     if args.vision_feature_type == 'local':
@@ -179,12 +181,19 @@ def kps_det_response(args,
 
 
 def main(args):
+    if args.use_lightllm:
+        world_size = int(os.getenv("WORLD_SIZE", "1"))
+        local_rank = int(os.getenv("LOCAL_RANK", "0")) % torch.cuda.device_count()
+        dist.init_process_group("nccl", 
+                                init_method="tcp://127.0.0.1:10086",
+                                world_size=world_size, rank=local_rank)
     # load model
     model = LAMMPEFTModel(**args.__dict__)
     delta_ckpt = torch.load(args.delta_ckpt_path, map_location=torch.device('cpu'))
     model.load_state_dict(delta_ckpt, strict=False)
     print(f'[!] merging LoRA weights ...')
-    model.llama_model = model.llama_model.merge_and_unload()
+    if not args.use_lightllm:
+        model.llama_model = model.llama_model.merge_and_unload()
     model = model.eval().half().cuda()
     Visualization(model).structure_graph()
     print(f'[!] init the LLM over ...')
