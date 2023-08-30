@@ -18,14 +18,15 @@
 *.0
 
 # result related
-./answer*
-./ckpt/*
-./ckpt3d/*
+answers/
+ckpt/
+ckpt3d/
 
 *.jsonl
 
 
 # assets related
-
+datasets/
+model_zoo/
 
 # package related
