@@ -178,6 +178,8 @@ def main(args):
     model = LAMMPEFTModel(**args.__dict__)
     delta_ckpt = torch.load(args.delta_ckpt_path, map_location=torch.device('cpu'))
     model.load_state_dict(delta_ckpt, strict=False)
+    print(f'[!] merging LoRA weights ...')
+    model.llama_model = model.llama_model.merge_and_unload()
     model = model.eval().half().cuda()
     Visualization(model).structure_graph()
     print(f'[!] init the LLM over ...')
