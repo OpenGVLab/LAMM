@@ -22,7 +22,7 @@ torchrun --nnodes=1 --nproc_per_node=${numgpu} --master_port=25441 train.py \
     --model lamm_peft \
     --encoder_pretrain epcl \
     --encoder_ckpt_path ../model_zoo/epcl_ckpt/epcl_scannet_vit-L-14_256tokens_latest.pth \
-    --vicuna_ckpt_path ../model_zoo/vicuna_ckpt/13b_v0/ \
+    --llm_ckpt_path ../model_zoo/vicuna_ckpt/13b_v0/ \
     --vision_feature_type ${visfeat_type} \
     --num_vision_token 256 \
     --save_path  ${ckpt_dir}/${exp} \

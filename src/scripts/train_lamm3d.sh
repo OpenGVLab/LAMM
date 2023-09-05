@@ -19,7 +19,7 @@ deepspeed --include localhost:0,1,2,3 --master_addr 127.0.0.1 --master_port 2845
     --model lamm_peft \
     --encoder_pretrain epcl \
     --encoder_ckpt_path ../model_zoo/epcl_ckpt/epcl_scannet_vit-L-14_256tokens_latest.pth \
-    --vicuna_ckpt_path ../model_zoo/vicuna_ckpt/13b_v0/ \
+    --llm_ckpt_path ../model_zoo/vicuna_ckpt/13b_v0/ \
     --vision_feature_type ${visfeat_type} \
     --num_vision_token 256 \
     --save_path  ${ckpt_dir}/${exp} \

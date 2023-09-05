@@ -3,19 +3,21 @@
 ![LAMM](./images/lamm-title.png)
 <p align="center">
     <font size='4'>
-    <a href="https://openlamm.github.io/" target="_blank">🌏 Project Page</a> • <a href="https://huggingface.co/spaces/openlamm/LAMM" target="_blank">🤗 Demo</a> • <a href="https://www.youtube.com/watch?v=M7XlIe8hhPk" target="_blank">▶️ YouTube </a> • <a href="https://www.bilibili.com/video/BV1kN411D7kt/?share_source=copy_web&vd_source=ab4c734425ed0114898300f2c037ac0b" target="_blank"> 📺 Bilibili <a href="https://opendatalab.com/LAMM" target="_blank">📀 Data</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-benchmark" target="_blank">📊 Benchmark</a> • <a href="https://huggingface.co/openlamm" target="_blank">📦 LAMM Models</a>
+    <a href="https://openlamm.github.io/" target="_blank">🌏 Project Page</a> • <a href="https://openxlab.org.cn/apps/detail/LAMM/LAMM" target="_blank">𝕏 Demo</a> • <a href="https://www.youtube.com/watch?v=M7XlIe8hhPk" target="_blank">▶️ YouTube </a> • <a href="https://www.bilibili.com/video/BV1kN411D7kt/?share_source=copy_web&vd_source=ab4c734425ed0114898300f2c037ac0b" target="_blank"> 📺 Bilibili <a href="https://opendatalab.com/LAMM" target="_blank">📀 Data</a> • <a href="https://github.com/OpenLAMM/LAMM#lamm-benchmark" target="_blank">📊 Benchmark</a> • <a href="https://huggingface.co/openlamm" target="_blank">📦 LAMM Models</a>
     </font>
 </p>
 
+
 ### Official Repository of [LAMM: Language-Assisted Multi-Modal Instruction-Tuning Dataset, Framework, and Benchmark](https://arxiv.org/abs/2306.06687)
 
-<!-- <a href="https://www.youtube.com/watch?v=M7XlIe8hhPk"><p><img src="./images/lamm-video.png"/></p></a>  -->
 [![](./images/lamm-video.png)](https://www.youtube.com/watch?v=M7XlIe8hhPk)
 
 # Updates
-📆 **Coming Soon**
+📆 [**2023-09-02**]
 
-1. Code for less GPU memory will be released soon. Please stay tuned.
+1. Deepspeed ZeRO stage3, [xformers](https://github.com/facebookresearch/xformers) & [flashattention v2 (V100 not available)](https://github.com/Dao-AILab/flash-attention) are available for efficient training. LightLLM enabled for inference. Training your models on **V100** or **RTX3090**!
+2. Checkpoints finetuning LLaMA2 online, please check it out.
+3. Our demo is moved to [![Open in OpenXLab](https://cdn-static.openxlab.org.cn/app-center/openxlab_app.svg)](https://openxlab.org.cn/apps/detail/LAMM/LAMM), and previous session on Huggingface will be discarded.
 
 📆 [**2023-07-28**]
 
@@ -78,7 +80,7 @@ Point cloud data are required to be in format of `npy`, we suggest to use data f
         --vision_type pcl or image \
         --encoder_pretrain epcl or clip \
         --encoder_ckpt_path $EPCL_CKPT_PATH or '' \
-        --vicuna_ckpt_path $LLM_CKPT_PATH \
+        --llm_ckpt_path $LLM_CKPT_PATH \
         --delta_ckpt_path $LAMM_CKPT_PATH
 ```
 
@@ -446,6 +448,13 @@ For your reference, GPU memory consumption for different models are shown as fol
     ```
     </details>
 
+- You can also change options as following to decrease calculation consumption.
+```
+    --cfg ./config/train_ds3.yaml   # enable Deepspeed ZeRO stage3
+    --use_flash_attn    # enable flash attention
+    --use_xformers      # enable xformers
+```
+
 - Evaluation for other MLLM models. 
 
     Please refer to [LLaVA](https://github.com/haotian-liu/LLaVA), [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4) and [mPLUG-owl](https://github.com/X-PLUG/mPLUG-Owl) for inference respectively. Save the answers in `./answers`. And then run `common_eval_2d.py` for evaluation. For example, to evaluate LLaVA on VOC2012:
@@ -528,9 +537,10 @@ You may need to dive into scripts to change datasets to evaluation & checkpoints
 | -------------------------- | :--------: | :--------: | -------- | :----: | :---------------: |
 | 98K  | CLIP-ViT-L | Vicuna_v0_7B            | LAMM-2D daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_98k) |
 | 186K  | CLIP-ViT-L | Vicuna_v0_7B            | LAMM-2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_7b_lora32_186k) |
+| 186K | CLIP-ViT-L |  LLaMA2_chat_7B           | LAMM-2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm186k_llama2chat7b_lora32) |
 | 98K | CLIP-ViT-L | Vicuna_v0_13B           | LAMM-2D daily dialogue & desctiption | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora32_98k) |
 | 186K | CLIP-ViT-L |  Vicuna_v0_13B           | LAMM-2D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm_13b_lora_186k) |
-| 10K | [EPCL-ViT-L](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main) |  Vicuna13B           | LAMM-3D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm3d_13b_lora32_10k) |
+| 10K | [EPCL-ViT-L](https://huggingface.co/openlamm/epcl_vit-L_256tokens/tree/main) |  Vicuna_v0_13B           | LAMM-3D Instruction Data | 32 | [Checkpoints](https://huggingface.co/openlamm/lamm3d_13b_lora32_10k) |
 
 
 

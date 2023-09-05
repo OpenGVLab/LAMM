@@ -69,7 +69,7 @@ class LAMMStoppingCriteria(StoppingCriteria):
         return False
 
 
-def build_one_instance(tokenizer, conversation, vision_type="image"):
+def build_one_instance(tokenizer, conversation, vision_type="image", template=conversations.default_conversation):
     """build one instance for training; text part
 
     :param class tokenizer: text tokenizer
@@ -92,7 +92,7 @@ def build_one_instance(tokenizer, conversation, vision_type="image"):
             turn["value"] = (
                 turn["value"].replace(f"{pos}\n", "").replace(f"\n{pos}", "")
             )
-            text = f"{eov} " + turn["value"] + "\n### Assistant:"
+            text = f"{eov} " + turn["value"] + "\n{} {}: ".format(template.sep, template.roles[1])
             one_input_id = tokenizer(text, add_special_tokens=False).input_ids
             input_ids += one_input_id
             target_ids += [-100] * len(
@@ -100,24 +100,25 @@ def build_one_instance(tokenizer, conversation, vision_type="image"):
             )  # do not perform loss regression on human prompt
         else:
             if role == "human":
-                text = "Human: " + turn["value"] + "\n### Assistant:"
+                # text = "{}: ".format(template.roles[0]) + turn["value"] + "\n### {}:".format(template.roles[1])
+                text = "{}: {}\n{} {}: ".format(template.roles[0], turn["value"], template.sep, template.roles[1])
                 one_input_id = tokenizer(text, add_special_tokens=False).input_ids
                 input_ids += one_input_id
                 target_ids += [-100] * len(one_input_id)
             elif role == "gpt":
-                text = turn["value"] + "\n###"
+                text = turn["value"] + "\n{}".format(template.sep2 if (template.sep2 is not None) else template.sep)
                 one_input_id = tokenizer(text, add_special_tokens=False).input_ids
                 input_ids += one_input_id
                 target_ids += one_input_id
             else:
-                raise Exception("Wrong Role!!!")
+                raise Exception(f"{role} is a Wrong Role!!!")
         text_list.append(text)
         assert len(input_ids) == len(target_ids)
     return text_list, input_ids, target_ids
 
 
 def process_batch_instance(
-    tokenizer, batch_of_conversations, max_tgt_len, vision_type="image"
+    tokenizer, batch_of_conversations, max_tgt_len, vision_type="image", template=conversations.default_conversation
 ):
     """build one batch of instance for training
 
@@ -130,7 +131,7 @@ def process_batch_instance(
     batch_input_ids, batch_target_ids = [], []
     for conversation in batch_of_conversations:
         _, one_input_ids, one_target_ids = build_one_instance(
-            tokenizer, conversation, vision_type=vision_type
+            tokenizer, conversation, vision_type=vision_type, template=template
         )
         batch_input_ids.append(torch.LongTensor(one_input_ids))
         batch_target_ids.append(torch.LongTensor(one_target_ids))
@@ -148,7 +149,7 @@ def process_batch_instance(
     return input_ids, target_ids, attention_mask.long()
 
 
-def make_prompt_start(use_system=False, vision_type="image", task_type="normal"):
+def make_prompt_start(use_system=False, vision_type="image", task_type="normal", template=conversations.default_conversation):
     """make starting prompt
 
     :param bool use_system: whether to use system message, defaults to False
@@ -156,15 +157,21 @@ def make_prompt_start(use_system=False, vision_type="image", task_type="normal")
     :param str task_type: task type of current sample, defaults to 'normal'
     :return str: resulting starting prompt
     """
-    PROMPT_START = f'### Human: {VISION_TAGS["sov"][vision_type]}'
+    # PROMPT_START = f'### Human: {VISION_TAGS["sov"][vision_type]}'
+    PROMPT_START = f'{template.sep} {template.roles[0]}: {VISION_TAGS["sov"][vision_type]}'
     if use_system:
         if task_type == "normal":
-            return f"{conversations.default_conversation.system}\n\n" + PROMPT_START
+            # print(template.system)
+            return f"{template.system}\n\n" + PROMPT_START
         else:
-            return [
-                f"{conversations.conversation_dict[task]}\n\n" + PROMPT_START
-                for task in task_type
-            ]
+            if template.sys_temp is None:
+                return [
+                    f"{conversations.conversation_dict[task]}\n\n" + PROMPT_START
+                    for task in task_type
+                ]
+            else:
+                # print(template.sys_temp.format(system_message=conversations.conversation_dict[task_type[0]]))
+                return [template.sys_temp.format(system_message=conversations.conversation_dict[task]) + PROMPT_START for task in task_type]
     else:
         return PROMPT_START
 
@@ -189,9 +196,9 @@ class LAMMPEFTModel(nn.Module):
             if not encoder_pretrain == "clip"
             else "~/.cache/clip/ViT-L-14.pt"
         )
-        vicuna_ckpt_path = args["vicuna_ckpt_path"]
-
+        llm_ckpt_path = args["llm_ckpt_path"]
         use_system = args["use_system"] if "use_system" in args else False
+        self.conv_template = conversations.conv_templates[args['conv_template']] if 'conv_template' in args else conversations.default_conversation
         stage = args["stage"]
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -250,7 +257,7 @@ class LAMMPEFTModel(nn.Module):
         self.visual_encoder.eval()
         print("Visual encoder initialized.")
 
-        print(f"Initializing language decoder from {vicuna_ckpt_path} ...")
+        print(f"Initializing language decoder from {llm_ckpt_path} ...")
         # add the lora module
         peft_config = LoraConfig(
             task_type=TaskType.CAUSAL_LM,
@@ -276,7 +283,7 @@ class LAMMPEFTModel(nn.Module):
             self.llama_model.print_trainable_parameters()
 
         self.llama_tokenizer = LlamaTokenizer.from_pretrained(
-            vicuna_ckpt_path, use_fast=False
+            llm_ckpt_path, use_fast=False
         )
         self.llama_tokenizer.pad_token = self.llama_tokenizer.eos_token
         self.llama_tokenizer.padding_side = "right"
@@ -434,7 +441,7 @@ class LAMMPEFTModel(nn.Module):
 
         # return list of headers if multiple tasks
         p_before = make_prompt_start(
-            use_system=use_system, vision_type=self.vision_type, task_type=task_type
+            use_system=use_system, vision_type=self.vision_type, task_type=task_type, template=self.conv_template
         )
         if isinstance(p_before, list):
             p_before_tokens = [
@@ -531,7 +538,7 @@ class LAMMPEFTModel(nn.Module):
 
         output_texts = inputs["output_texts"]
         input_ids, target_ids, attention_mask = process_batch_instance(
-            self.llama_tokenizer, output_texts, self.max_tgt_len, self.vision_type
+            self.llama_tokenizer, output_texts, self.max_tgt_len, self.vision_type, self.conv_template
         )
         inputs_embeds, targets, attention_mask = self.prompt_wrap(
             vision_embeds,
@@ -600,7 +607,7 @@ class LAMMPEFTModel(nn.Module):
 
         batch_size = feature_embeds.shape[0]
         p_before = make_prompt_start(
-            vision_type=self.vision_type
+            vision_type=self.vision_type, template=self.conv_template
         )  # no system header in test
         p_before_tokens = self.llama_tokenizer(
             p_before, return_tensors="pt", add_special_tokens=False
@@ -611,7 +618,7 @@ class LAMMPEFTModel(nn.Module):
             batch_size, -1, -1
         )  # bsz x s1 x embed_dim
 
-        p_after_texts = [f"{eov} " + prompt + "\n### Assistant:" for prompt in prompt_list]
+        p_after_texts = [f"{eov} " + prompt + f"\n{self.conv_template.sep} {self.conv_template.roles[1]}:" for prompt in prompt_list]
         p_after_tokens = self.llama_tokenizer(
             p_after_texts, 
             padding="longest", return_length=True, # padding right
@@ -665,7 +672,7 @@ class LAMMPEFTModel(nn.Module):
         """
         input_embeds, input_masks = self.prepare_generation_embedding(inputs)
         stopping_criteria = StoppingCriteriaList(
-            [LAMMStoppingCriteria([[2277, 29937], [835]], input_embeds)]
+            [LAMMStoppingCriteria([[2277, 29937], [835], [1, 2]], input_embeds)]            # TODO: different template has corresponding end signal [sep2]
         )
         outputs = self.llama_model.generate(
             inputs_embeds=input_embeds,

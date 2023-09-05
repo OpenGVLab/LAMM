@@ -29,7 +29,7 @@ def parse_args():
         help="path of vision pretrained model; CLIP use default path in cache",
     )
     parser.add_argument(
-        "--vicuna_ckpt_path",
+        "--llm_ckpt_path",
         type=str,
         required=True,
         help="path of LLM, default: Vicuna",
@@ -70,7 +70,7 @@ def parse_args():
         raise NotImplementedError('NOT implement vision feature type: {}'.format(args.vision_feature_type))
     
     assert os.path.exists(args.delta_ckpt_path), "delta checkpoint not exists!"
-    assert os.path.exists(args.vicuna_ckpt_path), "vicuna checkpoint not exists!"
+    assert os.path.exists(args.llm_ckpt_path), "vicuna checkpoint not exists!"
     assert len(args.encoder_ckpt_path) == 0 or os.path.exists(args.encoder_ckpt_path), "vision encoder checkpoint not exists!"
     print(json.dumps(vars(args), indent=4, sort_keys=True))
     return args
@@ -91,14 +91,17 @@ def generate_conversation_text(args, input_list, history, sys_msg = None):
     """
     conv = conv_templates[args.conv_mode]
     if sys_msg:
-        conv.system = sys_msg
+        if conv.sys_temp is not None:
+            conv.system = conv.sys_temp.format(system_message=sys_msg)
+        else:
+            conv.system = sys_msg
     prompts_list = []
     for input in input_list:
         prompts = ''
-        prompts += conv.system 
+        prompts += conv.system + '\n\n'
         for q, a in history:
-            prompts += "{} {}: {}\n{} {}: {}\n".format(conv.sep, conv.roles[0], q, conv.sep, conv.roles[1], a)
-        prompts += "{} {}: {}\n".format(conv.sep, conv.roles[0], input)
+            prompts += "{}: {}\n{} {}: {}\n{}".format(conv.roles[0], q, conv.sep, conv.roles[1], a, conv.sep2 if (conv.sep2 is not None) else conv.sep)
+        prompts += "{}: {}\n{}".format(conv.roles[0], input, conv.sep)
         prompts_list.append(prompts)
     return prompts_list
 
@@ -143,10 +146,11 @@ def default_response(args,
         history=[],
         sys_msg = sys_msg,
     )
+    conv = conv_templates[args.conv_mode]
     response = history[-1][1]
     ans_list = []
     for res in response:
-        ans_list.append(res.split('###')[0])
+        ans_list.append(res.split(conv.sep2 if conv.sep is not None else conv.sep)[0])
     return ans_list
 
 
@@ -155,10 +159,11 @@ def vqa_response(args,
                 input,
                 images,
                 sys_msg):
+    conv = conv_templates[args.conv_mode]
     reasoning_list = default_response(args, model, input, images, sys_msg)
     option_prompt = []
-    for prompt_1, response_1 in zip(input,reasoning_list):
-        option_prompt.append(prompt_1 + response_1 + ' ###\nANSWER:') 
+    for prompt_1, response_1 in zip(input, reasoning_list):
+        option_prompt.append(prompt_1 + response_1 + ' {}\nANSWER:'.format(conv.sep)) 
     final_answer_list = default_response(args, model, option_prompt, images, sys_msg)
     all_answer_list = []
     for reasoning, option in zip(reasoning_list, final_answer_list):

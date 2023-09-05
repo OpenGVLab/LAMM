@@ -58,7 +58,7 @@ def parser_args():
         help="path of vision pretrained model; CLIP use default path in cache",
     )
     parser.add_argument(
-        "--vicuna_ckpt_path",
+        "--llm_ckpt_path",
         type=str,
         required=True,
         help="path of LLM, default: Vicuna",
@@ -83,7 +83,8 @@ def parser_args():
         choices=(-1, -2),
         help="the layer to output visual features; -1 means global from last layer",
     )
-    parser.add_argument("--num_vision_token", type=int, default=1)
+    parser.add_argument("--num_vision_token", type=int, default=1, help="number of vision tokens")
+    parser.add_argument("--conv_template", type=str, default="default", help="which conversation template to use")
     parser.add_argument(
         "--stage",
         type=int,
