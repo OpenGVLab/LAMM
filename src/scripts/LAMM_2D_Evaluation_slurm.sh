@@ -18,7 +18,7 @@ for dataset in ${common_dataset[*]}; do
         python inference_2d.py \
             --model lamm_peft \
             --encoder_pretrain clip \
-            --vicuna_ckpt_path ../model_zoo/vicuna_ckpt/13b_v0 \
+            --llm_ckpt_path ../model_zoo/vicuna_ckpt/13b_v0 \
             --delta_ckpt_path ../ckpt/${exp}/pytorch_model.pt \
             --max_tgt_len 400 \
             --lora_r 32 \
@@ -30,7 +30,7 @@ for dataset in ${common_dataset[*]}; do
             --dataset-name ${dataset} \
             --base-data-path ${base_data_path} \
             --inference-mode common \
-            --bs 32 \
+            --bs 4 \
             --answers-dir ${answerdir}/${exp} \
     
     python common_eval_2d.py \
@@ -45,7 +45,7 @@ for dataset in ${locating_dataset[*]}; do
         python inference_2d.py \
             --model lamm_peft \
             --encoder_pretrain clip \
-            --vicuna_ckpt_path ../model_zoo/vicuna_ckpt/13b_v0 \
+            --llm_ckpt_path ../model_zoo/vicuna_ckpt/13b_v0 \
             --delta_ckpt_path ../ckpt/${exp}/pytorch_model.pt \
             --max_tgt_len 400 \
             --lora_r 32 \
@@ -57,7 +57,7 @@ for dataset in ${locating_dataset[*]}; do
             --dataset-name ${dataset} \
             --base-data-path ${base_data_path} \
             --inference-mode locating \
-            --bs 32 \
+            --bs 4 \
             --answers-dir ${answerdir}/${exp} \
 
 done

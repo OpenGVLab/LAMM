@@ -27,7 +27,7 @@ def parse_args():
         help="path of vision pretrained model; CLIP use default path in cache",
     )
     parser.add_argument(
-        "--vicuna_ckpt_path",
+        "--llm_ckpt_path",
         type=str,
         required=True,
         help="path of LLM, default: Vicuna",
@@ -67,7 +67,7 @@ def parse_args():
         raise NotImplementedError('NOT implement vision feature type: {}'.format(args.vision_feature_type))
     
     assert os.path.exists(args.delta_ckpt_path), "delta checkpoint not exists!"
-    assert os.path.exists(args.vicuna_ckpt_path), "vicuna checkpoint not exists!"
+    assert os.path.exists(args.llm_ckpt_path), "vicuna checkpoint not exists!"
     assert os.path.exists(args.encoder_ckpt_path), "vision encoder checkpoint not exists!"
     print(json.dumps(vars(args), indent=4, sort_keys=True))
     return args

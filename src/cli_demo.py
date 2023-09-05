@@ -25,7 +25,7 @@ def parse_args():
     parser.add_argument('--encoder_pretrain', type=str, default='epcl')
     parser.add_argument('--encoder_ckpt_path', type=str, 
                         help="path of vision pretrained model; CLIP use default path in cache")
-    parser.add_argument('--vicuna_ckpt_path', type=str, default='../model_zoo/vicuna_ckpt/13b_v0')
+    parser.add_argument('--llm_ckpt_path', type=str, default='../model_zoo/vicuna_ckpt/13b_v0')
     parser.add_argument('--delta_ckpt_path', type=str, default='../model_zoo/pandagpt_ckpt/13b/pytorch_model.pt')
     parser.add_argument('--force_test', action='store_true', help='whether to force test mode, ignore file missing')
     parser.add_argument('--stage', type=int, default=2, help='has no function in testing')
@@ -62,7 +62,7 @@ def parse_args():
     # make sure input
     assert len(args.vision_root_path) == 0 or os.path.exists(args.vision_root_path), "vision root directory not exists!"
     assert os.path.exists(args.delta_ckpt_path) or args.force_test, "delta checkpoint not exists and it's required!"
-    assert os.path.exists(args.vicuna_ckpt_path), "vicuna checkpoint not exists!"
+    assert os.path.exists(args.llm_ckpt_path), "vicuna checkpoint not exists!"
     assert args.encoder_pretrain == 'clip' or os.path.exists(args.encoder_ckpt_path), "vision checkpoint not exists!"
     args.max_tgt_len = args.max_tgt_len - 1 + args.num_vision_token
     if not os.path.isdir(os.path.dirname(args.answer_file)):
@@ -164,7 +164,7 @@ def main(args):
         delta_ckpt = torch.load(args.delta_ckpt_path, map_location=torch.device('cpu'))
         model.load_state_dict(delta_ckpt, strict=False)
     elif args.force_test:
-        print("[!] Loading vicuna checkpoint: {}... while {} not found!".format(args.vicuna_ckpt_path, args.delta_ckpt_path))
+        print("[!] Loading vicuna checkpoint: {}... while {} not found!".format(args.llm_ckpt_path, args.delta_ckpt_path))
     else:
         raise ValueError("delta checkpoint not exists!")
 
