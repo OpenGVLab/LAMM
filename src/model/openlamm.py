@@ -13,6 +13,7 @@ from transformers import StoppingCriteria, StoppingCriteriaList
 from .CLIP import load as load_clip
 from .EPCL import build_epcl_encoder
 
+from .modeling_lightllm import LlamaLightForCausalLM
 from .modeling_llama import LlamaForCausalLM
 from .utils.pcl_utils import MEAN_COLOR_RGB, RandomCuboid, random_sampling
 from .utils.data import transform_vision_data
@@ -260,9 +261,19 @@ class LAMMPEFTModel(nn.Module):
             target_modules=self.args["lora_target_modules"],
         )
 
-        self.llama_model = LlamaForCausalLM.from_pretrained(vicuna_ckpt_path)
-        self.llama_model = get_peft_model(self.llama_model, peft_config)
-        self.llama_model.print_trainable_parameters()
+        if args.get('use_lightllm', False):
+            self.llama_model = LlamaLightForCausalLM(
+                batch_size=self.args['bs'],
+                max_input_len=1024,
+                max_output_len=args['max_tgt_len'],
+                weight_dir=vicuna_ckpt_path,
+                lora_path=args['delta_ckpt_path'],
+                lora_config=peft_config,
+            )
+        else:
+            self.llama_model = LlamaForCausalLM.from_pretrained(vicuna_ckpt_path)
+            self.llama_model = get_peft_model(self.llama_model, peft_config)
+            self.llama_model.print_trainable_parameters()
 
         self.llama_tokenizer = LlamaTokenizer.from_pretrained(
             vicuna_ckpt_path, use_fast=False
