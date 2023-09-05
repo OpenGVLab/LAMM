@@ -239,13 +239,24 @@ Download required NLTK data
 
 Optional:
 
-- flash attention(v2)   
-Install flash attention (v2) if you are tight in GPU memory. Please refer to [flash attention's installation](https://github.com/Dao-AILab/flash-attention/tree/main#installation-and-features)
-    
-    > FlashAttention-2 currently supports Ampere, Ada, or Hopper GPUs (e.g., A100, RTX 3090, RTX 4090, H100).
+- for training
 
-- xformers   
-Install xformers if you are tight in GPU memory and cannot use flash attention (e.g., using Nvidia v100). Please refer to [xformers's installation](https://github.com/facebookresearch/xformers#installing-xformers)
+    - flash attention(v2)   
+    Install flash attention (v2) if you are tight in GPU memory. Please refer to [flash attention's installation](https://github.com/Dao-AILab/flash-attention/tree/main#installation-and-features)
+        > FlashAttention-2 currently supports Ampere, Ada, or Hopper GPUs (e.g., A100, RTX 3090, RTX 4090, H100).
+
+    - xformers   
+    Install xformers if you are tight in GPU memory and cannot use flash attention (e.g., using Nvidia v100). Please refer to [xformers's installation](https://github.com/facebookresearch/xformers#installing-xformers)
+
+- for inference
+
+    - lightllm   
+    Install lightllm to speed up inference and decrease the GPU memery usage to enable large batchsize.
+        ```
+        git clone -b multimodal  https://github.com/ModelTC/lightllm.git
+        cd lightllm
+        python setup.py install
+        ```
 
 ## Data & Model Preparation for Training
 - Data
@@ -545,4 +556,4 @@ The project is CC BY NC 4.0 (allowing only non-commercial use) and models traine
 ## Acknowledgement
 We thank [Hongxing Fan](https://scholar.google.com/citations?user=Wnk95ccAAAAJ), [Zeren Chen](https://github.com/Zx55), Zhen Wang for support of LAMM project. 
 
-We also thanks the great works including [CLIP](https://github.com/openai/CLIP), [EPCL](https://arxiv.org/abs/2212.04098), [LLaMA](https://github.com/facebookresearch/llama), [Vicuna](https://github.com/lm-sys/FastChat), [FlashAttention](https://github.com/Dao-AILab/flash-attention/)
+We also thanks the great works including [CLIP](https://github.com/openai/CLIP), [EPCL](https://arxiv.org/abs/2212.04098), [LLaMA](https://github.com/facebookresearch/llama), [Vicuna](https://github.com/lm-sys/FastChat), [FlashAttention](https://github.com/Dao-AILab/flash-attention/), [xformers](https://github.com/facebookresearch/xformers), [lightllm](https://github.com/ModelTC/lightllm)
