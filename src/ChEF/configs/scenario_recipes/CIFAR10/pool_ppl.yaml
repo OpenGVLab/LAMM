@@ -1,0 +1,12 @@
+scenario_cfg:
+  dataset_name: CIFAR10
+  base_data_path: /mnt/petrelfs/shizhelun/shizhelun/data/datasets/LAMM/2D_Benchmark
+  ppl: True
+eval_cfg:
+  instruction_cfg: 
+    query_type: query_pool
+  inferencer_cfg:
+    inferencer_type: PPL
+    batch_size: 8
+  metric_cfg:
+    metric_type: basic

@@ -1,0 +1,5 @@
+model: configs/models/instructblip.yaml
+
+save_dir: results
+
+recipe: configs/scenario_recipes/CIFAR10/direct.yaml

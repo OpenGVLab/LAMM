@@ -1,0 +1,18 @@
+scenario_cfg:
+  dataset_name: ScienceQA
+  base_data_path: data/datasets/LAMM/2D_Benchmark
+  ppl: True
+  option_content: False
+  img_crp: True
+  text_crp: True
+
+eval_cfg:
+  instruction_cfg: 
+    query_type: standard_query
+  inferencer_cfg:
+    inferencer_type: PPL
+    batch_size: 8
+    CoT: True
+    max_new_tokens: 256
+  metric_cfg:
+    metric_type: Calibration

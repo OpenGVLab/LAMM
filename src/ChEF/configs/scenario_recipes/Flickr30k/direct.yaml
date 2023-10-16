@@ -1,0 +1,14 @@
+scenario_cfg:
+  dataset_name: Flickr30k
+  base_data_path: /mnt/petrelfs/shizhelun/shizhelun/data/datasets/LAMM/2D_Benchmark
+
+eval_cfg:
+  instruction_cfg:
+    query_type: standard_query
+  inferencer_cfg:
+    inferencer_type: Direct
+    max_new_tokens: 64
+    batch_size: 16
+  metric_cfg:
+    metric_type: basic
+    strategy: direct

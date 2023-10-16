@@ -1,0 +1,15 @@
+scenario_cfg:
+  dataset_name: Omnibenchmark
+  base_data_path: data/datasets/OmniBenchmark_Bamboo2_v3
+  bamboo_tree_path: data/datasets/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json
+
+eval_cfg:
+  instruction_cfg: 
+    query_type: standard_query
+  inferencer_cfg:
+    inferencer_type: Direct
+    batch_size: 8
+  metric_cfg:
+    metric_type: basic
+    inference_type: direct
+    bamboo_tree_path: data/datasets/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json

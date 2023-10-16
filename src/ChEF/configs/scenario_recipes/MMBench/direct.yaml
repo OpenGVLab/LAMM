@@ -1,0 +1,18 @@
+scenario_cfg:
+  dataset_name: MMBench
+  base_data_path: data/datasets/MMBench
+  split: dev
+  hint: True
+
+eval_cfg:
+  instruction_cfg: 
+    query_type: query_pool
+    prompt_assigned_ids: 1
+    template_assigned_ids: 1
+  inferencer_cfg:
+    inferencer_type: Direct
+    batch_size: 4
+    CoT: False
+    max_new_tokens: 256
+  metric_cfg:
+    metric_type: basic

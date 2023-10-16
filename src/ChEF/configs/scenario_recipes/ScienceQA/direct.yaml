@@ -1,0 +1,14 @@
+scenario_cfg:
+  dataset_name: ScienceQA
+  base_data_path: data/datasets/LAMM/2D_Benchmark
+
+eval_cfg:
+  instruction_cfg: 
+    query_type: standard_query
+  inferencer_cfg:
+    inferencer_type: Direct
+    batch_size: 8
+    CoT: False
+    max_new_tokens: 256
+  metric_cfg:
+    metric_type: basic

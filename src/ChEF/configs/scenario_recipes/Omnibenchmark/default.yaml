@@ -1,0 +1,19 @@
+scenario_cfg:
+  dataset_name: Omnibenchmark
+  base_data_path: data/datasets/OmniBenchmark_Bamboo2_v3
+  bamboo_tree_path: data/datasets/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json
+  ppl_cfg: 
+    negative_opt_num: 3
+    random_seed: 0
+    single_turn: False
+
+eval_cfg:
+  instruction_cfg: 
+    query_type: multiturn
+  inferencer_cfg:
+    inferencer_type: Multi_PPL
+    batch_size: 8
+  metric_cfg:
+    metric_type: basic
+    inference_type: multi_ppl
+    bamboo_tree_path: data/datasets/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json
