@@ -13,11 +13,14 @@ def parser_args():
     parser.add_argument(
         "--data_path",
         type=str,
-        required=True,
+        # required=True,
         help="the path that stores the data JSON",
     )
     parser.add_argument(
-        "--vision_root_path", type=str, required=True, help="Root dir for images"
+        "--vision_root_path", 
+        type=str, 
+        # required=True, 
+        help="Root dir for images"
     )
     parser.add_argument(
         "--max_tgt_len",
@@ -212,7 +215,7 @@ def main(**args):
         logging.info("xxx enable xformers attention.")
         replace_llama_attn_with_xformers_attn()
 
-    train_data, train_iter, sampler = load_lamm_dataset(args)
+    train_data, train_iter, sampler = load_dataset(args)
 
     length = (
         args["epochs"]

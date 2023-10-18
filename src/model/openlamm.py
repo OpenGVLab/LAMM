@@ -259,26 +259,19 @@ class LAMMPEFTModel(nn.Module):
 
         print(f"Initializing language decoder from {llm_ckpt_path} ...")
         # add the lora module
-        peft_config = LoraConfig(
-            task_type=TaskType.CAUSAL_LM,
-            inference_mode=False,
-            r=self.args["lora_r"],
-            lora_alpha=self.args["lora_alpha"],
-            lora_dropout=self.args["lora_dropout"],
-            target_modules=self.args["lora_target_modules"],
-        )
+        peft_config = self.build_peft_config()
 
         if args.get('use_lightllm', False):
             self.llama_model = LlamaLightForCausalLM(
                 batch_size=self.args['bs'],
                 max_input_len=1024,
                 max_output_len=args['max_tgt_len'],
-                weight_dir=vicuna_ckpt_path,
+                weight_dir=llm_ckpt_path,
                 lora_path=args['delta_ckpt_path'],
                 lora_config=peft_config,
             )
         else:
-            self.llama_model = LlamaForCausalLM.from_pretrained(vicuna_ckpt_path)
+            self.llama_model = LlamaForCausalLM.from_pretrained(llm_ckpt_path)
             self.llama_model = get_peft_model(self.llama_model, peft_config)
             self.llama_model.print_trainable_parameters()
 
@@ -287,18 +280,60 @@ class LAMMPEFTModel(nn.Module):
         )
         self.llama_tokenizer.pad_token = self.llama_tokenizer.eos_token
         self.llama_tokenizer.padding_side = "right"
+        tokens = self.get_special_tokens()
+        self.add_tokens(tokens)
         print("Language decoder initialized.")
 
-        self.llama_proj = nn.Linear(
-            self.vision_hidden_size, self.llama_model.config.hidden_size
-        )
-        print("LLaMa projection layer initialized.")
+        self.build_projection_layer()
 
         self.max_tgt_len = args["max_tgt_len"]
         self.use_system = use_system
         self.use_flash_attn = args.get('use_flash_attn', False)
         self.use_xformers = args.get('use_xformers', False)
         self.device = torch.cuda.current_device()
+
+    def build_projection_layer(self):
+        self.llama_proj = nn.Linear(
+            self.vision_hidden_size, self.llama_model.config.hidden_size
+        )
+        print("LLaMa projection layer initialized.")
+
+    def build_peft_config(self):
+        peft_config = LoraConfig(
+            task_type=TaskType.CAUSAL_LM,
+            inference_mode=False,
+            r=self.args["lora_r"],
+            lora_alpha=self.args["lora_alpha"],
+            lora_dropout=self.args["lora_dropout"],
+            target_modules=self.args["lora_target_modules"],
+        )
+        return peft_config
+
+    def get_special_tokens(self):
+        tokens = []
+        return tokens
+    
+    def add_tokens(self, tokens):
+        if len(tokens) == 0:
+            return 
+        
+        # Add an empty token to match len(tokenizer) == len(model.input_embeddings)
+        self.llama_tokenizer.add_tokens(['<XSFQ/>'], special_tokens=True)
+        # Add special tokens
+        num_new_tokens = self.llama_tokenizer.add_tokens(tokens, special_tokens=True)
+        self.llama_model.resize_token_embeddings(len(self.llama_tokenizer))
+        if num_new_tokens > 0:
+            input_embeddings = self.llama_model.get_input_embeddings().weight.data
+            output_embeddings = self.llama_model.get_output_embeddings().weight.data
+
+            input_embedding_avg = input_embeddings[:-num_new_tokens].mean(
+                dim=0, keepdim=True
+            )
+            output_embedding_avg = output_embeddings[:-num_new_tokens].mean(
+                dim=0, keepdim=True
+            )
+            input_embeddings[-num_new_tokens:] = input_embedding_avg
+            output_embeddings[-num_new_tokens:] = output_embedding_avg
 
     def encode_image(self, image_paths):
         """encode images to llama inputs
