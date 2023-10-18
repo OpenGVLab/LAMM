@@ -17,7 +17,7 @@ fvcore
 decord==0.6.0
 tqdm==4.64.1
 setuptools==65.5.1
-transformers==4.31.1
+transformers>=4.31.0
 bigmodelvis
 nltk
 tensorboard
