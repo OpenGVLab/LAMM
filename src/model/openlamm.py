@@ -273,12 +273,12 @@ class LAMMPEFTModel(nn.Module):
                 batch_size=self.args['bs'],
                 max_input_len=1024,
                 max_output_len=args['max_tgt_len'],
-                weight_dir=vicuna_ckpt_path,
+                weight_dir=llm_ckpt_path,
                 lora_path=args['delta_ckpt_path'],
                 lora_config=peft_config,
             )
         else:
-            self.llama_model = LlamaForCausalLM.from_pretrained(vicuna_ckpt_path)
+            self.llama_model = LlamaForCausalLM.from_pretrained(llm_ckpt_path)
             self.llama_model = get_peft_model(self.llama_model, peft_config)
             self.llama_model.print_trainable_parameters()
 

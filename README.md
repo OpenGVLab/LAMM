@@ -14,6 +14,10 @@
 
 # Updates
 📆 [**2023-09-02**]
+1. LAMM is accepted by NeurIPS2023 Datasets & Benchmark Track! See you in December!
+2. Finetuning data for ScanQA in multiple choice format is available on [huggingface](https://huggingface.co/datasets/openlamm/LAMM_Dataset/blob/main/3D_Instruct/meta_file/VQA_ScanQA_multiplechoice_finetune.json). Please check it out.
+
+📆 [**2023-09-02**]
 
 1. Deepspeed ZeRO stage3, [xformers](https://github.com/facebookresearch/xformers) & [flashattention v2 (V100 not available)](https://github.com/Dao-AILab/flash-attention) are available for efficient training. LightLLM enabled for inference. Training your models on **V100** or **RTX3090**!
 2. Checkpoints finetuning LLaMA2 online, please check it out.
