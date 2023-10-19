@@ -5,6 +5,7 @@ from peft import TaskType
 import torch
 import torch.nn as nn
 from torch.nn.utils import rnn
+from torchvision import transforms
 from typing import List
 
 import conversations
@@ -482,6 +483,27 @@ class Octavius(LAMMPEFTModel):
     # ==============================================
     # inference and evaluation 
     # ==============================================
+    def transform_vision_data(self, images, device):
+        image_ouputs = []
+        for img in images:
+            data_transform = transforms.Compose(
+                [
+                    transforms.Resize(
+                        224, interpolation=transforms.InterpolationMode.BICUBIC
+                    ),
+                    transforms.CenterCrop(224),
+                    transforms.ToTensor(),
+                    transforms.Normalize(
+                        mean=(0.48145466, 0.4578275, 0.40821073),
+                        std=(0.26862954, 0.26130258, 0.27577711),
+                    ),
+                ]
+            )
+            image = data_transform(img).to(device)
+            image = image.half()
+            image_ouputs.append(image)
+        return torch.stack(image_ouputs, dim=0)
+
     def extract_multimodal_feature(self, inputs):
         if 'images' in inputs and inputs["images"]:  # image objects input in testing
             self.vision_type = "image"
@@ -513,7 +535,6 @@ class Octavius(LAMMPEFTModel):
         :param class inputs: model
         :return Dict: generation input
         """
-        eov = VISION_TAGS["eov"][self.vision_type]
         # TODO: add System header & image token size
         prompt_list = inputs["prompt"]  # questions from user
         if len(inputs["modality_embeds"]) == 1:
@@ -522,14 +543,18 @@ class Octavius(LAMMPEFTModel):
             feature_embeds = self.extract_multimodal_feature(inputs)
             inputs["modality_embeds"].append(feature_embeds)
         
+        eov = VISION_TAGS["eov"][self.vision_type]
         batch_size = feature_embeds.shape[0]
         p_before = make_prompt_start(
-            vision_type=self.vision_type, template=self.conv_template
+            use_system=False,
+            vision_type=[self.vision_type for _ in range(batch_size)],
+            task_type=['normal' for _ in range(batch_size)],
+            template=self.conv_template
         )  # no system header in test
         p_before_tokens = self.llama_tokenizer(
             p_before, return_tensors="pt", add_special_tokens=False
         ).to(self.device)
-        p_before_embeds = self.llama_model.model.embed_tokens(
+        p_before_embeds = self.llama_model.model.model.embed_tokens(
             p_before_tokens.input_ids
         ).expand(
             batch_size, -1, -1
@@ -545,7 +570,20 @@ class Octavius(LAMMPEFTModel):
             add_special_tokens=False, return_tensors="pt"
         ).to(self.device)
         p_after_masks_len = p_after_tokens.length.max() - p_after_tokens.length
-        p_after_embeds = self.llama_model.model.embed_tokens(p_after_tokens.input_ids)
+        p_after_embeds = self.llama_model.model.model.embed_tokens(p_after_tokens.input_ids)
+        # p_after_tokens_list = []
+        # for prompt in prompt_list:
+        #     text = f"{eov} " + prompt + "\n### Assistant:"
+        #     p_after_tokens = self.llama_tokenizer(
+        #         text, add_special_tokens=False, return_tensors="pt"
+        #     ).to(self.device)
+        #     p_after_tokens_list.append(p_after_tokens.input_ids.squeeze(0))
+        # p_after_tokens = rnn.pad_sequence(
+        #     p_after_tokens_list,
+        #     batch_first=True,
+        #     padding_value=self.llama_tokenizer.pad_token_id,
+        # )
+        # p_after_embeds = self.llama_model.model.model.embed_tokens(p_after_tokens)
 
         bos = (
             torch.ones(
@@ -555,7 +593,7 @@ class Octavius(LAMMPEFTModel):
             )
             * self.llama_tokenizer.bos_token_id
         )  # bsz x 1
-        bos_embeds = self.llama_model.model.embed_tokens(
+        bos_embeds = self.llama_model.model.model.embed_tokens(
             bos
         )  # bsz x 1 x embed_dim
 
