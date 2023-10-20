@@ -9,6 +9,8 @@ from .SEED_Bench_dataset import *
 from .MME_dataset import *
 
 from .POPE_dataset import *
+
+
 dataset_dict = {
     # Caption 
     'Flickr30k': FlickrDataset,
@@ -19,6 +21,7 @@ dataset_dict = {
     'ScienceQA': ScienceQADataset,
     # Detection
     'VOC2012': VOC2012Dataset,
+    'VOC2012_LAMM': VOC2012LAMMDataset,
     # Counting
     'FSC147': FSC147Dataset,
     # MMBench

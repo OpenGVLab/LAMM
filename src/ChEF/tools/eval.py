@@ -1,14 +1,16 @@
-from models import get_model
 import yaml
 import argparse
 import os
 import numpy as np
 import torch
-from scenario import dataset_dict
-from tools.evaluator import Evaluator
+from torch.utils.data import Subset
 import datetime
 
-from torch.utils.data import Subset
+from ChEF.models import get_model
+from ChEF.scenario import dataset_dict
+from ChEF.tools.evaluator import Evaluator
+
+
 class CustomSubset(Subset):
     '''A custom subset class'''
     def __init__(self, dataset, indices):

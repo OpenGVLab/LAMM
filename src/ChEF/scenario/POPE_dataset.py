@@ -2,6 +2,8 @@ import os
 import json
 from torch.utils.data import Dataset
 import random
+
+
 class POPE_COCO_Random_Dataset(Dataset):
     task_name = 'POPE'
     dataset_name = 'POPE_COCO_random'

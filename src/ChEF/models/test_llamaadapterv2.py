@@ -1,7 +1,8 @@
 import torch
+import torch.nn.functional as F
+
 from . import llama_adapter_v2
 from .utils import *
-import torch.nn.functional as F
 from .test_base import TestBase
 
 CONV_VISION = Conversation(
@@ -27,7 +28,7 @@ class TestLLamaAdapterV2(TestBase):
         self.move_to_device()
 
     @torch.no_grad()
-    def generate(self, image, question, max_new_tokens=256):
+    def generate(self, image, question, max_new_tokens=256, **kwargs):
         imgs = [get_BGR_image(image)]
         imgs = [self.img_transform(x) for x in imgs]
         imgs = torch.stack(imgs, dim=0).to(self.device)
@@ -37,7 +38,7 @@ class TestLLamaAdapterV2(TestBase):
         return result
     
     @torch.no_grad()
-    def batch_generate(self, image_list, question_list, max_new_tokens=256):
+    def batch_generate(self, image_list, question_list, max_new_tokens=256, **kwargs):
         imgs = [get_BGR_image(img) for img in image_list]
         imgs = [self.img_transform(x) for x in imgs]
         imgs = torch.stack(imgs, dim=0).to(self.device)

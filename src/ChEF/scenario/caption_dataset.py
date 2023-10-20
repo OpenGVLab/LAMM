@@ -2,6 +2,8 @@ import os
 import json
 from torch.utils.data import Dataset
 import random
+
+
 class FlickrDataset(Dataset):
     task_name = 'caption'
     dataset_name = 'Flickr30k'

@@ -2,7 +2,7 @@ from .classification import FG_Classification, CG_Classification
 from .vqa import VQA, MMBenchVQA, MMEVQA
 from .caption import Caption
 from .desiderata import MMBench_Calibration, ScienceQA_Calibration, POPE_Metric, Instruct_Follow
-from .detection import Detection, KOSMOS_Detection 
+from .detection import Detection, KOSMOS_Detection, LAMM_Detection 
 from .counting import Counting
 
 evaluation_protocol = {
@@ -36,9 +36,11 @@ evaluation_protocol = {
     'KOSMOS':{ # kosmos outputs special tokens for bbox
         'VOC2012': KOSMOS_Detection,
     },  
-
+    'LAMM': {
+        'VOC2012': LAMM_Detection,
+    }
 }
 
 def build_metric(metric_type, dataset_name, **kwargs):
-    build_fuc = evaluation_protocol[metric_type][dataset_name]
-    return build_fuc(dataset_name = dataset_name, **kwargs)
+    build_func = evaluation_protocol[metric_type][dataset_name]
+    return build_func(dataset_name = dataset_name, **kwargs)

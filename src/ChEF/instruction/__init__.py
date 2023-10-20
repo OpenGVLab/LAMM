@@ -2,6 +2,7 @@ from .ice_retriever import build_retriever
 from .query import build_query, build_template
 import numpy as np
 
+
 supported_query_types = ['standard_query', 'query_pool', 'multiturn']
 class InstructionHandler:
     def __init__(self, query, answer_template, icl_cfg = None, dataset = None) -> None:
@@ -22,11 +23,10 @@ class InstructionHandler:
                 self.icl_cfg['mult_conversations'] = False
                 self.icl_cfg['sysmsg'] = 'You will now see some examples. The example has no relation to the provided image content. You need to follow the example and answer the final question based on the image content.'
 
-
-
     def generate_basic_query(self, batch, query=None):
         if not query:
             query = self.query
+        # FIXME: hardcode 'image_path' -> img/pcl modality
         cur_batch_len = len(batch['image_path'])
         if 'question' in batch:
             question = batch['question']
@@ -51,7 +51,6 @@ class InstructionHandler:
             Lecture = outputs
             prompts_for_answer = [f'{self.query}' for i in range(cur_batch_len)]
             return prompts_for_answer, Lecture
-        
 
     def generate_ppl_query(self, prompts, batch, batch_options, answer_template = None, ices = None, CoT = None):
         if answer_template is None:

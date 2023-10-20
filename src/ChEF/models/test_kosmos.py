@@ -2,14 +2,16 @@ import torch
 from fairseq import checkpoint_utils, utils, options, tasks
 from fairseq.dataclass.utils import convert_namespace_to_omegaconf
 from collections import namedtuple
-from .utils import get_image
-from .kosmos2 import unilm
-import torch.nn.functional as F
-from .kosmos2.utils import get_interactive_tokens_and_lengths, post_process_prediction, get_token_src
 import sentencepiece as spm
 import ast
 from fairseq_cli.generate import get_symbols_to_strip_from_output
+
+import torch.nn.functional as F
+from .utils import get_image
+from .kosmos2 import unilm
+from .kosmos2.utils import get_interactive_tokens_and_lengths, post_process_prediction, get_token_src
 from .test_base import TestBase
+
 Batch = namedtuple("Batch", "ids src_tokens src_lengths constraints img_src_tokens img_gpt_input_mask")
 Translation = namedtuple("Translation", "src_str hypos pos_scores alignments")
 
@@ -142,7 +144,7 @@ class TestKOSMOS2(TestBase): # TODO: batch_size = 1
         return outputs
 
     @torch.no_grad()
-    def generate(self, image, question, max_new_tokens=128):
+    def generate(self, image, question, max_new_tokens=128, **kwargs):
         self.generator.ppl = False
         self.generator.max_len_b = max_new_tokens
         images = [get_image(image)]
@@ -154,7 +156,7 @@ class TestKOSMOS2(TestBase): # TODO: batch_size = 1
         return outputs[0]
         
     @torch.no_grad()
-    def batch_generate(self, image_list, question_list, max_new_tokens=128):
+    def batch_generate(self, image_list, question_list, max_new_tokens=128, **kwargs):
         self.generator.ppl = False
         self.generator.max_len_b = max_new_tokens
         images = [get_image(image) for image in image_list]

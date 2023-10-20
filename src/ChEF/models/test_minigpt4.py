@@ -1,4 +1,5 @@
 import torch
+
 from .minigpt4.common.config import Config
 from .minigpt4.common.registry import registry
 from .minigpt4.conversation.conversation import Chat, CONV_VISION
@@ -43,7 +44,7 @@ class TestMiniGPT4(TestBase):
         self.chat.move_stopping_criteria_device(self.device, dtype=self.dtype)
 
     @torch.no_grad()
-    def generate(self, image, question, max_new_tokens=128):
+    def generate(self, image, question, max_new_tokens=128, **kwargs):
         chat_state = CONV_VISION.copy()
         img_list = []
         if image is not None:
@@ -55,7 +56,7 @@ class TestMiniGPT4(TestBase):
         return llm_message
 
     @torch.no_grad()
-    def batch_generate(self, image_list, question_list, max_new_tokens=128):
+    def batch_generate(self, image_list, question_list, max_new_tokens=128, **kwargs):
         image_list = [get_image(image) for image in image_list]
         chat_list = [CONV_VISION.copy() for _ in range(len(image_list))]
         batch_outputs = self.chat.batch_answer(image_list, question_list, chat_list, max_new_tokens=max_new_tokens)

@@ -1,5 +1,3 @@
 model: ChEF/configs/models/octavius_2d+3d.yaml
-
-save_dir: results
-
 recipe: ChEF/configs/scenario_recipes/VOC2012/lamm.yaml
+save_dir: results

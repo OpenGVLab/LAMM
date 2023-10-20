@@ -2,6 +2,8 @@ import os
 import json
 from torch.utils.data import Dataset
 import random
+
+
 class CIFAR10Dataset(Dataset):
     task_name = 'coarse_grained_classification'
     dataset_name = 'CIFAR10'

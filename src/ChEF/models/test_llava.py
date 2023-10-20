@@ -1,11 +1,9 @@
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
-from transformers import CLIPImageProcessor, CLIPVisionModel, StoppingCriteria
+import torch.nn.functional as F
+from transformers import AutoModelForCausalLM, AutoTokenizer, CLIPImageProcessor, CLIPVisionModel, StoppingCriteria
+
 from .llava import LlavaMPTForCausalLM, LlavaLlamaForCausalLM, conv_templates, SeparatorStyle
 from .utils import get_image
-import torch.nn.functional as F
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
 from .test_base import TestBase
 
 DEFAULT_IMAGE_TOKEN = "<image>"
@@ -225,7 +223,7 @@ class TestLLaVA(TestBase):
         return outputs
 
     @torch.no_grad()
-    def generate(self, image, question, max_new_tokens=128):
+    def generate(self, image, question, max_new_tokens=128, **kwargs):
         image = get_image(image)
         conv = self.conv.copy()
         text = question + '\n<image>'
@@ -240,7 +238,7 @@ class TestLLaVA(TestBase):
         
 
     @torch.no_grad()    
-    def batch_generate(self, image_list, question_list, max_new_tokens=128):
+    def batch_generate(self, image_list, question_list, max_new_tokens=128, **kwargs):
         images, prompts = [], []
         for idx, (image, question) in enumerate(zip(image_list, question_list)):
             image = get_image(image)

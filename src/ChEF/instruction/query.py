@@ -101,8 +101,12 @@ counting_templates = [
 ]
 
 # detection
-# We only provide the multi-turn inference for detection tasks.
-# Two-turn prompts, with the first turn query for the category and the second turn query for the bounding box.
+# We provide both LAMM-style standard prompts and multi-turn prompts
+detection_lamm_prompts = [
+    'Identify all the objects in the image and provide their positions. Your answer needs to give the object name and the bounding box of the object. The bounding box should be represented as [x1, y1, x2, y2] with floating numbers ranging from 0 to 1. These values correspond to the top left x, top left y, bottom right x, and bottom right y.'
+]
+
+# Two-turn detection prompts, with the first turn query for the category and the second turn query for the bounding box.
 detection_multi_turn_prompts = [
     ['The image shows',
      'Give all the bounding boxes of {} in the image. The bounding box should be represented as [x1, y1, x2, y2] with floating numbers indicating the coordinates of the object in a normalized range of 0-1. These values correspond to the top left x, top left y, bottom right x, and bottom right y.' # replace {} with the fore_label
@@ -137,7 +141,8 @@ query_pool_dict = {
     'caption_prompts': caption_prompts,
     'VQA_prompts': vqa_prompts,
     'counting_prompts': counting_prompts,
-    'POPE_prompts':pope_prompts
+    'POPE_prompts':pope_prompts,
+    'detection_lamm_prompts': detection_lamm_prompts,
 }
 ppl_template_dict = {
     'coarse_grained_classification_templates': coarse_grained_classification_templates,
@@ -206,13 +211,15 @@ query_func_dict = {
 
 
 def build_query(query_type, **kwargs):
-    build_fuc = query_func_dict[query_type]
-    return build_fuc(**kwargs)
+    build_func = query_func_dict[query_type]
+    return build_func(**kwargs)
 
 def build_template(**kwargs):
+    # LAMM-style inference does not require template
+    if kwargs['task_name'].endswith('lamm'):
+        return None
+
     return ppl_template(**kwargs)
-
-
 
 
 if __name__ == "__main__":

@@ -509,9 +509,8 @@ class Octavius(LAMMPEFTModel):
             self.vision_type = "image"
             images = self.transform_vision_data(inputs['images'], self.device)
             image_embeds = self.encode_image(images)
-            return image_embeds
+            return image_embeds 
         
-        features = []
         if 'image_paths' in inputs and inputs["image_paths"]:
             self.vision_type = "image"
             image_paths = inputs['image_paths']
@@ -519,11 +518,12 @@ class Octavius(LAMMPEFTModel):
                 image_paths, self.device
             ).to(self.llama_model.dtype)  # bsz x 3 x 224 x 224
             image_embeds = self.encode_image(images)
-            features.append(image_embeds)
-        else:
-            self.vision_type = "pcl"
-            pcl_embeds = self.encode_pcl(inputs)
-            features.append(pcl_embeds)
+            return image_embeds
+
+        features = []
+        self.vision_type = "pcl"
+        pcl_embeds = self.encode_pcl(inputs)
+        features.append(pcl_embeds)
         feature_embeds = (
             torch.cat(features).sum(dim=0).unsqueeze(0)
         )  # sum all modality features together

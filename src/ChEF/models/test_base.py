@@ -22,14 +22,14 @@ class TestBase:
         return [''] * len(images) 
 
     @torch.no_grad()
-    def generate(self, image, question, max_new_tokens):
+    def generate(self, image, question, max_new_tokens, **kwargs):
         '''
             process a single input image and instruction, and then do_generate
         '''
         return self.do_generate([image], [question], max_new_tokens=max_new_tokens)[0]
 
     @torch.no_grad()
-    def batch_generate(self, image_list, question_list, max_new_tokens):
+    def batch_generate(self, image_list, question_list, max_new_tokens, **kwargs):
         '''
             process a batch of images and questions, and then do_generate
         '''

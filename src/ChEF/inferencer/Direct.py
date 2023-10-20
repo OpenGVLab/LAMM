@@ -25,15 +25,32 @@ class Direct_inferencer:
         self.results_path = None
 
     def inference(self, model, dataset):
-        predictions=[]
-        dataloader = DataLoader(dataset, batch_size=self.batch_size, collate_fn=lambda batch: {key: [dict[key] for dict in batch] for key in batch[0]})
+        if hasattr(dataset, 'collate'):
+            collate_fn = dataset.collate
+        else:
+            collate_fn = lambda batch: {
+                key: [data[key] for data in batch] for key in batch[0]
+            }
+        dataloader = DataLoader(
+            dataset, batch_size=self.batch_size, collate_fn=collate_fn
+        )
+
+        predictions = []
         for batch in tqdm(dataloader, desc="Running inference"):
             if self.CoT:
                 prompts, cot = self.instruction_handler.generate_CoT_query(model, batch)
             else:
                 prompts = self.instruction_handler.generate_basic_query(batch)
                 cot = None
-            outputs = model.batch_generate(batch['image_path'], prompts, max_new_tokens=self.max_new_tokens)
+
+            # compatible with LAMM-style inference
+            sys_msg = None if not hasattr(dataset, 'system_msg') else dataset.system_msg
+            outputs = model.batch_generate(
+                batch['image_path'], 
+                prompts, 
+                max_new_tokens=self.max_new_tokens,
+                sys_msg=sys_msg
+            )
             for i in range(len(outputs)):
                 answer_dict = copy_batch_dict(batch, i)
                 answer_dict['query'] = prompts[i]
@@ -49,7 +66,6 @@ class Direct_inferencer:
         with open(answer_path, "w") as f:
             f.write(json.dumps(predictions, indent=4))
         self.results_path = answer_path
-
 
 
 class Det_Direct_inferencer(Direct_inferencer):

@@ -6,6 +6,8 @@ import pandas as pd
 from PIL import Image
 from torch.utils.data import Dataset
 import json
+
+
 OPTION=['A','B','C','D','E','F','G','H']
 OPTION_MAP = {'natural':[['1','2','3','4','5','6','7','8'],
                           ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'],
