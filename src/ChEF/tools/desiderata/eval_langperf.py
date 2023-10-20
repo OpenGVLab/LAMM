@@ -8,9 +8,8 @@ import time
 import argparse
 import re
 
-openai.api_key='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'
-openai.organization = "org-VMQ4pAO1tyr7RRz0iLrlxbFH"
-#openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key=''
+openai.organization = ""
 openai.Model.list()
 SYS_VQA="""
 Please act as an impartial judge and conduct a comprehensive assessment of a multimodal AI assistant's performance in the field of Visual Question Answering (VQA). Each data sample to be evaluated follows the following format:
@@ -197,9 +196,9 @@ def eval_cost(response_list):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--base-data-path', default='/mnt/petrelfs/shizhelun/shizhelun/data/datasets/LAMM/2D_Benchmark/meta_file/VQA_ScienceQA.json')
-    parser.add_argument('--answer-path', default='/mnt/petrelfs/shizhelun/wangzp/data/ppl_res/ScienceQA_pplresults/llava.json')
-    parser.add_argument('--response-dir', default='/mnt/petrelfs/shizhelun/wangzp/code/LAMMdev/gpt_eval/results')
+    parser.add_argument('--base-data-path', default='data/datasets/LAMM/2D_Benchmark/meta_file/VQA_ScienceQA.json')
+    parser.add_argument('--answer-path', default='data/ppl_res/ScienceQA_pplresults/llava.json')
+    parser.add_argument('--response-dir', default='results/gpt_eval')
     args = parser.parse_args()
     response_list, res_list = GPT_Metric(args.base_data_path,
                                args.answer_path,

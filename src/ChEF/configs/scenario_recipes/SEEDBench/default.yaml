@@ -5,7 +5,7 @@ scenario_cfg:
 eval_cfg:
   instruction_cfg: 
     query_type: query_pool
-    prompt_assigned_ids: 4
+    query_assigned_ids: 4
     template_assigned_ids: 0
   inferencer_cfg:
     inferencer_type: PPL

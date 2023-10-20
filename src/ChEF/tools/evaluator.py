@@ -37,7 +37,8 @@ class Evaluator:
                         answer_path = results_path,
                         result = result
                     ), indent=4))
-
+    
+        return results_path, result
 
 
 

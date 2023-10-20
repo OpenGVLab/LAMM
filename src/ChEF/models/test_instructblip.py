@@ -2,8 +2,9 @@ import torch
 from .instruct_blip.models import load_model_and_preprocess
 from .utils import get_image
 import torch.nn.functional as F
+from .test_base import TestBase
 
-class TestInstructBLIP:
+class TestInstructBLIP(TestBase):
     def __init__(self) -> None:
         self.device = torch.device("cuda") if torch.cuda.is_available() else "cpu"
         self.model, self.vis_processors, _ = load_model_and_preprocess(name="blip2_vicuna_instruct", model_type="vicuna7b", is_eval=True, device=self.device)
@@ -109,6 +110,10 @@ class TestInstructBLIP:
         prompts = self.get_icl_prompt(question_list, ices, incontext_cfg)
         output = self.model.generate({"image": imgs, "prompt": prompts}, max_length=max_new_tokens)
         return output, prompts
+    
+    @torch.no_grad()
+    def do_calibration(self, image_list, question_list, answer_list, answer_pool, CoT_list=None):
+        return super().do_calibration(image_list, question_list, answer_list, answer_pool, CoT_list)
     
     @torch.no_grad()
     def icl_ppl_inference(self, image_list, question_list, answer_list, answer_options, ices, incontext_cfg, CoT_list = None, calib = False):

@@ -2,7 +2,7 @@ import torch
 
 class TestBase:
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs) -> None:
         pass
 
     def move_to_device(self):
@@ -19,21 +19,21 @@ class TestBase:
         '''
             Direct generate answers with single image and questions, max_len(answer) = max_new_tokens
         '''
-        pass
+        return [''] * len(images) 
 
     @torch.no_grad()
     def generate(self, image, question, max_new_tokens):
         '''
             process a single input image and instruction, and then do_generate
         '''
-        pass
+        return self.do_generate([image], [question], max_new_tokens=max_new_tokens)[0]
 
     @torch.no_grad()
     def batch_generate(self, image_list, question_list, max_new_tokens):
         '''
             process a batch of images and questions, and then do_generate
         '''
-        pass
+        return self.do_generate(image_list, question_list, max_new_tokens)
     
     @torch.no_grad()
     def do_ppl(self, images, questions, answer_list, answer_pool, calib = False):
@@ -43,7 +43,7 @@ class TestBase:
             :param answer_pool: list of answers
             :param calib: output confidence for calibration evaluation
         '''
-        pass
+        return [0]*len(images)
 
     @torch.no_grad()
     def ppl_inference(self, image_list, question_list, answer_list, answer_pool, CoT_list = None, calib = False):
@@ -51,7 +51,7 @@ class TestBase:
             process a batch of images and questions, and then do_ppl
             :param CoT_list: batch of CoT answers, the CoT is regarded as a part of ppl output
         '''
-        pass
+        return self.do_ppl(image_list, question_list, answer_list, answer_pool, calib=calib)
 
     @torch.no_grad()
     def icl_batch_generate(self, image_list, question_list, ices, incontext_cfg, max_new_tokens):

@@ -168,7 +168,7 @@ def load_Omni(source_base_dir, subset_len, supported_labels):
     return data_for_eval
 
 if __name__ == '__main__':
-    source_base_dir = '/ssd/home/shizhelun/data/datasets/OmniBenchmark_raw/omnibenchmark_v2_onedrive'
-    target_base_dir = '/ssd/home/shizhelun/data/datasets/OmniBenchmark_Bamboo2_v3'
-    bamboo_annot_path = '/ssd/home/shizhelun/data/datasets/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json'
+    source_base_dir = 'data/datasets/OmniBenchmark_raw/omnibenchmark_v2_onedrive'
+    target_base_dir = 'data/datasets/OmniBenchmark_Bamboo'
+    bamboo_annot_path = 'data/datasets/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json'
     main(source_base_dir, target_base_dir, bamboo_annot_path)

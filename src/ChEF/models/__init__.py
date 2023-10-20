@@ -35,5 +35,8 @@ def get_model(cfg):
     elif model_name == 'Shikra':
         from .test_shikra import TestShikra
         return TestShikra(**cfg)
+    elif model_name == 'Test':
+        from .test_base import TestBase
+        return TestBase(**cfg)
     else:
         raise ValueError(f"Invalid model_name: {model_name}")

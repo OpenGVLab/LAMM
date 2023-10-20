@@ -42,6 +42,8 @@ class MMBenchDataset(Dataset):
                  option_map=None,
                  text_crp=False,
                  img_crp=False,
+                 generative=False,
+                 data_c_path = 'data/datasets/ChEF/MMBench_C',
                  **kwargs
         ):
         self.df = pd.read_csv(os.path.join(base_data_path, f'mmbench_{split}_20230712.tsv'), sep='\t')
@@ -60,12 +62,14 @@ class MMBenchDataset(Dataset):
         if option_map!=None:
             self.map_type = option_map['type']
             self.map_id = option_map['ids']
-            if self.map_type!='unneutral':
+            if self.map_type!='unnatural':
                 self.option_map=OPTION_MAP[self.map_type][option_map['ids']]
-        self.text_crp=text_crp
-        self.img_crp=img_crp
-        self.img_c_path = '/mnt/petrelfs/shizhelun/wangzp/data/dataset/mmbench/0/images'
-        self.txt_c = json.load(open('/mnt/petrelfs/shizhelun/wangzp/data/dataset/mmbench/0/MMBench.json', 'rb'))
+        self.text_crp = text_crp
+        self.img_crp = img_crp
+        self.img_c_path = os.path.join(data_c_path, 'images')
+        self.txt_c = json.load(open(os.path.join(data_c_path, 'MMBench_C.json'), 'rb'))
+        self.generative = generative
+
         self.data = None
 
     def __len__(self):
@@ -94,6 +98,9 @@ class MMBenchDataset(Dataset):
         for key, item in options.items():
             options_prompt += f'({key}) {item}\n'
         
+        if self.generative:
+            options_prompt = '' # no options
+
         if hint is not None and self.hint:
             question = f'{hint} {question} {options_prompt}'
         else:
@@ -122,7 +129,7 @@ class MMBenchDataset(Dataset):
         if self.ppl_cfg:
             option_list = []
             for key, item in options.items():
-                option_list.append(f'{item}' if self.content_only else  f'({key}')
+                option_list.append(f'{item}' if (self.content_only or self.generative) else  f'({key}')
             data['options'] = option_list
 
             data['gt_answers'] = '(' + option_candidate[data['gt_choice']] + ')'
@@ -130,7 +137,7 @@ class MMBenchDataset(Dataset):
             if self.map_type!=None:
                 map_text = ''
                 map_template='If the answer is "{}", you need to output "{}". '
-                if self.map_type=='unneutral':
+                if self.map_type=='unnatural':
                     if self.map_id==0:
                         option_map = data['options'][1:]+data['options'][:1]
                     else:
@@ -154,6 +161,6 @@ class MMBenchDataset(Dataset):
             return None
 
 if __name__ == '__main__':
-    dataset = MMBenchDataset(base_data_path='/mnt/petrelfs/shizhelun/shizhelun/data/datasets/MMBench', split='dev', hint=True, ppl_cfg = dict(content_only = False))
+    dataset = MMBenchDataset(base_data_path='data/datasets/MMBench', split='dev', hint=True, ppl_cfg = dict(content_only = False), generative=True)
     data = dataset[0]
     import ipdb;ipdb.set_trace()

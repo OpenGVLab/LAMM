@@ -1,6 +1,6 @@
 scenario_cfg:
   dataset_name: POPE_COCO_popular
-  base_data_path: data/datasets/coco
+  base_data_path: data/datasets/coco_pope
   ppl: True
   option_content: False
 

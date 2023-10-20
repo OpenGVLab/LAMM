@@ -4,7 +4,6 @@ from .caption import Caption
 from .desiderata import MMBench_Calibration, ScienceQA_Calibration, POPE_Metric, Instruct_Follow
 from .detection import Detection, KOSMOS_Detection 
 from .counting import Counting
-# from .pope import POPE_Metric
 
 evaluation_protocol = {
     'basic':{
@@ -20,16 +19,18 @@ evaluation_protocol = {
     },
     'Calibration':
     {
-        'VQA': ScienceQA_Calibration,
+        'ScienceQA': ScienceQA_Calibration,
         'MMBench': MMBench_Calibration
     },
     'Hallucination':
     {
-        'POPE': POPE_Metric,
+        'POPE_COCO_random': POPE_Metric,
+        'POPE_COCO_popular': POPE_Metric,
+        'POPE_COCO_adversarial': POPE_Metric,
     },
     'Instruct_Follow':
     {
-      'VQA': Instruct_Follow,
+      'ScienceQA': Instruct_Follow,
       'MMBench': Instruct_Follow,
     },
     'KOSMOS':{ # kosmos outputs special tokens for bbox

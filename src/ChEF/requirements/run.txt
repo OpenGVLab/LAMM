@@ -1,0 +1,5 @@
+PyYAML==6.0.1
+tqdm==4.64.1
+pandas==2.0.3
+transformers==4.28.0
+sentence-transformers==2.2.2

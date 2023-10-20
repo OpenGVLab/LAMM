@@ -1,0 +1,5 @@
+model: configs/models/instructblip.yaml
+
+save_dir: results
+
+recipe: configs/desiderata_recipes/Robust/ScienceQA.yaml

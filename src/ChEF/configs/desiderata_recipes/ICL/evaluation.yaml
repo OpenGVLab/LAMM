@@ -1,0 +1,5 @@
+model: configs/models/llava.yaml
+
+save_dir: results
+
+recipe: configs/desiderata_recipes/ICL/MMBench.yaml

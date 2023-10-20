@@ -1,6 +1,6 @@
 scenario_cfg:
   dataset_name: Omnibenchmark
-  base_data_path: data/datasets/OmniBenchmark_Bamboo2_v3
+  base_data_path: data/datasets/ChEF/OmniBenchmark_Bamboo
   bamboo_tree_path: data/datasets/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json
 
 eval_cfg:

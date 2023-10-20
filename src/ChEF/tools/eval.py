@@ -28,6 +28,7 @@ def parse_args():
     parser.add_argument("cfg_path", type=str)
     parser.add_argument("--device", type=int, default=-1)
     parser.add_argument("--debug", action="store_true")
+    parser.add_argument("--sample_len", type=int, default=-1)
     args = parser.parse_args()
     return args
 
@@ -65,6 +66,8 @@ def main():
     dataset = dataset_dict[dataset_name](**scenario_cfg)
     if args.debug:
         dataset = sample_dataset(dataset, sample_len=16, sample_seed=0)
+    if args.sample_len != -1:
+        dataset = sample_dataset(dataset, sample_len=args.sample_len, sample_seed=0)
 
     # save_cfg
     time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
