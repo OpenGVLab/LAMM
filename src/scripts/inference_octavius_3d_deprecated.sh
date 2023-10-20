@@ -19,12 +19,13 @@ mkdir -p ${results_path}/${exp}
 srun -p ${partition} --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
     python inference_3d.py \
     --model octavius \
+    --octavius_modality pcl \
     --encoder_pretrain clip \
     --llm_ckpt_path ../model_zoo/vicuna_ckpt/13b_v0 \
     --delta_ckpt_path ../ckpt/${exp}/pytorch_model.pt \
     --max_tgt_len 800 \
     --peft_type moe_lora \
-    --moe_lora_num_experts 6 \
+    --moe_lora_num_experts 3 \
     --lora_r 32 \
     --lora_alpha 32 \
     --lora_dropout 0.1 \

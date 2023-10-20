@@ -9,19 +9,6 @@ from bigmodelvis import Visualization
 from datasets import load_3Deval_dataset, load_3Deval_dataset_v2
 from datasets.system_msg import common_task2sysmsg
 
-answers_file = ''
-
-common_dataset2task = {
-    # 'ScanNet': 'Detection',
-    # 'ScanRefer': 'VG',
-    # 'ScanQA': 'VQA',
-    'qa': 'VQA',
-    'caption': 'Caption',
-    'vg': 'VG',
-    'classification': 'Classification',
-    # 'nr3d_cap': 'Caption',
-    # 'shapenet_cls': 'Classification',
-}
 
 def parse_args():
     parser = argparse.ArgumentParser()

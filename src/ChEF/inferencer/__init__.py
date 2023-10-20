@@ -1,4 +1,5 @@
 from .Direct import Direct_inferencer, Det_Direct_inferencer, Icl_Direct_inferencer
+from .LAMM import LAMM_inferencer, Det_LAMM_inferencer
 from .PPL import PPL_inferencer, ICL_PPL_inferencer, Det_PPL_inferencer
 from .Multiturn import Multi_Turn_PPL_inferencer
 
@@ -6,6 +7,8 @@ inferencer_dict = {
     'Direct': Direct_inferencer,
     'Det': Det_Direct_inferencer,
     'Det_PPL': Det_PPL_inferencer,
+    'LAMM': LAMM_inferencer,
+    'Det_LAMM': Det_LAMM_inferencer,
     'PPL': PPL_inferencer,
     'Multi_PPL': Multi_Turn_PPL_inferencer,
     'ICL_Direct': Icl_Direct_inferencer,
