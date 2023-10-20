@@ -571,19 +571,6 @@ class Octavius(LAMMPEFTModel):
         ).to(self.device)
         p_after_masks_len = p_after_tokens.length.max() - p_after_tokens.length
         p_after_embeds = self.llama_model.model.model.embed_tokens(p_after_tokens.input_ids)
-        # p_after_tokens_list = []
-        # for prompt in prompt_list:
-        #     text = f"{eov} " + prompt + "\n### Assistant:"
-        #     p_after_tokens = self.llama_tokenizer(
-        #         text, add_special_tokens=False, return_tensors="pt"
-        #     ).to(self.device)
-        #     p_after_tokens_list.append(p_after_tokens.input_ids.squeeze(0))
-        # p_after_tokens = rnn.pad_sequence(
-        #     p_after_tokens_list,
-        #     batch_first=True,
-        #     padding_value=self.llama_tokenizer.pad_token_id,
-        # )
-        # p_after_embeds = self.llama_model.model.model.embed_tokens(p_after_tokens)
 
         bos = (
             torch.ones(
