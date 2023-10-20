@@ -22,13 +22,13 @@ class MMEDataset(Dataset):
     def __init__(self,
                  base_data_path,
                  ppl_cfg = True,
-                 option_lower = False,
+                 generative = False,
                  **kwargs
         ):
         self.base_data_path = base_data_path
         self.load_raw_data()
         self.ppl_cfg = ppl_cfg
-        self.option_lower = option_lower
+        self.generative = generative
     
     def load_raw_data(self):
         data = []
@@ -91,6 +91,8 @@ class MMEDataset(Dataset):
     def __getitem__(self, idx):
         item = self.data[idx]
         question = item['question']
+        if self.generative:
+            question = question.replace(' Please answer yes or no.','')
         img_path = item['img_path']
         gt_answers = item['answer']
         id = str(item['question_id']) if 'question_id' in item else str(idx)
@@ -103,6 +105,10 @@ class MMEDataset(Dataset):
         }
         if self.ppl_cfg:
             res_dict['options'] = ['Yes', 'No']
-            if self.option_lower:
-                res_dict['options'] = ['yes', 'no'] # for instructblip
         return res_dict
+
+
+if __name__ == '__main__':
+    dataset = MMEDataset(base_data_path='data/datasets/MME_Benchmark_release_version', generative=True)
+    data = dataset[0]
+    import ipdb;ipdb.set_trace()

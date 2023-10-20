@@ -1,0 +1,4 @@
+model_name: LAMM
+model_path: data/checkpoints/LAMM_ckpts/vicuna13b_v0_lamm186k_ep2_clip_system/pytorch_model.pt
+vicuna_ckpt_path: data/checkpoints/Vicuna/13B
+task_type: noraml

@@ -166,9 +166,7 @@ class TestLLaVA(TestBase):
   
     @torch.no_grad()
     def do_generate(self, images, questions, dtype=torch.float16, temperature=0.2, max_new_tokens=256, stop_str=None, keep_aspect_ratio=False):
-        # import ipdb;ipdb.set_trace()
         images, input_ids, batch_size = self.get_images_input_ids(images, questions, dtype, keep_aspect_ratio)
-        #
         stop_idx = None
         if stop_str is not None:
             stop_idx = self.tokenizer(stop_str).input_ids
@@ -185,7 +183,6 @@ class TestLLaVA(TestBase):
 
         for i in range(max_new_tokens):
             if i == 0:
-                # import ipdb;ipdb.set_trace()
                 out = self.model(
                     input_ids,
                     attention_mask = att_mask,

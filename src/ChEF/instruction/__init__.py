@@ -12,8 +12,19 @@ class InstructionHandler:
             self.retriever = build_retriever(dataset, dataset, **icl_cfg)
             self.retriever.seed = icl_cfg['random_seed']
             self.ice_idx_list = self.retriever.retrieve()
+            if icl_cfg['ice_with_image']:
+                self.icl_cfg['use_pic'] = True
+                self.icl_cfg['add_sysmsg'] = False
+                self.icl_cfg['mult_conversations'] = True
+            else:
+                self.icl_cfg['use_pic'] = False
+                self.icl_cfg['add_sysmsg'] = True
+                self.icl_cfg['mult_conversations'] = False
+                self.icl_cfg['sysmsg'] = 'You will now see some examples. The example has no relation to the provided image content. You need to follow the example and answer the final question based on the image content.'
 
-    def generate_basic_query(self, batch, query=None): # TODO: multiturn
+
+
+    def generate_basic_query(self, batch, query=None):
         if not query:
             query = self.query
         cur_batch_len = len(batch['image_path'])
@@ -25,7 +36,6 @@ class InstructionHandler:
         return prompts
     
     def generate_CoT_query(self, model, batch):
-        # for vqa tasks only
         cur_batch_len = len(batch['image_path'])
         if 'question' in batch: # VQA tasks or predefined query
             question = batch['question']

@@ -1,0 +1,5 @@
+model: configs/models/minigpt4.yaml
+
+save_dir: results
+
+recipe: configs/desiderata_recipes/Calibration/MMBench.yaml

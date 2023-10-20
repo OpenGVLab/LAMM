@@ -50,8 +50,8 @@ class Answer_Extractor:
         output_text = answer
         output_text = output_text.split('###')[0]
         output_text = output_text.split('Assistant:')[-1].strip()
-        output_text = output_text.strip('</s><s>')
-        output_text = output_text.strip('</Img>')
+        # output_text = output_text.strip('</s><s>')
+        # output_text = output_text.strip('</Img>')
         output_text = output_text.strip()
         # mmbench direct pattern
         pattern = re.compile(r'([A-Z]\.)')
@@ -72,7 +72,7 @@ class Answer_Extractor:
             if copt:
                 return copt, 1, 0
         if answer in choices:
-            return self.choices[choices.index(answer)], 0 , 1
+            return self.choices[choices.index(answer)], 0, 1
         return self.infer_text(answer, choices), 0, 1
 
 class VQA(Base_Metric):

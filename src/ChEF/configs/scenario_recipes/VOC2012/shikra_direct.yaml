@@ -1,0 +1,14 @@
+scenario_cfg:
+  dataset_name: VOC2012
+  base_data_path: data/datasets/LAMM/2D_Benchmark
+   
+eval_cfg:
+  instruction_cfg:
+    query_type: multiturn
+    query_assigned_ids: 1
+  inferencer_cfg:
+    inferencer_type: Det
+    max_new_tokens: 512
+    batch_size: 8
+  metric_cfg:
+    metric_type: basic

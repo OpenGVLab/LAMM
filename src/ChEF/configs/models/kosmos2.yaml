@@ -1,4 +1,4 @@
 model_name: Kosmos2
 model_path: data/checkpoints/kosmos/kosmos-2.pt
-if_grounding: True # set True for detection and grounding evaluation
+if_grounding: False # set True for detection and grounding evaluation
 ppl: False

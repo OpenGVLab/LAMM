@@ -119,7 +119,7 @@ detection_templates = [
 ]
 
 
-# POPE TODO: VQA
+# POPE
 # The prompts for POPE are defined in dataset. 
 pope_prompts = [
     "",

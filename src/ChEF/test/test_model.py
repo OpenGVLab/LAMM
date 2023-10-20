@@ -3,7 +3,7 @@ import yaml
 import argparse
 import os
 import numpy as np
-import torch
+from test_recipes import scenario_recipes, desiderata_recipes
 from scenario import dataset_dict
 from tools.evaluator import Evaluator
 import datetime
@@ -26,6 +26,7 @@ def load_yaml(cfg_path):
 def parse_args():
     parser = argparse.ArgumentParser(description="Evaluation")
     parser.add_argument("model_cfg", type=str)
+    parser.add_argument("--save_dir", type=str, default='results')
     parser.add_argument("--device", type=int, default=-1)
     parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()
@@ -47,39 +48,41 @@ def main():
     args = parse_args()
     if args.device != -1:
         os.environ['CUDA_VISIBLE_DEVICES'] = str(args.device)
-
-    # config
-    yaml_dict = load_yaml(args.model_cfg)
-    model_cfg_path = yaml_dict['model']
-    save_dir = 'result'
-
-    
-    recipe_cfg_path = yaml_dict['recipe']
-    model_cfg = load_yaml(model_cfg_path)
-    recipe_cfg = load_yaml(recipe_cfg_path)
+    save_dir = args.save_dir
 
     # model
+    model_cfg = load_yaml(args.model_cfg)
     model = get_model(model_cfg)
 
-    # dataset
-    scenario_cfg = recipe_cfg['scenario_cfg']
-    dataset_name = scenario_cfg['dataset_name']
-    dataset = dataset_dict[dataset_name](**scenario_cfg)
-    if args.debug:
-        dataset = sample_dataset(dataset, sample_len=16, sample_seed=0)
+    recipes = scenario_recipes + desiderata_recipes
+    for recipe_path in recipes:
+        recipe_cfg = load_yaml(recipe_path)
+        # dataset
+        scenario_cfg = recipe_cfg['scenario_cfg']
+        dataset_name = scenario_cfg['dataset_name']
+        dataset = dataset_dict[dataset_name](**scenario_cfg)
+        if args.debug:
+            dataset = sample_dataset(dataset, sample_len=16, sample_seed=0)
+        try:
+            # save_cfg
+            time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            save_base_dir = os.path.join(save_dir, model_cfg['model_name'], dataset_name, time)
+            os.makedirs(save_base_dir, exist_ok=True)
+            with open(os.path.join(save_base_dir, 'config.yaml'), 'w', encoding='utf-8') as f:
+                yaml.dump(data=dict(
+                    model = args.model_cfg,
+                    save_dir = save_dir,
+                    recipe = recipe_path,
+                ), stream=f, allow_unicode=True)
+            print(f'Save results in {save_base_dir}!')
 
-    # save_cfg
-    time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    save_base_dir = os.path.join(save_dir, model_cfg['model_name'], dataset_name, time)
-    os.makedirs(save_base_dir, exist_ok=True)
-    with open(os.path.join(save_base_dir, 'config.yaml'), 'w', encoding='utf-8') as f:
-        yaml.dump(data=yaml_dict, stream=f, allow_unicode=True)
-    print(f'Save results in {save_base_dir}!')
-
-    # evaluate
-    eval_cfg = recipe_cfg['eval_cfg']
-    evaluater = Evaluator(dataset, save_base_dir, eval_cfg)
-    evaluater.evaluate(model)
+            # evaluate
+            eval_cfg = recipe_cfg['eval_cfg']
+            evaluater = Evaluator(dataset, save_base_dir, eval_cfg)
+            evaluater.evaluate(model)
+            print(f'Results saved in {save_base_dir}!')
+        except:
+            print(f'{recipe_path} test not pass!')
 
 if __name__ == '__main__':
     main()

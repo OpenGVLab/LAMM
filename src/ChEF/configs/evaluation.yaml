@@ -1,5 +1,5 @@
-model: configs/models/instructblip.yaml
+model: configs/models/lamm.yaml
 
 save_dir: results
 
-recipe: configs/scenario_recipes/CIFAR10/direct.yaml
+recipe: configs/scenario_recipes/ScienceQA/default.yaml

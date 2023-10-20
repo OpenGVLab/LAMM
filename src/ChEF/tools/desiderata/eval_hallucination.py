@@ -62,10 +62,10 @@ def main():
     
     # dataset
     scenario_cfg = recipe_cfg['scenario_cfg']
-    
+
     settings = ['POPE_COCO_random','POPE_COCO_popular','POPE_COCO_adversarial']
     for setting in settings:
-        scenario_cfg['dataset_name'] = 
+        scenario_cfg['dataset_name'] = setting
         dataset_name = scenario_cfg['dataset_name']
         dataset = dataset_dict[dataset_name](**scenario_cfg)
         if args.debug:
@@ -73,7 +73,7 @@ def main():
 
         # save_cfg
         time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        save_base_dir = os.path.join(save_dir, model_cfg['model_name'], dataset_name, time)
+        save_base_dir = os.path.join(save_dir, model_cfg['model_name'], 'Hallucination',dataset_name, time)
         os.makedirs(save_base_dir, exist_ok=True)
         with open(os.path.join(save_base_dir, 'config.yaml'), 'w', encoding='utf-8') as f:
             yaml.dump(data=yaml_dict, stream=f, allow_unicode=True)

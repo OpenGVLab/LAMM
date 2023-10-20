@@ -19,7 +19,6 @@ class PPL_inferencer(Direct_inferencer):
             else:
                 prompts = self.instruction_handler.generate_basic_query(batch)
                 cot = None
-            
             batch_options = batch['options']
             image_path, questions, answers, ppl_batch_mask, answer_options, CoT_answer, _ = self.instruction_handler.generate_ppl_query(prompts, batch, batch_options, CoT = cot)
             if self.calib:
@@ -67,7 +66,7 @@ class ICL_PPL_inferencer(Direct_inferencer):
             ices = self.instruction_handler.generate_ices(prompts, batch_idx, self.batch_size)
             
             batch_options = batch['options']
-            image_path, questions, answers, ppl_batch_mask, answer_options, CoT_answer, ices = self.instruction_handler.generate_ppl_query(prompts, batch, batch_options, ices, CoT = cot)
+            image_path, questions, answers, ppl_batch_mask, answer_options, CoT_answer, ices = self.instruction_handler.generate_ppl_query(prompts, batch, batch_options, ices = ices, CoT = cot)
             outputs, icl_prompts = model.icl_ppl_inference(image_path, questions, answers, answer_options, ices, self.instruction_handler.icl_cfg, CoT_answer)
             ppl_np = np.array(outputs)
             icl_prompt_idx = 0
@@ -118,7 +117,7 @@ class Det_PPL_inferencer(Direct_inferencer):
 
             for idx in range(cur_batch_len):
                 answer_dict = copy_batch_dict(batch, idx)
-                answer_dict['query'] = cls_questions[ppl_batch_mask[idx].argmax()] + '\n' + grd_questions[ppl_batch_mask[idx].argmax()]
+                answer_dict['query'] = cls_questions[0] + '\n' + grd_questions[0]
                 classification_ppl_results = [ppl_np[ppl_batch_mask[idx]] for ppl_np, ppl_batch_mask in zip(classification_ppl_list, classification_ppl_batch_mask_list)]
                 classification_ppl_results = [result for result in classification_ppl_results if len(result) > 0]
                 pred_answer_id_list = [ppl_result.argmin() for ppl_result in classification_ppl_results]
@@ -132,4 +131,40 @@ class Det_PPL_inferencer(Direct_inferencer):
                 answer_dict['grounding_answer'] = [batch['grounding_options'][idx][id]['options'][pred_answer_id] for (id, pred_answer_id) in enumerate(pred_answer_id_list)]
                 predictions.append(answer_dict)
 
+        self._after_inference_step(predictions)
+
+    
+class Cali_inferencer(Direct_inferencer):
+    def __init__(self,  **kwargs) -> None:
+        super().__init__(**kwargs)
+
+    def inference(self, model, dataset):
+        predictions=[]
+        dataloader = DataLoader(dataset, batch_size=self.batch_size, collate_fn=lambda batch: {key: [dict[key] for dict in batch] for key in batch[0]})
+        for batch in tqdm(dataloader, desc="Running inference"):
+            cur_batch_len = len(batch['image_path'])
+            if self.CoT:
+                prompts, cot = self.instruction_handler.generate_CoT_query(model, batch)
+            else:
+                prompts = self.instruction_handler.generate_basic_query(batch)
+                cot=None
+            
+            batch_options = batch['options']
+            image_path, questions, answers, ppl_batch_mask, answer_options, CoT_answer, _ = self.instruction_handler.generate_ppl_query(prompts, batch, batch_options, CoT = cot)
+            score = model.do_calibration(image_path, questions, answers, answer_options, CoT_answer)
+            score_np = np.array(score)
+            for idx in range(cur_batch_len):
+                score_results = score_np[ppl_batch_mask[idx]]
+                score_tensor = torch.from_numpy(score_results)
+                pred_answer_id = score_results.argmax()
+                answer_dict = copy_batch_dict(batch, idx)
+                answer_dict['query'] = prompts[idx]
+                answer_dict['ppl_results'] = score_results.tolist()
+                if self.CoT:
+                    answer_dict['CoT_answer'] = cot[idx]
+                answer_dict['answer'] = batch['options'][idx][pred_answer_id]
+                probs = score_tensor.softmax(dim=-1).tolist()
+                answer_dict['probs'] = probs
+                answer_dict['prob'] = max(probs)
+                predictions.append(answer_dict)
         self._after_inference_step(predictions)

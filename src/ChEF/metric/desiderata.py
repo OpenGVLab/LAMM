@@ -1,8 +1,44 @@
 from .vqa import Answer_Extractor
 from .utils import Base_Metric
 import json
+from tqdm import tqdm 
+import re
 
+def compute_ECE(answers, num_bins=10):
+    probs, accs = [], []
+    least = int(len(answers) / num_bins) # Minimum number of samples for each bin
+    plus_max_id = len(answers) % num_bins -1 # [0...plud_max_id]-th bin have least+1 samples
+    cur_bin_id=0 # current bin id
+    cur_bin_max = least+1 if plus_max_id>=0 else least # current bin maxsize
+    ece = 0.0
+    cur_bin_probs, cur_bin_accs = [], []
+    sorted_answers = sorted(answers, key=lambda x: x['prob']) 
+    total = 0
+    #import ipdb;ipdb.set_trace()
+    for item in tqdm(sorted_answers, desc="Running Calibration Metric"):
+        cur_bin_probs.append(item['prob'])
+        cur_bin_accs.append(item['correct'])
+        if len(cur_bin_probs) == cur_bin_max:
+            avg_p = sum(cur_bin_probs)*1.0 / len(cur_bin_accs)
+            probs.append(avg_p)
+            avg_a = sum(cur_bin_accs)*1.0 / len(cur_bin_accs)
+            accs.append(avg_a)
+            ece += len(cur_bin_probs)*abs(avg_p-avg_a)
+            total += len(cur_bin_accs)
+            cur_bin_id+=1
+            cur_bin_probs = []
+            cur_bin_accs = []
+            if cur_bin_id==plus_max_id+1:
+                cur_bin_max-=1
     
+    assert total == len(answers)
+    ece = ece / len(answers)
+    return dict(
+        ECE = ece,
+        Acc_bins = accs,
+        Prob_bins = probs
+        )
+
 class ScienceQA_Calibration(Base_Metric):
     CHOICE = 'ABCDEFG'
     def __init__(self, dataset_name, content_only = False, **kwargs):
@@ -26,43 +62,14 @@ class ScienceQA_Calibration(Base_Metric):
         score = score/len(answers) * 100
 
         # Calculate ECE
-
-        num_bins=10
-        probs, accs = [], []
-        least = int(len(answers) / num_bins) # Minimum number of samples for each bin
-        plus_max_id = len(answers) % num_bins -1 # [0...plud_max_id]-th bin have least+1 samples
-        cur_bin_id=0 # current bin id
-        cur_bin_max = least+1 if plus_max_id>=0 else least # current bin maxsize
-        ece = 0.0
-        cur_bin_probs, cur_bin_accs = [], []
-        sorted_answers = sorted(answers, key=lambda x: x['prob']) 
-        total = 0
-        #import ipdb;ipdb.set_trace()
-        for item in tqdm(sorted_answers, desc="Running Calibration Metric"):
-            cur_bin_probs.append(item['prob'])
-            cur_bin_acc.append(item['correct'])
-            if len(cur_bin_probs) == cur_bin_max:
-                avg_p = sum(cur_bin_probs)*1.0 / len(cur_bin)
-                probs.append(avg_p)
-                avg_a = sum(cur_bin_acc)*1.0 / len(cur_bin_acc)
-                accs.append(avg_a)
-                ece += len(cur_bin_probs)*abs(avg_p-avg_a)
-                total += len(cur_bin_acc)
-                cur_bin_id+=1
-                cur_bin = []
-                cur_bin_acc = []
-                if cur_bin_id==plus_max_id+1:
-                    cur_bin_max-=1
-        #import ipdb;ipdb.set_trace()
-        assert total == len(answers)
-        ece = ece / len(answers) 
-        return {'acc':score, 'ece': ece,'acc_bins':accs, 'probs':probs}
+        calib_res = compute_ECE(answers)
+        
         return dict(
             ACC = score, 
             match_ratio = self.match /(len(answers)) * 100,
-            ECE = ece,
-            Acc_bins = accs,
-            Prob_bins = probs
+            ECE = calib_res['ECE'],
+            Acc_bins = calib_res['Acc_bins'],
+            Prob_bins = calib_res['Prob_bins']
         )
 
 
@@ -134,47 +141,19 @@ class MMBench_Calibration(Base_Metric):
             answers_unique.append(answers[i])
         
         # Calculate ECE
+        calib_res = compute_ECE(answers_unique)
 
-        num_bins=10
-        probs, accs = [], []
-        least = int(len(answers) / num_bins) # Minimum number of samples for each bin
-        plus_max_id = len(answers) % num_bins -1 # [0...plud_max_id]-th bin have least+1 samples
-        cur_bin_id=0 # current bin id
-        cur_bin_max = least+1 if plus_max_id>=0 else least # current bin maxsize
-        ece = 0.0
-        cur_bin_probs, cur_bin_accs = [], []
-        sorted_answers = sorted(answers, key=lambda x: x['prob']) 
-        total = 0
-        #import ipdb;ipdb.set_trace()
-        for item in tqdm(sorted_answers, desc="Running Calibration Metric"):
-            cur_bin_probs.append(item['prob'])
-            cur_bin_acc.append(item['correct'])
-            if len(cur_bin_probs) == cur_bin_max:
-                avg_p = sum(cur_bin_probs)*1.0 / len(cur_bin)
-                probs.append(avg_p)
-                avg_a = sum(cur_bin_acc)*1.0 / len(cur_bin_acc)
-                accs.append(avg_a)
-                ece += len(cur_bin_probs)*abs(avg_p-avg_a)
-                total += len(cur_bin_acc)
-                cur_bin_id+=1
-                cur_bin = []
-                cur_bin_acc = []
-                if cur_bin_id==plus_max_id+1:
-                    cur_bin_max-=1
-        #import ipdb;ipdb.set_trace()
-        assert total == len(answers_unique)
-        ece = ece / len(answers_unique) 
+       
         return dict(
             vanilla_acc = vanilla_score / vanilla_cnt * 100,
             circular_acc = circular_score / vanilla_cnt * 100,
             option_match = self.match_option / cnt * 100,
             content_match = self.match_content / cnt *100,
             prednum = self.pred_num,
-            ECE=ece,
-            Acc_bins=accs,
-            Prob_bins=probs,
+            ECE = calib_res['ECE'],
+            Acc_bins = calib_res['Acc_bins'],
+            Prob_bins = calib_res['Prob_bins']
         )
-
 
 
 
@@ -253,7 +232,7 @@ class POPE_Metric(Base_Metric):
 
 class Answer_Extractor_map(Answer_Extractor): # TODO 
     def __init__(self, content_only = False) -> None:
-        super.__init__(content_only)
+        super().__init__(content_only)
     # Prefetch Answers
     def infer_option(self, answer, item_choices):
         def get_unit_option(splits, choices='ABCD', prefix='', suffix=''):
@@ -324,7 +303,7 @@ class Instruct_Follow(Base_Metric):
             gt_choice = item['gt_choice']
             gt_char = item['options'][gt_choice]
             pred_text = item['answer']
-            pred_option = self.answer_extractor.fetch_answer(pred_text, item['gt_choices'],item['options'])
+            pred_option = self.answer_extractor.fetch_answer(pred_text, item['options'])
             #import ipdb;ipdb.set_trace()
             if pred_option!=None and pred_option.lower() == gt_char.lower():
                 score += 1.0

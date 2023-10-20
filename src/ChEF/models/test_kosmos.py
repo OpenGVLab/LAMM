@@ -13,7 +13,7 @@ from .test_base import TestBase
 Batch = namedtuple("Batch", "ids src_tokens src_lengths constraints img_src_tokens img_gpt_input_mask")
 Translation = namedtuple("Translation", "src_str hypos pos_scores alignments")
 
-class TestKOSMOS2(TestBase):
+class TestKOSMOS2(TestBase): # TODO: batch_size = 1
     def __init__(self, model_path, 
                  dict_path = 'models/kosmos2/data/dict.txt', 
                  tokenizer_path = 'models/kosmos2/data/sentencepiece.bpe.model',

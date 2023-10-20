@@ -27,10 +27,15 @@ def get_options(choices, option_content):
             option_list.append(f'({optionstr}')
     return option_list
 
-def clean_question(question): # delete context
+def clean_question(question, generative = False): # delete context
     qlist = question.split('Options:')
     q = qlist[0].split('Context:')
-    return 'Question: ' + q[0] + 'Options:' + qlist[1] + "\n"
+    if not generative:
+        res = 'Question: ' + q[0] + 'Options:' + qlist[1] + "\n"
+    else:
+        res = 'Question: ' + q[0] + "\n"
+    
+    return res
 
 class ScienceQADataset(Dataset):
     """Example:
@@ -40,11 +45,12 @@ class ScienceQADataset(Dataset):
     task_name = 'VQA'
     dataset_name = 'ScienceQA'
 
-    def __init__(self, base_data_path, ppl = False, option_content = True, option_map=None, img_crp=False, text_crp=False,split='31', **kwargs):
+    def __init__(self, base_data_path, ppl = False, option_content = False, option_map=None, img_crp=False, text_crp=False,split='31', generative = False, 
+                  data_c_path = 'data/datasets/ChEF/ScienceQA_C', **kwargs):
         self.base_data_path = base_data_path
         json_path = os.path.join(self.base_data_path, 'meta_file', f'{self.task_name}_{self.dataset_name}.json')
         if text_crp:
-            json_path='/mnt/petrelfs/shizhelun/wangzp/data/dataset/sqa_c/VQA_ScienceQA_C.json'
+            json_path = os.path.join(data_c_path, 'VQA_ScienceQA_C.json')
         self.data = json.load(open(json_path, 'rb'))
         self.ppl = ppl  # if true, return positive option and negative options 
         self.option_content = option_content # if true, return [(A) xxx]  instead of (A)
@@ -52,20 +58,22 @@ class ScienceQADataset(Dataset):
         if option_map!=None:
             self.map_type = option_map['type']
             self.map_id = option_map['ids']
+            '''
             data_tmp = []
             sub_idx = json.load(open(option_map['sub_idx'], 'rb'))
             for i in sub_idx:
                 data_tmp.append(self.data[i])
             perc = option_map['perc']
-            N =  len(data_tmp)
+            N = len(data_tmp)
             self.data=data_tmp[:int(N*perc)]
-            if self.map_type!='unneutral':
+            '''
+            if self.map_type!='unnatural':
                 self.option_map=OPTION_MAP[self.map_type][option_map['ids']]
-        self.data_c_path = f'/mnt/petrelfs/shizhelun/wangzp/data/dataset/sqa_c/{split}'
+        self.data_c_path = data_c_path
         if img_crp:
             self.base_data_path = self.data_c_path
-        self.img_crp=img_crp
-        
+        self.img_crp = img_crp
+        self.generative = generative
         #self.random_generator = random.Random()
         #self.random_generator.seed(2023)
         #self.mix_perb = MildMixPerturbation()
@@ -82,7 +90,7 @@ class ScienceQADataset(Dataset):
     def __getitem__(self, idx):
         item = self.data[idx]
         question = item['query']
-        question = clean_question(question)
+        question = clean_question(question, self.generative)
         img_path = os.path.join(self.base_data_path,item['image'])
         gt_choice = item['gt_choice']
         gt_answers = item['gt_choices'][gt_choice]
@@ -98,16 +106,19 @@ class ScienceQADataset(Dataset):
             "gt_choices": gt_choices
         }
 
-        if self.ppl:
+        if self.generative:
+            res_dict['options'] = gt_choices
+            res_dict['gt_answers'] = gt_choices[res_dict['gt_choice']]
+        else:
             res_dict['options'] = get_options(gt_choices, self.option_content)
             res_dict['gt_answers'] = '(' + OPTION[res_dict['gt_choice']] + ')'
         
-        res_dict['options'] = get_options(gt_choices, self.option_content)
+        # res_dict['options'] = get_options(gt_choices, self.option_content)
         
         if self.map_type!=None:
             map_text = ''
             map_template='If the answer is "{}", you need to output "{}". '
-            if self.map_type=='unneutral':
+            if self.map_type=='unnatural':
                 if self.map_id==0:
                     option_map = res_dict['options'][1:]+res_dict['options'][:1]
                 else:
@@ -152,7 +163,7 @@ class ScienceQADataset_C(Dataset):
             perc = option_map['perc']
             N =  len(data_tmp)
             self.data=data_tmp[:int(N*perc)]
-            if self.map_type!='unneutral':
+            if self.map_type!='unnatural':
                 self.option_map=OPTION_MAP[self.map_type][option_map['ids']]
         self.data_c_path = '/ssd/home/wangzhipin/data/sqa_c/imgs'
     def __len__(self):
@@ -182,7 +193,7 @@ class ScienceQADataset_C(Dataset):
         if self.map_type!=None:
             map_text = ''
             map_template='If the answer is "{}", you need to output "{}". '
-            if self.map_type=='unneutral':
+            if self.map_type=='unnatural':
                 if self.map_id==0:
                     option_map = data['options'][1:]+data['options'][:1]
                 else:
@@ -199,7 +210,9 @@ class ScienceQADataset_C(Dataset):
             res_dict['CHOICES']=res_dict['options']
         #import ipdb;ipdb.set_trace()
         return res_dict
+
+
 if __name__ == '__main__':
-    dataset = ScienceQADataset(base_data_path='/cpfs01/user/shizhelun/shizhelun/data/dataset/LAMM/2D_Benchmark', ppl=True, option_content=False)
+    dataset = ScienceQADataset(base_data_path='data/datasets/LAMM/2D_Benchmark', ppl=True, generative=True)
     data = dataset[0]
     import ipdb;ipdb.set_trace()

@@ -1,0 +1,16 @@
+scenario_cfg:
+  dataset_name: MME
+  base_data_path: data/datasets/MME_Benchmark_release_version
+  ppl_cfg: True
+  generative: True
+
+eval_cfg:
+  instruction_cfg: 
+    query_type: query_pool
+    query_assigned_ids: 2
+    template_assigned_ids: 0
+  inferencer_cfg:
+    inferencer_type: PPL
+    batch_size: 8
+  metric_cfg:
+    metric_type: basic

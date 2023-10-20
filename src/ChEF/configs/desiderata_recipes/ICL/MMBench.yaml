@@ -1,0 +1,25 @@
+scenario_cfg:
+  dataset_name: MMBench
+  base_data_path: data/datasets/MMBench
+  ppl_cfg: 
+    content_only: False
+  split: dev
+  hint: True
+
+eval_cfg:
+  instruction_cfg: 
+    query_type: query_pool
+    prompt_assigned_ids: 1
+    template_assigned_ids: 1
+    incontext_cfg:
+      ice_with_image: False
+      retriever_type: random
+      ice_num: 3
+      random_seed: 1
+  inferencer_cfg:
+    inferencer_type: ICL_PPL
+    batch_size: 4
+    CoT: True
+    max_new_tokens: 256
+  metric_cfg:
+    metric_type: basic

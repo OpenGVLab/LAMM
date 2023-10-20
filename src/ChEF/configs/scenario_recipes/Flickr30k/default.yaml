@@ -12,7 +12,7 @@ eval_cfg:
   inferencer_cfg:
     inferencer_type: PPL
     max_new_tokens: 64
-    batch_size: 16
+    batch_size: 8
   metric_cfg:
     metric_type: basic
     strategy: acc
