@@ -1,0 +1,5 @@
+model: ChEF/configs/models/octavius_2d+3d.yaml
+
+save_dir: ChEF/results
+
+recipe: ChEF/configs/scenario_recipes/Octavius3D/shapenet_cls_direct3d.yaml

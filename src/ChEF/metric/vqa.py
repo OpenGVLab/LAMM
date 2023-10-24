@@ -3,6 +3,7 @@ from .utils import Base_Metric
 import re
 import copy
 
+
 class Answer_Extractor:
     def __init__(self, content_only = False) -> None:
         self.choices = 'ABCDEFG'
@@ -236,3 +237,61 @@ class MMEVQA(Base_Metric):
             cnt_plus_overall += acc_plus_cnt_dict[key]
         results_dict.update(overall = acc_overall/cnt_overall * 100, overall_plus = acc_plus_overall / cnt_plus_overall * 100)
         return results_dict
+
+
+class LAMM_VQA(Base_Metric):
+    def __init__(self, dataset_name):
+        super().__init__(dataset_name)
+
+    def metric_func(self, answers):
+        import re
+        CHOICE = ['A', 'B', 'C', 'D', 'E']
+        pattern_1 = re.compile(r'The answer is \(?[A-E]\)?\W|the answer is \(?[A-E]\)?\W')
+        pattern_2 = re.compile(r'ANSWER: [A-E]')
+        pattern_3 = re.compile(r'\([A-E]\)')
+        def check_text(text, choices, gt_id):
+            text = text.lower()
+            if choices[gt_id].lower() not in text:
+                return False
+            for id, choice in enumerate(choices):
+                if id == gt_id:
+                    continue
+                if choice.lower() in text:
+                    return False
+            return True
+        def check_option(res_list, gt_char):
+            for res in res_list:
+                if gt_char not in res:
+                    return False
+            return True
+        def check_pattern2(res_list, gt_char):
+            pred = res_list[0][-1]
+            if pred == gt_char:
+                return True
+            return False
+        score = 0.0
+        for item in tqdm(answers, desc="Running Metric"):
+            tmp_score = 0
+            pred_text = item['answer']
+            gt_choice = item['gt_choice']
+            gt_char = CHOICE[gt_choice]
+            gt_choices = item['gt_choices']
+            res_1 = pattern_1.findall(pred_text)
+            res_2 = pattern_2.findall(pred_text)
+            res_3 = pattern_3.findall(pred_text)
+            if len(res_1) !=0 :
+                if check_option(res_1, gt_char):
+                    tmp_score = 1.0
+            elif len(res_2) !=0:
+                if check_pattern2(res_2, gt_char):
+                    tmp_score = 1.0
+            elif len(res_3) != 0:
+                if check_option(res_3, gt_char):
+                    tmp_score = 1.0
+            elif check_text(pred_text, gt_choices, gt_choice):
+                tmp_score = 1.0
+            score+=tmp_score
+
+        return dict(
+            vision_acc = score/len(answers)
+        )

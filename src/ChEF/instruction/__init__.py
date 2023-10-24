@@ -2,6 +2,7 @@ from .ice_retriever import build_retriever
 from .query import build_query, build_template
 import numpy as np
 
+
 supported_query_types = ['standard_query', 'query_pool', 'multiturn']
 class InstructionHandler:
     def __init__(self, query, answer_template, icl_cfg = None, dataset = None) -> None:
@@ -25,7 +26,13 @@ class InstructionHandler:
     def generate_basic_query(self, batch, query=None):
         if not query:
             query = self.query
-        cur_batch_len = len(batch['image_path'])
+        if 'image_path' in batch:
+            cur_batch_len = len(batch['image_path'])
+        elif 'task_type' in batch:
+            cur_batch_len = len(batch['task_type'])
+        else:
+            raise ValueError('cannot get batch size')
+
         if 'question' in batch:
             question = batch['question']
             prompts = [f'{question[i]}{query}' for i in range(cur_batch_len)]
@@ -49,7 +56,6 @@ class InstructionHandler:
             Lecture = outputs
             prompts_for_answer = [f'{self.query}' for i in range(cur_batch_len)]
             return prompts_for_answer, Lecture
-        
 
     def generate_ppl_query(self, prompts, batch, batch_options, answer_template = None, ices = None, CoT = None):
         if answer_template is None:

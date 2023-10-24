@@ -2,6 +2,8 @@ import os
 import json
 from torch.utils.data import Dataset
 import random
+from datasets.system_msg import common_task2sysmsg
+
 
 OPTION=['A','B','C','D','E','F','G','H']
 OPTION_MAP = {'natural':[['1','2','3','4','5','6','7','8'],
@@ -117,8 +119,39 @@ class ScienceQADataset(Dataset):
 
             res_dict['question']+=map_text
             res_dict['options']=option_map[:len(res_dict['options'])]
+
         return res_dict
 
+
+
+class ScienceQALAMMDataset(Dataset):
+    task_name = 'VQA_lamm'
+    dataset_name = 'ScienceQA'
+
+    def __init__(self, base_data_path, **kwargs):
+        super().__init__()
+
+        self.base_data_path = base_data_path
+        json_path = os.path.join(self.base_data_path, 'meta_file', 'VQA_SQAimage.json')
+        self.data = json.load(open(json_path, 'rb'))
+
+        self.system_msg = common_task2sysmsg['VQA']
+    
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        item = self.data[index]
+        data_id =  str(item['id']) if 'id' in item else str(index)
+
+        data_dict = {
+            'id' : data_id,
+            'image_path' : os.path.join(self.base_data_path, item['image']),
+            'question' : item['query'],
+            'gt_choice' : item['gt_choice'],
+            'gt_choices' : item['gt_choices'],
+        }
+        return data_dict
 
 if __name__ == '__main__':
     dataset = ScienceQADataset(base_data_path='data/datasets/LAMM/2D_Benchmark', ppl=True, generative=True)

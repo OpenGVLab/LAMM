@@ -1,5 +1,6 @@
 import torch
 import torch.nn.functional as F
+
 from .utils import get_image
 from .shikra.builder.build_shikra import load_pretrained_shikra
 from .shikra import model_args, training_args, quantization_kwargs
@@ -57,7 +58,7 @@ class TestShikra(TestBase):
         return [output.split('</s>')[0] for output in outputs]
 
     @torch.no_grad()
-    def generate(self, image, question, max_new_tokens=128):
+    def generate(self, image, question, max_new_tokens=128, **kwargs):
         ds = prepare_interactive(model_args, self.preprocessor)
         ds.set_image(get_image(image))
         ds.append_message(role=ds.roles[0], message = question, boxes = [], boxes_seq = [])
@@ -70,7 +71,7 @@ class TestShikra(TestBase):
         return outputs[0]
         
     @torch.no_grad()
-    def batch_generate(self, image_list, question_list, max_new_tokens=128):
+    def batch_generate(self, image_list, question_list, max_new_tokens=128, **kwargs):
         input_image_list = []
         input_text_list = []
         for image, question in zip(image_list, question_list):

@@ -2,6 +2,7 @@ import os
 import json
 from torch.utils.data import Dataset
 
+
 class SEEDBenchDataset(Dataset):
     task_name = 'VQA'
     dataset_name = 'SEEDBench'

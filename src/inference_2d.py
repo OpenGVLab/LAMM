@@ -1,5 +1,5 @@
 import os
-from model.openlamm import LAMMPEFTModel
+from model import LAMMPEFTModel, Octavius
 import torch
 from torch import distributed as dist
 import json
@@ -40,6 +40,16 @@ def parse_args():
         help="path of delta parameters from previous stage; Only matter for stage 2",
     )
     parser.add_argument('--stage', type=int, default=2,)
+    # Octavius MoE configurations
+    parser.add_argument('--peft_type', type=str, default='lora')
+    parser.add_argument('--moe_lora_num_experts', type=int, default=4)
+    parser.add_argument('--moe_gate_mode', type=str, default='top2_gate')
+    parser.add_argument('--octavius_modality', nargs='+', default=['image', 'pcl'])
+    # Point Cloud Modality configuration
+    parser.add_argument('--num_query_rsp_3d', type=int, default=16)
+    parser.add_argument('--hidden_size_rsp_3d', type=int, default=768)
+    parser.add_argument('--num_layers_rsp_3d', type=int, default=1)
+    parser.add_argument('--num_heads_rsp_3d', type=int, default=8)
     # LoRA configurations
     parser.add_argument('--lora_r', type=int, default=32)
     parser.add_argument('--lora_alpha', type=int, default=32)
@@ -150,7 +160,7 @@ def default_response(args,
     response = history[-1][1]
     ans_list = []
     for res in response:
-        ans_list.append(res.split(conv.sep2 if conv.sep is not None else conv.sep)[0])
+        ans_list.append(res.split(conv.sep2 if conv.sep2 is not None else conv.sep)[0])
     return ans_list
 
 
@@ -185,6 +195,17 @@ def kps_det_response(args,
     return answer_list
 
 
+def build_model(args):
+    model_name = args.model
+    if model_name == 'openllama_peft':
+        model = LAMMPEFTModel(**args.__dict__)
+    elif model_name == 'octavius':
+        model = Octavius(**args.__dict__)
+    else:
+        raise ValueError(f'model name {model_name} not found.')
+    
+    return model
+
 def main(args):
     if args.use_lightllm:
         world_size = int(os.getenv("WORLD_SIZE", "1"))
@@ -192,12 +213,13 @@ def main(args):
         dist.init_process_group("nccl", 
                                 init_method="tcp://127.0.0.1:10086",
                                 world_size=world_size, rank=local_rank)
+
     # load model
-    model = LAMMPEFTModel(**args.__dict__)
+    model = build_model(args)
     delta_ckpt = torch.load(args.delta_ckpt_path, map_location=torch.device('cpu'))
     model.load_state_dict(delta_ckpt, strict=False)
-    print(f'[!] merging LoRA weights ...')
-    if not args.use_lightllm:
+    if not args.use_lightllm and not args.peft_type == 'moe_lora':
+        print(f'[!] merging LoRA weights ...')
         model.llama_model = model.llama_model.merge_and_unload()
     model = model.eval().half().cuda()
     Visualization(model).structure_graph()

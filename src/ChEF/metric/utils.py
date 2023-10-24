@@ -1,6 +1,9 @@
 import re
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
+from nltk import word_tokenize
+import string
+from nltk.corpus import stopwords
 stops = set(stopwords.words("english"))
 import numpy as np
 from nltk.corpus import wordnet as wn

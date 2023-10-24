@@ -30,6 +30,11 @@ fine_grained_classification_multiturn_prompts = [
      # replace {} with the fore_label (defined in scenario) 
 ]
 
+# LAMM-style classfication prompts
+classification_lamm_prompts = [
+    '',
+]
+
 # classification answer templates for ppl inference
 coarse_grained_classification_templates = [
     'The object in the image is {}',
@@ -64,6 +69,11 @@ caption_prompts = [
     "An image of", # For kosmos2
 ]
 
+# LAMM-style standard prompts
+caption_lamm_prompts = [
+    '',
+]
+
 # caption answer templates for ppl inference
 caption_templates = [
     'The caption for this image is \" {}',
@@ -81,6 +91,16 @@ vqa_prompts = [
     'The answer (option) is',
     'Answer:',
 ]
+
+# vqa
+# LAMM-style standard prompts
+vqa_lamm_prompts = [
+    '',
+]
+
+Classification_octavius3d_prompts = ['']
+VQA_octavius3d_prompts = ['']
+Caption_octavius3d_prompts = ['']
 
 # vqa answer templates for ppl inference
 vqa_templates = [
@@ -101,8 +121,12 @@ counting_templates = [
 ]
 
 # detection
-# We only provide the multi-turn inference for detection tasks.
-# Two-turn prompts, with the first turn query for the category and the second turn query for the bounding box.
+# We provide both LAMM-style standard prompts and multi-turn prompts
+detection_lamm_prompts = [
+    'Identify all the objects in the image and provide their positions. Your answer needs to give the object name and the bounding box of the object. The bounding box should be represented as [x1, y1, x2, y2] with floating numbers ranging from 0 to 1. These values correspond to the top left x, top left y, bottom right x, and bottom right y.'
+]
+
+# Two-turn detection prompts, with the first turn query for the category and the second turn query for the bounding box.
 detection_multi_turn_prompts = [
     ['The image shows',
      'Give all the bounding boxes of {} in the image. The bounding box should be represented as [x1, y1, x2, y2] with floating numbers indicating the coordinates of the object in a normalized range of 0-1. These values correspond to the top left x, top left y, bottom right x, and bottom right y.' # replace {} with the fore_label
@@ -130,6 +154,10 @@ pope_templates=[
     'The answer is {}'
 ]
 
+# octavius3d
+octavius3d_templates = [
+    "{}",
+]
 
 query_pool_dict = {
     'coarse_grained_classification_prompts': coarse_grained_classification_prompts,
@@ -137,8 +165,17 @@ query_pool_dict = {
     'caption_prompts': caption_prompts,
     'VQA_prompts': vqa_prompts,
     'counting_prompts': counting_prompts,
-    'POPE_prompts':pope_prompts
+    'POPE_prompts':pope_prompts,
+    'detection_lamm_prompts': detection_lamm_prompts,
+    'VQA_lamm_prompts' : vqa_lamm_prompts,
+    'caption_lamm_prompts' : caption_lamm_prompts,
+    'Facial_cls_lamm_prompts' : classification_lamm_prompts,
+    'classification_lamm_prompts': classification_lamm_prompts,
+    'Classification_octavius3d_prompts': Classification_octavius3d_prompts,
+    'VQA_octavius3d_prompts': VQA_octavius3d_prompts,
+    'Caption_octavius3d_prompts': Caption_octavius3d_prompts,
 }
+
 ppl_template_dict = {
     'coarse_grained_classification_templates': coarse_grained_classification_templates,
     'fine_grained_classification_templates': fine_grained_classification_templates,
@@ -146,7 +183,10 @@ ppl_template_dict = {
     'counting_templates': counting_templates,
     'caption_templates': caption_templates,
     'detection_templates': detection_templates,
-    'POPE_templates':pope_templates,
+    'POPE_templates': pope_templates,
+    'Classification_octavius3d_templates': octavius3d_templates,
+    'Caption_octavius3d_templates': octavius3d_templates,
+    'VQA_octavius3d_templates': octavius3d_templates,
 }
 
 multiturn_query_dict = {
@@ -206,13 +246,15 @@ query_func_dict = {
 
 
 def build_query(query_type, **kwargs):
-    build_fuc = query_func_dict[query_type]
-    return build_fuc(**kwargs)
+    build_func = query_func_dict[query_type]
+    return build_func(**kwargs)
 
 def build_template(**kwargs):
+    # LAMM-style inference does not require template
+    if kwargs['task_name'].endswith('lamm'):
+        return None
+
     return ppl_template(**kwargs)
-
-
 
 
 if __name__ == "__main__":

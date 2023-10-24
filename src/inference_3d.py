@@ -1,14 +1,13 @@
 import os
-from model.openlamm import LAMMPEFTModel
+from model import LAMMPEFTModel, Octavius
 import torch
 import json
 import argparse
 from conversations import conv_templates
 from tqdm import tqdm
 from bigmodelvis import Visualization
-from datasets import load_3Deval_dataset
-
-answers_file = ''
+from datasets import load_3Deval_dataset, load_3Deval_dataset_v2
+from datasets.system_msg import common_task2sysmsg
 
 
 def parse_args():
@@ -38,6 +37,16 @@ def parse_args():
         help="path of delta parameters from previous stage; Only matter for stage 2",
     )
     parser.add_argument('--stage', type=int, default=2,)
+    # Octavius MoE configurations
+    parser.add_argument('--peft_type', type=str, default='lora')
+    parser.add_argument('--moe_lora_num_experts', type=int, default=4)
+    parser.add_argument('--moe_gate_mode', type=str, default='top2_gate')
+    parser.add_argument('--octavius_modality', nargs='+', default=['image', 'pcl'])
+    # Point Cloud Modality configuration
+    parser.add_argument('--num_query_rsp_3d', type=int, default=16)
+    parser.add_argument('--hidden_size_rsp_3d', type=int, default=768)
+    parser.add_argument('--num_layers_rsp_3d', type=int, default=1)
+    parser.add_argument('--num_heads_rsp_3d', type=int, default=8)
     # LoRA configurations
     parser.add_argument('--lora_r', type=int, default=32)
     parser.add_argument('--lora_alpha', type=int, default=32)
@@ -51,7 +60,9 @@ def parse_args():
     parser.add_argument('--max_tgt_len', type=int, default=400, help="maximum length of target sequence at least 400; in case of 1 vision token")
     parser.add_argument('--conv_mode', type=str, default='simple')
     parser.add_argument("--dataset-name", required=True)
+    parser.add_argument("--task-name", type=str, default='VQA')  # choose one from [VQA, Caption, VG, Classification]
     parser.add_argument("--base-data-path", required=True)
+    parser.add_argument("--vision-root-path", required=True)
     parser.add_argument("--inference-mode", default='common')
     parser.add_argument("--bs", type=int,default=1)
     parser.add_argument("--answers-dir", required=True)
@@ -68,7 +79,6 @@ def parse_args():
     
     assert os.path.exists(args.delta_ckpt_path), "delta checkpoint not exists!"
     assert os.path.exists(args.llm_ckpt_path), "vicuna checkpoint not exists!"
-    assert os.path.exists(args.encoder_ckpt_path), "vision encoder checkpoint not exists!"
     print(json.dumps(vars(args), indent=4, sort_keys=True))
     return args
 
@@ -103,22 +113,12 @@ def predict(
     args,
     model,
     input,
-    pcl_paths, 
-    max_length, 
-    top_p, 
-    temperature, 
     history, 
     sys_msg,
 ):
-    prompt_text = generate_conversation_text(args, input, history, sys_msg)
-    response = model.generate({
-        'prompt': prompt_text,
-        'pcl_paths': pcl_paths,
-        'top_p': top_p,
-        'temperature': temperature,
-        'max_tgt_len': max_length,
-        'modality_embeds': []
-    })
+    prompt_text = generate_conversation_text(args, [input["output_texts"][0][0]['value']], history, sys_msg)
+    input['prompt'] = prompt_text
+    response = model.generate(input)
     history.append((input, response))
     return history
 
@@ -126,7 +126,6 @@ def predict(
 def default_response(args,
                     model,
                     input,
-                    pcl_paths,
                     sys_msg):
     """get response text by default
 
@@ -137,14 +136,17 @@ def default_response(args,
     :param str sys_msg: system message for test
     :return list: list of response
     """
+    update_param = {
+        'top_p': 0.9,
+        'temperature': 1.0,
+        'max_tgt_len': args.max_tgt_len,
+        'modality_embeds': []
+    }
+    input.update(update_param)
     history = predict(
         args=args,
         model=model,
         input=input,
-        pcl_paths=pcl_paths,
-        max_length=args.max_tgt_len,
-        top_p=0.9,
-        temperature=1.0,
         history=[],
         sys_msg=sys_msg,
     )
@@ -156,80 +158,59 @@ def default_response(args,
     return ans_list
 
 
-def vqa_response(args,
-                model,
-                input,
-                pcl_paths,
-                sys_msg):
-    reasoning_list = default_response(args, model, input, pcl_paths, sys_msg)
-    option_prompt = []
-    for prompt_1, response_1 in zip(input, reasoning_list):
-        option_prompt.append(prompt_1 + response_1 + ' ###\nANSWER:') 
-    final_answer_list = default_response(args, model, option_prompt, pcl_paths, sys_msg)
-    all_answer_list = []
-    # concat reasoning & final answer
-    for reasoning, option in zip(reasoning_list, final_answer_list):
-        all_answer_list.append(reasoning + '\n The answer is ' + option)
-    return all_answer_list
+def build_model(args):
+    model_name = args.model
+    if model_name == 'openllama_peft':
+        model = LAMMPEFTModel(**args.__dict__)
+    elif model_name == 'octavius':
+        model = Octavius(**args.__dict__)
+    else:
+        raise ValueError(f'model name {model_name} not found.')
+    
+    return model
 
 
 def main(args):
     # load model
-    model = LAMMPEFTModel(**args.__dict__)
+    model = build_model(args)
     delta_ckpt = torch.load(args.delta_ckpt_path, map_location=torch.device('cpu'))
     model.load_state_dict(delta_ckpt, strict=False)
-    print(f'[!] merging LoRA weights ...')
-    model.llama_model = model.llama_model.merge_and_unload()
+    if not args.peft_type == 'moe_lora':
+        print(f'[!] merging LoRA weights ...')
+        model.llama_model = model.llama_model.merge_and_unload()
     model = model.eval().half().cuda()
     Visualization(model).structure_graph()
     print(f'[!] init the LLM over ...')
     
     # load data
     dataset_name = args.dataset_name
-    inference_mode = args.inference_mode
     batch_size = args.bs
     if dataset_name in single_infernce_dataset:
         batch_size = 1
-    dataloader = load_3Deval_dataset(
+    dataloader = load_3Deval_dataset_v2(
         args.base_data_path,
+        args.task_name,
         args.dataset_name,
-        inference_mode,
+        args.vision_root_path,
         batch_size = batch_size
     )
-    sys_msg = dataloader.dataset.system_msg
-    task_name = dataloader.dataset.task_name
 
-    answers_file_name = task_name + '_' + args.dataset_name + '.json'
+    answers_file_name = args.task_name + '_' + args.dataset_name + '.json'
     answers_file = os.path.join(args.answers_dir, answers_file_name)
     os.makedirs(os.path.dirname(answers_file), exist_ok=True)
     
     ans_list = []
     ans_file = open(os.path.splitext(answers_file)[0] + '.jsonl', 'w')
     for data_item in tqdm(dataloader):
-        prompt = data_item['query']
-        pcl_paths = data_item['pcl']
-        
-        if task_name == 'VQA':
-            response_func = vqa_response
-        else:
-            response_func = default_response
-        
-        answer_list = response_func(
-            args=args,
-            model=model,
-            input=prompt,
-            pcl_paths=pcl_paths,
-            sys_msg=sys_msg,
-        )
-
-        for id, output in zip(data_item['id'], answer_list):
-            ans_dict = {"id": id,
-                        "text": output,
-                        "delta_path": args.delta_ckpt_path
-                        }
-            ans_list.append(ans_dict)
-            ans_file.write(json.dumps(ans_dict) + "\n")
-            ans_file.flush()
+        system_msg = common_task2sysmsg[args.task_name + '3D']
+        ans_dict = {"scene_id": data_item['scene_id'][0],
+            "question": data_item["output_texts"][0][0]['value'],
+        }
+        response = default_response(args, model, data_item, system_msg)
+        ans_dict['text'] = response
+        ans_list.append(ans_dict)
+        ans_file.write(json.dumps(ans_dict) + "\n")
+        ans_file.flush()
 
     ans_file.close()
     # dump all

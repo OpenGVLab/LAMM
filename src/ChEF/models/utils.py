@@ -1,5 +1,10 @@
 import numpy as np
 from PIL import Image
+import dataclasses
+from enum import auto, Enum
+from typing import List, Tuple, Any
+
+
 def get_image(image):
     if type(image) is str:
         try:
@@ -28,10 +33,6 @@ def get_RGB_image(image):
     image = Image.fromarray(np.uint8(image))
     return image
 
-
-import dataclasses
-from enum import auto, Enum
-from typing import List, Tuple, Any
 
 class SeparatorStyle(Enum):
     """Different separator style."""

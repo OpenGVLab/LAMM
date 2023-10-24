@@ -1,5 +1,5 @@
-model: configs/models/lamm.yaml
+model: ChEF/configs/models/octavius_2d+3d.yaml
 
-save_dir: results
+save_dir: ChEF/results
 
-recipe: configs/scenario_recipes/ScienceQA/default.yaml
+recipe: ChEF/configs/scenario_recipes/VOC2012/lamm_direct.yaml

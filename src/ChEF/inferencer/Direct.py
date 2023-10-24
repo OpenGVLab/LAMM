@@ -24,16 +24,38 @@ class Direct_inferencer:
         self.instruction_handler = instruction_handler
         self.results_path = None
 
+    def get_collate_fn(self, dataset):
+        if hasattr(dataset, 'collate'):
+            collate_fn = dataset.collate
+        else:
+            collate_fn = lambda batch: {
+                key: [data[key] for data in batch] for key in batch[0]
+            }
+        return collate_fn
+
     def inference(self, model, dataset):
-        predictions=[]
-        dataloader = DataLoader(dataset, batch_size=self.batch_size, collate_fn=lambda batch: {key: [dict[key] for dict in batch] for key in batch[0]})
+        dataloader = DataLoader(
+            dataset, batch_size=self.batch_size, collate_fn=self.get_collate_fn(dataset)
+        )
+
+        predictions = []
         for batch in tqdm(dataloader, desc="Running inference"):
             if self.CoT:
                 prompts, cot = self.instruction_handler.generate_CoT_query(model, batch)
             else:
                 prompts = self.instruction_handler.generate_basic_query(batch)
                 cot = None
-            outputs = model.batch_generate(batch['image_path'], prompts, max_new_tokens=self.max_new_tokens)
+
+            # compatible with LAMM-style inference
+            sys_msg = None if not hasattr(dataset, 'system_msg') else dataset.system_msg
+            outputs = model.batch_generate(
+                batch['image_path'], 
+                prompts, 
+                max_new_tokens=self.max_new_tokens,
+                sys_msg=sys_msg,
+                dataset_name=dataset.dataset_name,
+                task_name=dataset.task_name,
+            )
             for i in range(len(outputs)):
                 answer_dict = copy_batch_dict(batch, i)
                 answer_dict['query'] = prompts[i]
@@ -50,6 +72,40 @@ class Direct_inferencer:
             f.write(json.dumps(predictions, indent=4))
         self.results_path = answer_path
 
+
+class Direct3D_inferencer(Direct_inferencer):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def inference(self, model, dataset):
+        dataloader = DataLoader(
+            dataset, batch_size=self.batch_size, collate_fn=self.get_collate_fn(dataset)
+        )
+
+        predictions = []
+        for batch in tqdm(dataloader, desc="Running inference"):
+            prompts = self.instruction_handler.generate_basic_query(batch)
+
+            # compatible with LAMM-style inference
+            sys_msg = None if not hasattr(dataset, 'system_msg') else dataset.system_msg
+            outputs = model.batch_generate(
+                batch, 
+                prompts, 
+                sys_msg=sys_msg,
+                dataset_name=dataset.dataset_name,
+                task_name=dataset.task_name,
+            )
+            for i in range(len(outputs)):
+                answer_dict = dict(
+                    scene_id=batch['scene_id'][i],
+                    gt=batch['gt'][i],
+                    object_name=batch['object_name'][i],
+                    query=prompts[i],
+                    answer=outputs[i],
+                )
+                predictions.append(answer_dict)
+        self._after_inference_step(predictions)
 
 
 class Det_Direct_inferencer(Direct_inferencer):

@@ -32,6 +32,9 @@ def get_model(cfg):
     elif model_name == 'LAMM':
         from .test_lamm import TestLAMM
         return TestLAMM(**cfg)
+    elif model_name == 'Octavius':
+        from .test_octavius import TestOctavius
+        return TestOctavius(**cfg)
     elif model_name == 'Shikra':
         from .test_shikra import TestShikra
         return TestShikra(**cfg)

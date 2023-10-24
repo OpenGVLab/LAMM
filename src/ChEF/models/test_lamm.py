@@ -1,9 +1,10 @@
 import torch
+import torch.nn.functional as F
 import yaml
+
 from .lamm.openlamm import LAMMPEFTModel, process_batch_instance
 from .lamm.utils.conversations import conv_templates
 from .utils import get_image
-import torch.nn.functional as F
 from .test_base import TestBase
 
 
@@ -93,14 +94,14 @@ class TestLAMM(TestBase):
         return [output.split('\n###')[0] for output in outputs]
 
     @torch.no_grad()
-    def generate(self, image, question, max_new_tokens=128):
+    def generate(self, image, question, max_new_tokens=128, **kwargs):
         image = [get_image(image)]
         text = self.generate_conversation_text([question])
         outputs = self.do_generate(image, text, max_new_tokens)
         return outputs[0]
         
     @torch.no_grad()
-    def batch_generate(self, image_list, question_list, max_new_tokens=128):
+    def batch_generate(self, image_list, question_list, max_new_tokens=128, **kwargs):
         images = [get_image(image) for image in image_list]
         prompts = self.generate_conversation_text(question_list)
         outputs = self.do_generate(images, prompts, max_new_tokens)

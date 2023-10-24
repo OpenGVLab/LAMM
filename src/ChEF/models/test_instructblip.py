@@ -1,7 +1,8 @@
 import torch
+import torch.nn.functional as F
+
 from .instruct_blip.models import load_model_and_preprocess
 from .utils import get_image
-import torch.nn.functional as F
 from .test_base import TestBase
 
 class TestInstructBLIP(TestBase):
@@ -12,7 +13,7 @@ class TestInstructBLIP(TestBase):
         self.model.max_txt_len = 512
 
     @torch.no_grad()
-    def generate(self, image, question, max_new_tokens=128):
+    def generate(self, image, question, max_new_tokens=128, **kwargs):
         image = get_image(image)
         image = self.vis_processors["eval"](image).unsqueeze(0).to(self.device)
         output = self.model.generate({"image": image, "prompt": question}, max_length=max_new_tokens)[0]
@@ -20,7 +21,7 @@ class TestInstructBLIP(TestBase):
         return output
     
     @torch.no_grad()
-    def batch_generate(self, image_list, question_list, max_new_tokens=128):
+    def batch_generate(self, image_list, question_list, max_new_tokens=128, **kwargs):
         imgs = [get_image(img) for img in image_list]
         imgs = [self.vis_processors["eval"](x) for x in imgs]
         imgs = torch.stack(imgs, dim=0).to(self.device)

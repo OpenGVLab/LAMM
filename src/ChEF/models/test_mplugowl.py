@@ -1,11 +1,11 @@
 import torch
+import torch.nn.functional as F
+from transformers import AutoTokenizer
+from transformers.models.llama.tokenization_llama import LlamaTokenizer
 
 from .mplug_owl.processing_mplug_owl import MplugOwlProcessor, MplugOwlImageProcessor
 from .mplug_owl.modeling_mplug_owl import MplugOwlForConditionalGeneration
-from transformers import AutoTokenizer
-from transformers.models.llama.tokenization_llama import LlamaTokenizer
 from .utils import get_image, Conversation, SeparatorStyle
-import torch.nn.functional as F
 from .test_base import TestBase
 
 prompt_template = "The following is a conversation between a curious human and AI assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.\nHuman: <image>\nHuman: {}\nAI:"
@@ -45,7 +45,7 @@ class TestMplugOwl(TestBase):
         self.model.to(device=self.device, dtype=self.dtype)
 
     @torch.no_grad()
-    def generate(self, image, question, max_new_tokens=128):
+    def generate(self, image, question, max_new_tokens=128, **kwargs):
         prompts = [prompt_template.format(question)]
         image = get_image(image)
         inputs = self.processor(text=prompts, images=[image], return_tensors='pt')
@@ -65,7 +65,7 @@ class TestMplugOwl(TestBase):
         return generated_text
 
     @torch.no_grad()
-    def batch_generate(self, image_list, question_list, max_new_tokens=128):
+    def batch_generate(self, image_list, question_list, max_new_tokens=128, **kwargs):
         images = [get_image(image) for image in image_list]
         images = [self.image_processor(image, return_tensors='pt').pixel_values for image in images]
         images = torch.cat(images, dim=0).to(self.device, dtype=self.dtype)

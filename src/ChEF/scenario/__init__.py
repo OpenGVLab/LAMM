@@ -9,16 +9,24 @@ from .SEED_Bench_dataset import *
 from .MME_dataset import *
 
 from .POPE_dataset import *
+
+from .octavius_pcl_dataset import OctaviusPCLDataset
+
+
 dataset_dict = {
     # Caption 
     'Flickr30k': FlickrDataset,
+    'Flickr30k_LAMM': FlickrLAMMDataset,
     # classification
     'CIFAR10': CIFAR10Dataset,
     'Omnibenchmark': OmnibenchmarkDataset,
+    'CIFAR10_LAMM' : CIFAR10LAMMDataset,
     # VQA 
     'ScienceQA': ScienceQADataset,
+    'ScienceQA_LAMM' : ScienceQALAMMDataset,
     # Detection
     'VOC2012': VOC2012Dataset,
+    'VOC2012_LAMM': VOC2012LAMMDataset,
     # Counting
     'FSC147': FSC147Dataset,
     # MMBench
@@ -31,4 +39,9 @@ dataset_dict = {
     'SEEDBench': SEEDBenchDataset,
     # MME
     'MME': MMEDataset,
+    # Facial Classification
+    'CelebA(Hair)' : CelebAHairDataset,
+    'CelebA(Smile)' : CelebASmileDataset,
+    # 3D
+    'OctaviusPCLDataset': OctaviusPCLDataset,
 }
