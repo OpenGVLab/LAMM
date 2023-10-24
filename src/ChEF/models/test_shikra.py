@@ -227,7 +227,7 @@ class TestShikra(TestBase):
             input_text_list.append(model_inputs['input_text'])
             model_inputs['images'] = model_inputs['images'].to(torch.float16)
             input_image_list.append(model_inputs['images'])
-        results = self.get_ppl_results(input_text_list, input_image_list, answer_list, answer_options)
+        results = self.do_ppl(input_image_list, input_text_list, answer_list, answer_options)
         return results, input_text_list
 
     def do_calibration(self, image_list, question_list, answer_list, answer_pool, CoT_list=None):

@@ -14,7 +14,6 @@ def compute_ECE(answers, num_bins=10):
     cur_bin_probs, cur_bin_accs = [], []
     sorted_answers = sorted(answers, key=lambda x: x['prob']) 
     total = 0
-    #import ipdb;ipdb.set_trace()
     for item in tqdm(sorted_answers, desc="Running Calibration Metric"):
         cur_bin_probs.append(item['prob'])
         cur_bin_accs.append(item['correct'])
@@ -304,7 +303,6 @@ class Instruct_Follow(Base_Metric):
             gt_char = item['options'][gt_choice]
             pred_text = item['answer']
             pred_option = self.answer_extractor.fetch_answer(pred_text, item['options'])
-            #import ipdb;ipdb.set_trace()
             if pred_option!=None and pred_option.lower() == gt_char.lower():
                 score += 1.0
             result[main_idx]=1

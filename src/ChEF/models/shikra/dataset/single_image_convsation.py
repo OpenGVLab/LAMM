@@ -43,7 +43,6 @@ class SingleImageConvDatasetMixin:
         image: Image.Image = item.get('image', None)
         target: Dict[str, Any] = item.get('target', None)
         raw_conv: List[Dict[str, Any]] = item['conversations']
-        import ipdb;ipdb.set_trace()
         # transform 
         assert isinstance(image, list) == isinstance(target, list)
         multimage_mode = isinstance(image, list)

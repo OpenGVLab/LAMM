@@ -24,7 +24,9 @@
     <sup>&#x2709</sup> Corresponding Author
     
 </div>
-<a href="https://openlamm.github.io/" target="_blank">Project Page</a> | <a href="https://openlamm.github.io/" target="_blank">ChEF Paper</a> | TODO
+
+
+**Official Repository of [CHEF: A COMPREHENSIVE EVALUATION FRAMEWORK FOR STANDARDIZED ASSESSMENT OF MULTIMODAL LARGE LANGUAGE MODEL](https://openlamm.github.io/)**
 
 ## Introduction
 ChEF is a Comprehensive Evaluation Framework for reliable and indicative assessment of MLLMs, which is highly scalable and can be flexibly modified to adapt to the evaluation of any new model or task.

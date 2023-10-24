@@ -1,5 +1,5 @@
-model: configs/models/llava.yaml
+model: configs/models/lamm.yaml
 
 save_dir: results
 
-recipe: configs/desiderata_recipes/ICL/MMBench.yaml
+recipe: configs/desiderata_recipes/ICL/ScienceQA.yaml

@@ -868,7 +868,6 @@ class EnsembleModel(nn.Module):
         temperature: float = 1.0,
         multimodal: bool = False,
     ):
-        # import ipdb;ipdb.set_trace()
         log_probs = []
         avg_attn: Optional[Tensor] = None
         encoder_out: Optional[Dict[str, List[Tensor]]] = None

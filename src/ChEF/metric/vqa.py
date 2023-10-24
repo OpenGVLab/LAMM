@@ -215,7 +215,6 @@ class MMEVQA(Base_Metric):
                 accplus[image_path] = 0
                 acc_plus_cnt_dict[item['task_type']] += 1
             pred_label = self.parse_pred_ans(pred_text)
-            # import ipdb;ipdb.set_trace()
             cnt_dict[item['task_type']] += 1
             if pred_label == gt_label:
                 acc_dict[item['task_type']] += 1

@@ -176,10 +176,7 @@ class Attention(nn.Module):
 
         if adapter is not None:
             adapter_len = adapter.shape[1]
-            try:
-                adapter_v = self.wv(adapter).view(bsz, adapter_len, self.n_local_heads, self.head_dim)
-            except:
-                import ipdb;ipdb.set_trace()
+            adapter_v = self.wv(adapter).view(bsz, adapter_len, self.n_local_heads, self.head_dim)
             adapter_v = adapter_v.transpose(1, 2)
 
             if adapter_len > 1:

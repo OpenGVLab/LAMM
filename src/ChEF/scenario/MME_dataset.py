@@ -106,9 +106,3 @@ class MMEDataset(Dataset):
         if self.ppl_cfg:
             res_dict['options'] = ['Yes', 'No']
         return res_dict
-
-
-if __name__ == '__main__':
-    dataset = MMEDataset(base_data_path='data/datasets/MME_Benchmark_release_version', generative=True)
-    data = dataset[0]
-    import ipdb;ipdb.set_trace()

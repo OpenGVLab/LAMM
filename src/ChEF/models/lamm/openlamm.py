@@ -579,7 +579,6 @@ class LAMMPEFTModel(nn.Module):
         else:
             feature_embeds = self.extract_multimodal_feature(inputs)
             inputs["modality_embeds"].append(feature_embeds)
-        # import ipdb;ipdb.set_trace()
         batch_size = feature_embeds.shape[0]
         p_before = make_prompt_start(
             vision_type=self.vision_type

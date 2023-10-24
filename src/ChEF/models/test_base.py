@@ -58,14 +58,14 @@ class TestBase:
         '''
             process a batch of images and questions with ICE, and then do_generate
         '''
-        pass
+        return [''] * len(image_list) 
 
     @torch.no_grad()
     def icl_ppl_inference(self, image_list, question_list, answer_list, answer_pool, ices, incontext_cfg, CoT_list = None):
         '''
         
         '''
-        pass
+        return [0]*len(image_list)
 
     @torch.no_grad()
     def do_calibration(self, image_list, question_list, answer_list, answer_pool, CoT_list = None):

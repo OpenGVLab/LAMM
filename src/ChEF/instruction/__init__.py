@@ -22,8 +22,6 @@ class InstructionHandler:
                 self.icl_cfg['mult_conversations'] = False
                 self.icl_cfg['sysmsg'] = 'You will now see some examples. The example has no relation to the provided image content. You need to follow the example and answer the final question based on the image content.'
 
-
-
     def generate_basic_query(self, batch, query=None):
         if not query:
             query = self.query

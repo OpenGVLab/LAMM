@@ -1,6 +1,6 @@
 scenario_cfg:
   dataset_name: Flickr30k
-  base_data_path: /mnt/petrelfs/shizhelun/shizhelun/data/datasets/LAMM/2D_Benchmark
+  base_data_path: data/datasets/LAMM/2D_Benchmark
   ppl_cfg:
     negative_opt_num: 3
     random_seed: 0

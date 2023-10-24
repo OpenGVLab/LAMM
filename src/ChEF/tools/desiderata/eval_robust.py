@@ -31,6 +31,7 @@ def parse_args():
     parser.add_argument("cfg_path", type=str)
     parser.add_argument("--device", type=int, default=-1)
     parser.add_argument("--debug", action="store_true")
+    parser.add_argument("--sample_len", type=int, default=-1)
     args = parser.parse_args()
     return args
 
@@ -87,6 +88,8 @@ def main():
     dataset = dataset_dict[dataset_name](**scenario_cfg)
     if args.debug:
         dataset = sample_dataset(dataset, sample_len=16, sample_seed=0)
+    if args.sample_len != -1:
+        dataset = sample_dataset(dataset, sample_len=args.sample_len, sample_seed=0)
     # save_cfg
     save_base_dir = os.path.join(base_save_dir, "origin")
     os.makedirs(save_base_dir, exist_ok=True)
@@ -106,7 +109,8 @@ def main():
         dataset = dataset_dict[dataset_name](**scenario_cfg)
         if args.debug:
             dataset = sample_dataset(dataset, sample_len=16, sample_seed=0)
-
+        if args.sample_len != -1:
+            dataset = sample_dataset(dataset, sample_len=args.sample_len, sample_seed=0)
         # save_cfg
         time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
         save_base_dir = os.path.join(base_save_dir, f'{dataset_name}_{setting[0]}')
@@ -141,7 +145,6 @@ def main():
             acc_data = json.load(f)
         res_dict = acc_data['result']
         acc = get_acc(res_dict)
-        #import ipdb;ipdb.set_trace
         rrm = compute_RRM(origin_acc, acc, dataset_name)
         res = {'img_crp': setting[1], 
                'text_crp': setting[2], 

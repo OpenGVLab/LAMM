@@ -4,11 +4,6 @@ scenario_cfg:
   ppl: True
   option_content: False
   option_map: ''
-    #type: natural
-    #      #natural,neutral,unneutral
-    #ids: 1
-    #perc: 1
-    #      sub_idx: /mnt/petrelfs/shizhelun/wangzp/code/LAMMdev/data_process/sqa_subid.json
   
 
 eval_cfg:

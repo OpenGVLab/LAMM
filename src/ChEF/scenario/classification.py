@@ -141,9 +141,3 @@ class OmnibenchmarkDataset(Dataset):
                     ))
                 res_dict['options'] = res_options
         return res_dict
-
-if __name__ == '__main__':
-    dataset = OmnibenchmarkDataset(bamboo_tree_path = '/cpfs01/user/shizhelun/shizhelun/data/dataset/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json', 
-                 base_data_path = '/cpfs01/user/shizhelun/shizhelun/data/dataset/OmniBenchmark_Bamboo2_v3',ppl_cfg=dict(single_turn=False))
-    data = dataset[0]
-    import ipdb;ipdb.set_trace()

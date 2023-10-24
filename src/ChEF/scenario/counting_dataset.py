@@ -50,8 +50,3 @@ class FSC147Dataset(Dataset):
             res_dict['options'] = options
         return res_dict
     
-if __name__ == '__main__':
-    dataset = FSC147Dataset(base_data_path='/mnt/petrelfs/shizhelun/shizhelun/data/datasets/LAMM/2D_Benchmark',
-                            ppl_cfg=dict(heatmap_width = 3))
-    data = dataset[0]
-    import ipdb;ipdb.set_trace()

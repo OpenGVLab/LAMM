@@ -46,7 +46,7 @@ class LlavaLlamaModel(LlamaModel):
         if hasattr(config, "mm_vision_tower"):
             # HACK: for FSDP
             # self.vision_tower = [CLIPVisionModel.from_pretrained(config.mm_vision_tower)]
-            self.vision_tower = [CLIPVisionModel.from_pretrained('/mnt/petrelfs/shizhelun/shizhelun/data/checkpoints/clip-vit-large-patch14')]
+            self.vision_tower = [CLIPVisionModel.from_pretrained('data/checkpoints/clip-vit-large-patch14')]
             # self.vision_tower = CLIPVisionModel.from_pretrained(config.mm_vision_tower)
 
         if hasattr(config, "use_mm_proj"):

@@ -85,8 +85,6 @@ class MMBenchDataset(Dataset):
         question = self.df.iloc[idx]['question']
         hint = self.load_from_df(idx, 'hint')
         answer = self.df.iloc[idx]['answer'] if 'answer' in self.df.iloc[0].keys() else None
-        # catetory = self.df.iloc[idx]['category']
-        # l2_catetory = self.df.iloc[idx]['l2-category']
 
         option_candidate = ['A', 'B', 'C', 'D', 'E']
         options = {
@@ -117,10 +115,11 @@ class MMBenchDataset(Dataset):
         data['gt_choice'] = option_candidate.index(answer) if answer is not None else None
         data['gt_answers'] = options[answer] if answer is not None else None
         if self.text_crp:
-            data['question'] = self.txt_c[idx]["question"].replace("\nOptions: ", f' {self.sys_prompts}\n')
+            data['question'] = self.txt_c[idx]["query"]
             data['gt_choices'] = self.txt_c[idx]["gt_choices"]
-            data['gt_answers'] = self.txt_c[idx]["gt_answers"]
             data['gt_choice'] = self.txt_c[idx]["gt_choice"]
+            data['gt_answers'] = data['gt_answers'][data['gt_choice']]
+            
             options = {
                 option_candidate[idx]: choice for idx,choice in enumerate(data['gt_choices'])
             }
@@ -148,7 +147,7 @@ class MMBenchDataset(Dataset):
 
                 for opid,opt in enumerate(data['options']):
                     map_text+=map_template.format(opt+')', option_map[opid])
-                #map_text+='\n'
+
                 data['question']+=map_text
                 data['options']=option_map[:len(data['options'])]
 
@@ -163,4 +162,3 @@ class MMBenchDataset(Dataset):
 if __name__ == '__main__':
     dataset = MMBenchDataset(base_data_path='data/datasets/MMBench', split='dev', hint=True, ppl_cfg = dict(content_only = False), generative=True)
     data = dataset[0]
-    import ipdb;ipdb.set_trace()

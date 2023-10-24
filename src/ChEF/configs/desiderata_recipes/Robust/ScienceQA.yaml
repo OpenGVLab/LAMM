@@ -5,6 +5,7 @@ scenario_cfg:
   option_content: False
   img_crp: True
   text_crp: True
+  data_c_path: data/datasets/ChEF/ScienceQA_C
 
 eval_cfg:
   instruction_cfg: 

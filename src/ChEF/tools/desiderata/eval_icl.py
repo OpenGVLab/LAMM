@@ -33,6 +33,7 @@ def parse_args():
     parser.add_argument("cfg_path", type=str)
     parser.add_argument("--device", type=int, default=-1)
     parser.add_argument("--debug", action="store_true")
+    parser.add_argument("--sample_len", type=int, default=-1)
     args = parser.parse_args()
     return args
 
@@ -70,7 +71,9 @@ def main():
     dataset = dataset_dict[dataset_name](**scenario_cfg)
     if args.debug:
         dataset = sample_dataset(dataset, sample_len=16, sample_seed=0)
-
+    if args.sample_len != -1:
+        dataset = sample_dataset(dataset, sample_len=args.sample_len, sample_seed=0)
+        
     # save_cfg
     time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     save_base_dir = os.path.join(save_dir, model_cfg['model_name'], dataset_name, time)
@@ -83,7 +86,7 @@ def main():
     if model_cfg['model_name'] in ['MiniGPT-4', 'mPLUG-Owl', 'Otter', 'Kosmos2']:
         recipe_cfg['eval_cfg']['instruction_cfg']['incontext_cfg']['ice_with_image'] = True
     
-    ice_nums = [1, 2, 3]
+    ice_nums = [0, 1, 2, 3]
     results = []
     results_path = []
     for ice_num in ice_nums:
@@ -91,7 +94,10 @@ def main():
         eval_cfg['instruction_cfg']['incontext_cfg']['ice_num'] = ice_num
         evaluater = Evaluator(dataset, save_base_dir, eval_cfg)
         result_path, result = evaluater.evaluate(model)
-        results.append(result['vanilla_acc'])
+        if 'vanilla_acc' in result:
+            results.append(result['vanilla_acc'])
+        else:
+            results.append(result['ACC'])
         results_path.append(result_path)
     
     # calculate RIAM
@@ -99,7 +105,7 @@ def main():
     acc_icl_average = sum(results[1:])/len(results[1:])
     acc_rand = rand_acc[dataset_name]['vanilla']
 
-    RIAM = (acc_icl_average - results[0]) / (results[0] - acc_rand)
+    RIAM = ((acc_icl_average - results[0]) / (results[0] - acc_rand)) * 50 + 50
     with open(os.path.join(save_base_dir, 'results.json'), 'w', encoding='utf-8') as f:
         all_results = []
         for i in range(len(results)):

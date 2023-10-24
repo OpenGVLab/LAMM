@@ -248,7 +248,6 @@ class Chat:
             length_penalty=length_penalty,
             temperature=temperature,
         )
-        #import ipdb;ipdb.set_trace()
         batch_outputs = []
         for output_token in outputs:
             if output_token[0] == 0:  # the model might output a unknow token <unk> at the beginning. remove it
@@ -371,6 +370,7 @@ class Chat:
                     icl_question += f"{ice[j]['question']}: {ice[j]['gt_answers'][0]}. "
             icl_question += f"{question}: "
             self.ask(icl_question, conv)
+        return img_list
     
     def icl_ppl_batch_answer(self, image_list, question_list, chat_list, answer_list, answer_options, ice_imgs_emb, sample_data, incontext_cfg, CoT_list = None):
         embs_list = []

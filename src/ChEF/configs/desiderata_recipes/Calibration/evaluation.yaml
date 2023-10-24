@@ -1,4 +1,4 @@
-model: configs/models/minigpt4.yaml
+model: configs/models/lamm.yaml
 
 save_dir: results
 

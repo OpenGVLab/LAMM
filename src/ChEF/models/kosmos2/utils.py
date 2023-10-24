@@ -51,7 +51,6 @@ def get_interactive_tokens_and_lengths(self, images, inputs, tokenizer=None, spe
         token.append(bos_id)
         img_gpt_input_mask.append(0)
         img_id = 0
-        # import ipdb; ipdb.set_trace()
         for i, segment in enumerate(segments):
             if segment.startswith('[image]'):
                 if incontext_cfg is not None and incontext_cfg['use_pic']:

@@ -103,19 +103,15 @@ def GPT_Metric(base_data_path, answer_path, response_dir):
     score_list = []
     res_list=[]
     
-    #import ipdb;ipdb.set_trace()
     for ids,query in tqdm(zip(sample_ids, query_list)):
-        #import ipdb;ipdb.set_trace()
         messages = [{"role":"system", "content": SYS_VQA}]
         messages.append({"role":"user", "content":query})
         while True:
             try:
-                #import ipdb;ipdb.set_trace()
                 response = openai.ChatCompletion.create(model="gpt-4", messages=messages,n=6, max_tokens=512)
                 response_list.append(response)
                 break
             except:
-                #import ipdb;ipdb.set_trace()
                 continue
         cur_text = []
         cur_score = []
@@ -197,21 +193,9 @@ def eval_cost(response_list):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--base-data-path', default='data/datasets/LAMM/2D_Benchmark/meta_file/VQA_ScienceQA.json')
-    parser.add_argument('--answer-path', default='data/ppl_res/ScienceQA_pplresults/llava.json')
+    parser.add_argument('--answer-path')
     parser.add_argument('--response-dir', default='results/gpt_eval')
     args = parser.parse_args()
     response_list, res_list = GPT_Metric(args.base_data_path,
                                args.answer_path,
                              args.response_dir)
-    
-    #dict_list = []
-    #with open('/mnt/petrelfs/shizhelun/wangzhipin/code/gpt_eval/results/lamm_sqa_gpt_metric.jsonl', "r") as f:
-    #    for line in f:
-    #        data = json.loads(line)
-    #        dict_list.append(data)
-    #response_list=dict_list
-    #print(dict_list)
-    #import ipdb;ipdb.set_trace()
-    #score=eval_score(response_list)
-    #cost = eval_cost(response_list)
-    #print(score,cost)

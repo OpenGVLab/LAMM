@@ -20,7 +20,7 @@ class Direct_inferencer:
         self.save_base_dir = save_base_dir
         self.batch_size = batch_size
         self.max_new_tokens = max_new_tokens
-        self.CoT = CoT
+        self.CoT = CoT # whether generates CoT answer before final answer
         self.instruction_handler = instruction_handler
         self.results_path = None
 

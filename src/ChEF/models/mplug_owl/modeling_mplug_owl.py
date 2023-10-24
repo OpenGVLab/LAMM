@@ -1628,7 +1628,6 @@ class MplugOwlForConditionalGeneration(MplugOwlPreTrainedModel):
         Returns:
             captions (list): A list of strings of length batch_size * num_captions.
         """
-        # import ipdb;ipdb.set_trace()
         if pixel_values is not None:
             pixel_values = pixel_values.to(self.vision_model.embeddings.cls_token.data.dtype)
 

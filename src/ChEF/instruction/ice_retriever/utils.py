@@ -103,7 +103,6 @@ class DatasetEncoder(torch.utils.data.Dataset):
     def init_dataset(self):
         for idx, data in enumerate(self.datalist):
             tokenized_data = self.tokenizer.encode_plus(data, truncation=True, return_tensors='pt', verbose=False)
-            # import ipdb; ipdb.set_trace()
             self.encode_dataset.append({
                 'input_ids': tokenized_data.input_ids[0],
                 'attention_mask': tokenized_data.attention_mask[0],
@@ -134,7 +133,6 @@ class IMG_DatasetEncoder(torch.utils.data.Dataset):
     def init_dataset(self):
         for idx, data in enumerate(self.datalist):
             img_feature = self.extractor(data, return_tensors='pt')
-            # import ipdb;ipdb.set_trace()
             self.encode_dataset.append({
                 'pixel_values': img_feature.pixel_values[0],
                 "metadata": {"id": idx, "img": data}

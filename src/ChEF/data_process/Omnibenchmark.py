@@ -87,7 +87,6 @@ def main(source_base_dir, target_base_dir, bamboo_annot_path):
         chain = [bamboo_chain.id2name[chain_item][0] for chain_item in chain]
         chain.reverse()
         data_item['chain'] = chain
-    # import ipdb;ipdb.set_trace()
 
     for data_item in omni_data:
         copyfile(os.path.join(source_base_dir,'data', data_item['realm_name'], 'images', data_item['image'].split('/')[-1]),

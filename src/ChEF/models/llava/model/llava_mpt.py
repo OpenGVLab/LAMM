@@ -50,7 +50,7 @@ class LlavaMPTModel(MPTModel):
         if hasattr(config, "mm_vision_tower"):
             # HACK: for FSDP
             # self.vision_tower = [CLIPVisionModel.from_pretrained(config.mm_vision_tower)]
-            self.vision_tower = [CLIPVisionModel.from_pretrained('/mnt/petrelfs/shizhelun/shizhelun/data/checkpoints/clip-vit-large-patch14')]
+            self.vision_tower = [CLIPVisionModel.from_pretrained('data/checkpoints/clip-vit-large-patch14')]
             # self.vision_tower = CLIPVisionModel.from_pretrained(config.mm_vision_tower)
 
         if hasattr(config, "use_mm_proj"):
@@ -100,9 +100,7 @@ class LlavaMPTModel(MPTModel):
         #         self.get_input_embeddings().weight.data[:-2] = orig_embeds_params[:-2].data
         if inputs_embeds == None:
             inputs_embeds = self.wte(input_ids)
-        #import ipdb;ipdb.set_trace()
         vision_tower = getattr(self, 'vision_tower', None)
-        #import ipdb;ipdb.set_trace()
         if vision_tower is not None and (input_ids.shape[1] != 1 or self.training) and images is not None:
             # TODO: this is a modified multimodal LLM -- Haotian Liu
             vision_tower = vision_tower[0]  # HACK: for FSDP
@@ -132,7 +130,6 @@ class LlavaMPTModel(MPTModel):
                 image_features = self.mm_projector(image_features)
             dummy_image_features = torch.zeros(256, 1024, device=inputs_embeds.device, dtype=inputs_embeds.dtype)
             dummy_image_features = self.mm_projector(dummy_image_features)#256,4096
-            # import ipdb;ipdb.set_trace()
             new_input_embeds = []
             cur_image_idx = 0
             for cur_input_ids, cur_input_embeds in zip(input_ids, inputs_embeds):
