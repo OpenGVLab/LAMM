@@ -31,7 +31,6 @@ class Evaluator:
         model.ice_imgs_emb = None
         self.inferencer.inference(model, self.dataset)
         results_path = self.inferencer.results_path
-        # results_path = '/mnt/petrelfs/chenzeren/LAMM/src/ChEF/results/Octavius/OctaviusPCLDataset/20231023214915/scannet_VQA_20231023215655.json'
         result = self.metric.metric(results_path)
         with open(os.path.join(self.save_base_dir, 'results.json'), 'w', encoding='utf-8') as f:
             f.write(json.dumps(dict(
