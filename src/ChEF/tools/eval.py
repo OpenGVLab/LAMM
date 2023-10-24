@@ -65,6 +65,9 @@ def main():
     # dataset
     scenario_cfg = recipe_cfg['scenario_cfg']
     dataset_name = scenario_cfg['dataset_name']
+    if scenario_cfg['dataset_name']=="OctaviusPCLDataset":
+        # delete dataset_name from scenario_cfg
+        scenario_cfg.pop('dataset_name')
     dataset = dataset_dict[dataset_name](**scenario_cfg)
     if args.debug:
         dataset = sample_dataset(dataset, sample_len=16, sample_seed=0)

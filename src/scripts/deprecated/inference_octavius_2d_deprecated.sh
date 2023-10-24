@@ -18,9 +18,9 @@ srun -p ${partition} --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
         --delta_ckpt_path ../ckpt/${exp}/pytorch_model.pt \
         --max_tgt_len 400 \
         --peft_type moe_lora \
-        --moe_lora_num_experts 4 \
+        --moe_lora_num_experts 6 \
         --moe_gate_mode top2_gate \
-        --octavius_modality image \
+        --octavius_modality image pcl \
         --lora_r 32 \
         --lora_alpha 32 \
         --lora_dropout 0.1 \
@@ -30,5 +30,5 @@ srun -p ${partition} --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
         --dataset-name ${dataset} \
         --base-data-path ${base_data_path} \
         --inference-mode common \
-        --bs 32 \
+        --bs 1 \
         --answers-dir ${answerdir}/${exp} \

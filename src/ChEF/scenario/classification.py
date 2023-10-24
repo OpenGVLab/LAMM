@@ -2,6 +2,7 @@ import os
 import json
 from torch.utils.data import Dataset
 import random
+from datasets.system_msg import common_task2sysmsg
 
 
 class CIFAR10Dataset(Dataset):
@@ -29,6 +30,40 @@ class CIFAR10Dataset(Dataset):
         if self.ppl:
             res_dict['options']=['cat','ship','airplane','frog','automobile','truck', 'dog', 'horse', 'deer', 'bird']
         return res_dict
+
+
+class CIFAR10LAMMDataset(Dataset):
+    task_name = 'classification_lamm'
+    dataset_name = 'CIFAR10'
+    CIFAR10_LABELS = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+    def __init__(self, base_data_path, **kwargs):
+        super().__init__()
+        self.base_data_path = base_data_path
+        json_path = os.path.join(self.base_data_path, 'meta_file', 'Classification_CIFAR10.json')
+        self.data = json.load(open(json_path, 'rb'))
+
+        self.system_msg = common_task2sysmsg['Classification']
+
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        item = self.data[index]
+        data_id =  str(item['id']) if 'id' in item else str(index)
+
+        random_labels = random.sample(self.CIFAR10_LABELS, len(self.CIFAR10_LABELS))
+        shuffled_labels_str = ", ".join(random_labels)
+
+        additional_sentence = "Please choose a label from the following shuffled categories: "
+
+        data_dict = {
+            'id' : data_id,
+            'label' : item['label'],
+            'question' : f"{item['query']} {additional_sentence}({shuffled_labels_str})",
+            'image_path' : os.path.join(self.base_data_path, item['image']),
+        }
+        return data_dict
+
 
 class OmnibenchmarkDataset(Dataset):
     task_name = 'fine_grained_classification'
@@ -143,6 +178,65 @@ class OmnibenchmarkDataset(Dataset):
                     ))
                 res_dict['options'] = res_options
         return res_dict
+
+
+class CelebAHairDataset(Dataset):
+    task_name = 'Facial_cls_lamm'
+    dataset_name = 'CelebA(Hair)'
+
+    def __init__(self, base_data_path, **kwargs):
+        super().__init__()
+
+        self.base_data_path = base_data_path
+        json_path = os.path.join(self.base_data_path, 'meta_file', 'Facial_Classification_CelebA(Hair).json')
+        self.data = json.load(open(json_path, 'rb'))
+
+        self.system_msg = common_task2sysmsg['Facial_Classification']
+
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        item = self.data[index]
+        data_id =  str(item['id']) if 'id' in item else str(index)
+ 
+        data_dict = {
+            'id' : data_id,
+            'image_path' : os.path.join(self.base_data_path, item['image']),
+            'question' : item['query'],
+            'gt' : item['attr'],
+        }
+        return data_dict
+
+
+class CelebASmileDataset(Dataset):
+    task_name = 'Facial_cls_lamm'
+    dataset_name = 'CelebA(Smile)'
+
+    def __init__(self, base_data_path, **kwargs):
+        super().__init__()
+
+        self.base_data_path = base_data_path
+        json_path = os.path.join(self.base_data_path, 'meta_file', 'Facial_Classification_CelebA(Smile).json')
+        self.data = json.load(open(json_path, 'rb'))
+
+        self.system_msg = common_task2sysmsg['Facial_Classification']
+
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        item = self.data[index]
+        data_id =  str(item['id']) if 'id' in item else str(index)
+ 
+        data_dict = {
+            'id' : data_id,
+            'image_path' : os.path.join(self.base_data_path, item['image']),
+            'question' : item['query'],
+            'gt' : item['attr'],
+        }
+        return data_dict
+
 
 if __name__ == '__main__':
     dataset = OmnibenchmarkDataset(bamboo_tree_path = '/cpfs01/user/shizhelun/shizhelun/data/dataset/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json', 

@@ -26,8 +26,13 @@ class InstructionHandler:
     def generate_basic_query(self, batch, query=None):
         if not query:
             query = self.query
-        # FIXME: hardcode 'image_path' -> img/pcl modality
-        cur_batch_len = len(batch['image_path'])
+        if 'image_path' in batch:
+            cur_batch_len = len(batch['image_path'])
+        elif 'task_type' in batch:
+            cur_batch_len = len(batch['task_type'])
+        else:
+            raise ValueError('cannot get batch size')
+
         if 'question' in batch:
             question = batch['question']
             prompts = [f'{question[i]}{query}' for i in range(cur_batch_len)]

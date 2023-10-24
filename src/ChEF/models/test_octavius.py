@@ -66,13 +66,70 @@ class TestOctavius(TestBase):
         return ans_list
 
     @torch.no_grad()
-    def generate(self, modality_input, question, sys_msg=None, **kwargs):
+    def do_generate_vqa(self, modality_inputs, question_list, top_p=0.9, temperature=1.0):
+        conv = conv_templates[self.conv_mode]
+        reasoning_list = self.do_generate(modality_inputs, question_list)
+        option_prompt = []
+        for prompt_1, response_1 in zip(question_list, reasoning_list):
+            option_prompt.append(prompt_1 + response_1 + f' {conv.sep2 if conv.sep2 is not None else conv.sep}\nANSWER:')
+        final_answer_list = self.do_generate(modality_inputs, option_prompt) 
+        all_answer_list = []
+        for reasoning, option in zip(reasoning_list, final_answer_list):
+            all_answer_list.append(reasoning + '\n The answer is ' + option)
+        return all_answer_list
+
+    @torch.no_grad()
+    def do_generate_3d(self, modality_inputs, question_list, top_p=0.9, temperature=1.0):
+        modality_inputs.update({
+            'top_p': top_p,
+            'temperature': temperature,
+            'max_tgt_len': self.max_tgt_len,
+            'modality_embeds': [],
+            'prompt': question_list,
+        })
+        response = self.model.generate(modality_inputs)
+
+        conv = conv_templates[self.conv_mode]
+        ans_list = []
+        for res in response:
+            ans_list.append(res.split(conv.sep2 if conv.sep2 is not None else conv.sep)[0])
+        return ans_list
+
+    @torch.no_grad()
+    def generate(
+        self, 
+        modality_input, 
+        question, 
+        sys_msg=None, 
+        dataset_name=None, 
+        **kwargs
+    ):
         prompts = self.generate_conversation_text([question], history=[], sys_msg=sys_msg)
-        outputs = self.do_generate([modality_input], prompts)
+        if task_name.endswith('octavius3d'):
+            outputs = self.do_generate_3d(modality_input, prompts)
+        else:
+            if dataset_name == "ScienceQA":
+                outputs = self.do_generate_vqa([modality_input], prompts)
+            else:
+                outputs = self.do_generate([modality_input], prompts)
         return outputs[0]
 
     @torch.no_grad()
-    def batch_generate(self, modality_inputs, question_list, sys_msg=None, **kwargs):
+    def batch_generate(
+        self, 
+        modality_inputs, 
+        question_list, 
+        sys_msg=None, 
+        dataset_name=None, 
+        task_name=None, 
+        **kwargs
+    ):
         prompts = self.generate_conversation_text(question_list, history=[], sys_msg=sys_msg)
-        outputs = self.do_generate(modality_inputs, prompts)
+        if task_name.endswith('octavius3d'):
+            outputs = self.do_generate_3d(modality_inputs, prompts)
+        else:
+            if dataset_name == "ScienceQA":
+                outputs = self.do_generate_vqa(modality_inputs, prompts)
+            else:
+                outputs = self.do_generate(modality_inputs, prompts)
         return outputs

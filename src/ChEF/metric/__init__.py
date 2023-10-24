@@ -1,6 +1,7 @@
-from .classification import FG_Classification, CG_Classification
-from .vqa import VQA, MMBenchVQA, MMEVQA
-from .caption import Caption
+from .classification import FG_Classification, CG_Classification, LAMM_Classification, \
+    LAMM_Facial_Hair_Classification, LAMM_Facial_Smile_Classification, LAMM_3D_Classification
+from .vqa import VQA, MMBenchVQA, MMEVQA, LAMM_VQA
+from .caption import Caption, LAMM_Caption
 from .desiderata import MMBench_Calibration, ScienceQA_Calibration, POPE_Metric, Instruct_Follow
 from .detection import Detection, KOSMOS_Detection, LAMM_Detection 
 from .counting import Counting
@@ -38,6 +39,18 @@ evaluation_protocol = {
     },  
     'LAMM': {
         'VOC2012': LAMM_Detection,
+        'Flickr30k': LAMM_Caption,
+        'ScienceQA': LAMM_VQA,
+        'CIFAR10': LAMM_Classification,
+        'CelebA(Hair)': LAMM_Facial_Hair_Classification,
+        'CelebA(Smile)': LAMM_Facial_Smile_Classification,
+    },
+    'Octavius3D': {
+        'scannet_Classification': LAMM_3D_Classification,
+        'scannet_Caption': LAMM_Caption,
+        'scannet_VQA': LAMM_Caption,
+        'nr3d_Caption': LAMM_Caption,
+        'shapenet_Classification': LAMM_3D_Classification,
     }
 }
 

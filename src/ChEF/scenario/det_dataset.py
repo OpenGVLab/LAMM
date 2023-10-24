@@ -216,6 +216,6 @@ class VOC2012LAMMDataset(Dataset):
         data_dict = {
             'id': data_id,
             'image_path': os.path.join(self.base_data_path, item['image']),
-            'gt_answer': item['object'],
+            'gt_answers': item['object'],
         }
         return data_dict

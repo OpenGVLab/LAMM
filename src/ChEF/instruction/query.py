@@ -30,6 +30,11 @@ fine_grained_classification_multiturn_prompts = [
      # replace {} with the fore_label (defined in scenario) 
 ]
 
+# LAMM-style classfication prompts
+classification_lamm_prompts = [
+    '',
+]
+
 # classification answer templates for ppl inference
 coarse_grained_classification_templates = [
     'The object in the image is {}',
@@ -64,6 +69,11 @@ caption_prompts = [
     "An image of", # For kosmos2
 ]
 
+# LAMM-style standard prompts
+caption_lamm_prompts = [
+    '',
+]
+
 # caption answer templates for ppl inference
 caption_templates = [
     'The caption for this image is \" {}',
@@ -81,6 +91,16 @@ vqa_prompts = [
     'The answer (option) is',
     'Answer:',
 ]
+
+# vqa
+# LAMM-style standard prompts
+vqa_lamm_prompts = [
+    '',
+]
+
+Classification_octavius3d_prompts = ['']
+VQA_octavius3d_prompts = ['']
+Caption_octavius3d_prompts = ['']
 
 # vqa answer templates for ppl inference
 vqa_templates = [
@@ -134,6 +154,10 @@ pope_templates=[
     'The answer is {}'
 ]
 
+# octavius3d
+octavius3d_templates = [
+    "{}",
+]
 
 query_pool_dict = {
     'coarse_grained_classification_prompts': coarse_grained_classification_prompts,
@@ -143,7 +167,15 @@ query_pool_dict = {
     'counting_prompts': counting_prompts,
     'POPE_prompts':pope_prompts,
     'detection_lamm_prompts': detection_lamm_prompts,
+    'VQA_lamm_prompts' : vqa_lamm_prompts,
+    'caption_lamm_prompts' : caption_lamm_prompts,
+    'Facial_cls_lamm_prompts' : classification_lamm_prompts,
+    'classification_lamm_prompts': classification_lamm_prompts,
+    'Classification_octavius3d_prompts': Classification_octavius3d_prompts,
+    'VQA_octavius3d_prompts': VQA_octavius3d_prompts,
+    'Caption_octavius3d_prompts': Caption_octavius3d_prompts,
 }
+
 ppl_template_dict = {
     'coarse_grained_classification_templates': coarse_grained_classification_templates,
     'fine_grained_classification_templates': fine_grained_classification_templates,
@@ -151,7 +183,10 @@ ppl_template_dict = {
     'counting_templates': counting_templates,
     'caption_templates': caption_templates,
     'detection_templates': detection_templates,
-    'POPE_templates':pope_templates,
+    'POPE_templates': pope_templates,
+    'Classification_octavius3d_templates': octavius3d_templates,
+    'Caption_octavius3d_templates': octavius3d_templates,
+    'VQA_octavius3d_templates': octavius3d_templates,
 }
 
 multiturn_query_dict = {

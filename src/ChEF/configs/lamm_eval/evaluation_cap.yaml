@@ -2,4 +2,4 @@ model: ChEF/configs/models/octavius_2d+3d.yaml
 
 save_dir: ChEF/results
 
-recipe: ChEF/configs/scenario_recipes/VOC2012/lamm_direct.yaml
+recipe: ChEF/configs/scenario_recipes/Flickr30k/lamm_direct.yaml

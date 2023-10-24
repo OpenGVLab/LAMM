@@ -1,5 +1,8 @@
+import re
+import torch
 from torchvision.ops import box_iou
 from tqdm import tqdm
+
 from .utils import Base_Metric
 
 
@@ -95,6 +98,7 @@ class KOSMOS_Detection(Detection):
 class LAMM_Detection(Base_Metric):
 
     def __init__(self, dataset_name, iou_thres=[0.5, 0.25]):
+        super().__init__(dataset_name)
         self.iou_thres = iou_thres
 
     def hungarian_match(
@@ -137,7 +141,7 @@ class LAMM_Detection(Base_Metric):
                 if result is False:
                     iou_matrix[gt_i, pred_i] *= 0.
 
-        return hungarian_match(gt_bboxes, pred_bboxes, iou_matrix, iou_thres)
+        return self.hungarian_match(gt_bboxes, pred_bboxes, iou_matrix, iou_thres)
 
     def parser(self, text, ignore_coord_order=False):
         pat_cat = [
@@ -208,7 +212,7 @@ class LAMM_Detection(Base_Metric):
             num_pred += len(pred_bboxes)
 
             iou_matrix = box_iou(gt_bboxes, pred_bboxes)
-            for iou_i, iou_thres in enumerate(thres):
+            for iou_i, iou_thres in enumerate(self.iou_thres):
                 gt_match_id = self.hungarian_match(
                     gt_bboxes, pred_bboxes, iou_matrix.clone(), iou_thres)
                 tp[iou_i] += (gt_match_id != -1).sum()
@@ -220,9 +224,9 @@ class LAMM_Detection(Base_Metric):
         metric_dict = dict()
         for iou_i, iou_thres in enumerate(self.iou_thres):
             metric_dict.update({
-                f'recall@{iou_thres:.2f}': tp_with_cls[iou_i] / num_gt * 100,
-                f'prec@{iou_thres:.2f}': tp_with_cls[iou_i] / num_pred * 100,
-                f'recall_wocat@{iou_thres:.2f}': tp[iou_i] / num_gt * 100,
-                f'prec_wocat@{iou_thres:.2f}': tp[iou_i] / num_pred * 100,
+                f'recall@{iou_thres:.2f}': (tp_with_cls[iou_i] / num_gt * 100).item(),
+                f'prec@{iou_thres:.2f}': (tp_with_cls[iou_i] / num_pred * 100).item(),
+                f'recall_wocat@{iou_thres:.2f}': (tp[iou_i] / num_gt * 100).item(),
+                f'prec_wocat@{iou_thres:.2f}': (tp[iou_i] / num_pred * 100).item(),
             })
         return metric_dict
