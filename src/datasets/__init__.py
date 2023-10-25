@@ -1,4 +1,4 @@
-from header import *
+from torch.utils.data import DataLoader
 from .samplers import DistributedBatchSampler
 from .dataset import *
 from .LAMM_benchmark2D_dataset import LAMM_EVAL_2D

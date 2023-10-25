@@ -2,10 +2,10 @@ import torch
 import torch.nn.functional as F
 import yaml
 
-from .lamm.utils.conversations import conv_templates
+from model.LAMM.conversations import conv_templates
 from .utils import get_image
 from .test_base import TestBase
-from model.openlamm import LAMMPEFTModel
+from model.LAMM import LAMMPEFTModel
 
 class TestLAMM(TestBase):
     def __init__(self, 

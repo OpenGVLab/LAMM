@@ -8,7 +8,7 @@ from torch.nn.utils import rnn
 from peft import LoraConfig, TaskType, get_peft_model
 from transformers import LlamaForCausalLM, LlamaTokenizer, StoppingCriteria, StoppingCriteriaList
 
-import conversations
+import model.LAMM.conversations as conversations
 from .CLIP import load as load_clip
 from .EPCL import build_epcl_encoder
 

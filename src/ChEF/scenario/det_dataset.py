@@ -4,10 +4,9 @@ from torch.utils.data import Dataset
 import random
 from tqdm import tqdm
 import numpy as np
-from PIL import Image
 import copy
 
-from datasets.system_msg import common_task2sysmsg
+from .lamm_sysmsg import common_task2sysmsg
 
 
 def cal_iou(bbox1, bbox2):

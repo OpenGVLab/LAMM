@@ -7,7 +7,7 @@ import torch
 from torch.utils.data import Dataset
 from tqdm import tqdm
 
-from datasets.system_msg import common_task2sysmsg
+from .lamm_sysmsg import common_task2sysmsg
 
 
 class OctaviusPCLDataset(Dataset):

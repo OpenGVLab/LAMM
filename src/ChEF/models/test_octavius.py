@@ -1,7 +1,7 @@
 import torch
-from model.Octavius.octavius import Octavius
+from model.Octavius import Octavius
 
-from conversations import conv_templates
+from model.LAMM.conversations import conv_templates
 from .test_base import TestBase
 
 
@@ -102,6 +102,7 @@ class TestOctavius(TestBase):
         question, 
         sys_msg=None, 
         dataset_name=None, 
+        task_name=None,
         **kwargs
     ):
         prompts = self.generate_conversation_text([question], history=[], sys_msg=sys_msg)

@@ -8,7 +8,7 @@ from torch.nn.utils import rnn
 from torchvision import transforms
 from typing import List
 
-import conversations
+import model.LAMM.conversations as conversations
 from model.LAMM.openlamm import StoppingCriteriaList, LAMMStoppingCriteria, \
     build_one_instance, LAMMPEFTModel, VISION_TAGS
 from .utils.helpers import Resampler3D

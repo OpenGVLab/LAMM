@@ -2,7 +2,7 @@ import os
 import json
 from torch.utils.data import Dataset
 import random
-from datasets.system_msg import common_task2sysmsg
+from .lamm_sysmsg import common_task2sysmsg
 
 
 class FlickrDataset(Dataset):

@@ -1,6 +1,6 @@
 scenario_cfg:
   dataset_name: CIFAR10_LAMM
-  base_data_path: ../data/2D_Benchmark
+  base_data_path: /mnt/petrelfs/shizhelun/shizhelun/code/LAMM/data/datasets/LAMM/2D_Benchmark
 
 eval_cfg:
   instruction_cfg:
