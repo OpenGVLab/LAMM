@@ -1,5 +1,5 @@
 import torch
-from model.octavius import Octavius
+from model.Octavius.octavius import Octavius
 
 from conversations import conv_templates
 from .test_base import TestBase

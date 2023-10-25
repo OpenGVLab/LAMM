@@ -1,7 +1,23 @@
-from config import *
-from datasets import *
-from header import *
-from model import *
+from datasets import load_dataset
+import argparse
+import json
+import logging
+import os
+import random
+import time
+
+import numpy as np
+import torch
+import yaml
+from tqdm import tqdm
+
+import deepspeed
+from transformers.deepspeed import HfDeepSpeedConfig
+from model import load_model
+
+logging.getLogger("transformers").setLevel(logging.WARNING)
+logging.getLogger("transformers.tokenization_utils").setLevel(logging.ERROR)
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
 def parser_args():
@@ -206,12 +222,12 @@ def main(**args):
         )
     
     if args['use_flash_attn']:
-        from model.flash_attn_patch import replace_llama_attn_with_flash_attn
+        from model.LAMM.flash_attn_patch import replace_llama_attn_with_flash_attn
         logging.info("⚡⚡⚡ enable flash attention.")
         replace_llama_attn_with_flash_attn()
 
     if args['use_xformers']:
-        from model.xformers_patch import replace_llama_attn_with_xformers_attn
+        from model.LAMM.xformers_patch import replace_llama_attn_with_xformers_attn
         logging.info("xxx enable xformers attention.")
         replace_llama_attn_with_xformers_attn()
 

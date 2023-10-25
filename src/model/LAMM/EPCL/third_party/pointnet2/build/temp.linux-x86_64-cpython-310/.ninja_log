@@ -1,0 +1,10 @@
+# ninja log v5
+4	23804	1698217748000000000	/mnt/petrelfs/shizhelun/shizhelun/code/LAMM/src/model/LAMM/EPCL/third_party/pointnet2/build/temp.linux-x86_64-cpython-310/_ext_src/src/sampling.o	4cb48f4e534b1e68
+4	25381	1698217748000000000	/mnt/petrelfs/shizhelun/shizhelun/code/LAMM/src/model/LAMM/EPCL/third_party/pointnet2/build/temp.linux-x86_64-cpython-310/_ext_src/src/ball_query.o	90e7812121df86ca
+4	25400	1698217748000000000	/mnt/petrelfs/shizhelun/shizhelun/code/LAMM/src/model/LAMM/EPCL/third_party/pointnet2/build/temp.linux-x86_64-cpython-310/_ext_src/src/bindings.o	ad65664fa23ddc30
+4	25418	1698217748000000000	/mnt/petrelfs/shizhelun/shizhelun/code/LAMM/src/model/LAMM/EPCL/third_party/pointnet2/build/temp.linux-x86_64-cpython-310/_ext_src/src/group_points.o	8a0b3ff7abb81400
+4	25437	1698217748000000000	/mnt/petrelfs/shizhelun/shizhelun/code/LAMM/src/model/LAMM/EPCL/third_party/pointnet2/build/temp.linux-x86_64-cpython-310/_ext_src/src/interpolate.o	5122317fa8c87305
+4	26727	1698217751000000000	/mnt/petrelfs/shizhelun/shizhelun/code/LAMM/src/model/LAMM/EPCL/third_party/pointnet2/build/temp.linux-x86_64-cpython-310/_ext_src/src/ball_query_gpu.o	34b2e18271cc2825
+4	26743	1698217751000000000	/mnt/petrelfs/shizhelun/shizhelun/code/LAMM/src/model/LAMM/EPCL/third_party/pointnet2/build/temp.linux-x86_64-cpython-310/_ext_src/src/group_points_gpu.o	dc5729fb609bf528
+4	26793	1698217751000000000	/mnt/petrelfs/shizhelun/shizhelun/code/LAMM/src/model/LAMM/EPCL/third_party/pointnet2/build/temp.linux-x86_64-cpython-310/_ext_src/src/sampling_gpu.o	d6ce35b56dcecc6c
+4	26818	1698217751000000000	/mnt/petrelfs/shizhelun/shizhelun/code/LAMM/src/model/LAMM/EPCL/third_party/pointnet2/build/temp.linux-x86_64-cpython-310/_ext_src/src/interpolate_gpu.o	e0f139134e1d1e4c

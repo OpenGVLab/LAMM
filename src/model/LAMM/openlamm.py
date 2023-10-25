@@ -1,21 +1,20 @@
-import io
-
+import os
+import numpy as np
+import torch.nn as nn
 import requests
 import torch
-import torch.nn.functional as F
 from PIL import Image, ImageFile
 from torch.nn.utils import rnn
+from peft import LoraConfig, TaskType, get_peft_model
+from transformers import LlamaForCausalLM, LlamaTokenizer, StoppingCriteria, StoppingCriteriaList
 
 import conversations
-from header import *
-from transformers import StoppingCriteria, StoppingCriteriaList
-
 from .CLIP import load as load_clip
 from .EPCL import build_epcl_encoder
 
 from .modeling_lightllm import LlamaLightForCausalLM
 from .modeling_llama import LlamaForCausalLM
-from .utils.pcl_utils import MEAN_COLOR_RGB, RandomCuboid, random_sampling
+from .utils.pcl_utils import MEAN_COLOR_RGB, random_sampling
 from .utils.data import transform_vision_data
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True

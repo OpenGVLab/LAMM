@@ -1,6 +1,6 @@
-from .agent import DeepSpeedAgent
-from .openlamm import LAMMPEFTModel
-from .octavius import Octavius
+from .training_agent import DeepSpeedAgent
+from .LAMM import LAMMPEFTModel
+from .Octavius import Octavius
 
 
 def load_model(args):

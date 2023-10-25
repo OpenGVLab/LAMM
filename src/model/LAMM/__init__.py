@@ -1,0 +1,1 @@
+from .openlamm import LAMMPEFTModel

@@ -9,7 +9,7 @@ from torchvision import transforms
 from typing import List
 
 import conversations
-from .openlamm import StoppingCriteriaList, LAMMStoppingCriteria, \
+from model.LAMM.openlamm import StoppingCriteriaList, LAMMStoppingCriteria, \
     build_one_instance, LAMMPEFTModel, VISION_TAGS
 from .utils.helpers import Resampler3D
 from .utils.moe.layer import MoeLoraLayer, Top2Gating
