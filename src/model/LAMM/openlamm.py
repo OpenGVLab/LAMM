@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 import os
 from peft import LoraConfig, TaskType, get_peft_model
@@ -9,12 +10,26 @@ from torch.nn.utils import rnn
 from transformers import LlamaForCausalLM, LlamaTokenizer, StoppingCriteria, StoppingCriteriaList
 
 from .CLIP import load as load_clip
-from .EPCL import build_epcl_encoder
 import model.LAMM.conversations as conversations
-from .modeling_lightllm import LlamaLightForCausalLM
 from .modeling_llama import LlamaForCausalLM
 from .utils.pcl_utils import MEAN_COLOR_RGB, random_sampling
 from .utils.data import transform_vision_data
+
+# load optional 3d encoder
+try:
+    LOAD_EPCL_EXT = True
+    from .EPCL import build_epcl_encoder
+except ModuleNotFoundError as e:
+    LOAD_EPCL_EXT = False
+    logging.warning(f'{e.msg}. Please refer to README.md to install optional extension for 3D environment if required.')
+
+# load optional lightllm
+try:
+    LOAD_LIGHTLLM_EXT = True
+    from .modeling_lightllm import LlamaLightForCausalLM
+except ModuleNotFoundError as e:
+    LOAD_LIGHTLLM_EXT = False
+    logging.warning(f'{e.msg}. Please refer to README.md to install optional LightLLM extension if required.')
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -225,6 +240,9 @@ class LAMMPEFTModel(nn.Module):
                 )  # may cut partial tokens
 
         elif self.encoder_pretrain.lower() == "epcl":
+            if LOAD_EPCL_EXT is False:
+                raise ModuleNotFoundError('Please refer to README.md to install extension for 3D environment.')
+
             # PCL data Processing
             self.use_color = (
                 self.args["use_color"] if "use_color" in self.args else False
@@ -260,6 +278,9 @@ class LAMMPEFTModel(nn.Module):
         peft_config = self.build_peft_config()
 
         if args.get('use_lightllm', False):
+            if LOAD_LIGHTLLM_EXT is False:
+                raise ModuleNotFoundError('Please refer to README.md to install LightLLM extension.')
+
             self.llama_model = LlamaLightForCausalLM(
                 batch_size=self.args['bs'],
                 max_input_len=1024,

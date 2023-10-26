@@ -11,9 +11,9 @@ from typing import List
 import model.LAMM.conversations as conversations
 from model.LAMM.openlamm import StoppingCriteriaList, LAMMStoppingCriteria, \
     build_one_instance, LAMMPEFTModel, VISION_TAGS
-from .utils.helpers import Resampler3D
-from .utils.moe.layer import MoeLoraLayer, Top2Gating
-from .utils.moe import MoeLoraConfig
+from .moe.layer import MoeLoraLayer, Top2Gating
+from .moe import MoeLoraConfig
+from .resampler3d import Resampler3D
 
 
 def make_prompt_start(
