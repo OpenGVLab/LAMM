@@ -46,7 +46,7 @@ loop_3d: 0
 
 # deepspeed arguments
 deepspeed:
-  train_batch_size: 16 # 64
+  train_batch_size: 64 # 64
   train_micro_batch_size_per_gpu: 2
   gradient_accumulation_steps: 8
   gradient_clipping: 1.0

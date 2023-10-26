@@ -20,15 +20,16 @@
 # result related
 answers/
 results/
-ckpt/
-ckpt3d/
+ckpt/*
+!ckpt/.gitkeep
 
 *.jsonl
 
 
 # assets related
-data/
-datasets/
-model_zoo/
+data/*
+!data/.gitkeep
+model_zoo/*
+!model_zoo/.gitkeep
 
 # package related
