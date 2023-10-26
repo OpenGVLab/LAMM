@@ -19,6 +19,7 @@
 
 # result related
 answers/
+results/
 ckpt/
 ckpt3d/
 

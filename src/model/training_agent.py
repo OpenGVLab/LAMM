@@ -1,12 +1,10 @@
-import datetime
-import logging
-import types
 from collections import OrderedDict
-
-import torch
+import datetime
 import deepspeed
-
+import logging
+import torch
 from torch.utils.tensorboard import SummaryWriter
+import types
 
 
 class DeepSpeedAgent:

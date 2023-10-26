@@ -1,8 +1,7 @@
+import torch
 from torch.utils.data import DataLoader
 from .samplers import DistributedBatchSampler
-from .dataset import *
-from .LAMM_benchmark2D_dataset import LAMM_EVAL_2D
-from .LAMM_benchmark3D_dataset import LAMM_EVAL_3D, OctaviusEval3dDataset
+from .dataset import LAMMDataset, OctaviusDataset
 
 
 def collate_fn(batch):
@@ -54,44 +53,3 @@ def load_dataset(args):
         pin_memory=True,
     )
     return dataset, dataloader, sampler
-
-
-def load_2Deval_dataset(base_data_path,
-                        dataset_name,
-                        mode='common',
-                        load_data=True,
-                        batch_size=1):
-    dataset = LAMM_EVAL_2D(base_data_path,
-                           dataset_name,
-                           mode,
-                           load_data)
-    dataloader = DataLoader(dataset=dataset, batch_size=batch_size,shuffle=False,num_workers=2, drop_last=False,collate_fn=collate_fn)
-    return dataloader
-
-
-def load_3Deval_dataset(base_data_path,
-                        dataset_name,
-                        mode='common',
-                        load_data=True,
-                        batch_size=1):
-    dataset = LAMM_EVAL_3D(base_data_path,
-                           dataset_name,
-                           mode,
-                           load_data)
-    dataloader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=False, num_workers=2, drop_last=False, collate_fn=collate_fn)
-    return dataloader
-
-
-def load_3Deval_dataset_v2(base_data_path,
-                           task_name,
-                           dataset_name,
-                           vision_root_path,
-                           batch_size=1):
-    dataset = OctaviusEval3dDataset(
-        base_data_path,
-        task_name,
-        dataset_name, 
-        vision_root_path
-    )
-    dataloader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=False, num_workers=2, drop_last=False, collate_fn=dataset.collate)
-    return dataloader
