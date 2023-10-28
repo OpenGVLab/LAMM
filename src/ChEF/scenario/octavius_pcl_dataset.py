@@ -12,10 +12,11 @@ from .lamm_sysmsg import common_task2sysmsg
 
 class OctaviusPCLDataset(Dataset):
 
-    def __init__(self, base_data_path: str, task_name: str, inference_dataset_name: str, vision_root_path: str):
+    def __init__(self, base_data_path: str, task_name: str, inference_dataset_name: str, vision_root_path: str, **kwargs):
         super().__init__()
         self.task_name = task_name + '_octavius3d'
         self.dataset_name = inference_dataset_name + '_' + task_name
+        self.data = []
         self.system_msg = common_task2sysmsg[task_name + '3D']
 
         data_file_path = os.path.join(base_data_path, 'meta_file', task_name + '_' + inference_dataset_name + '.json')
