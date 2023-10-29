@@ -36,7 +36,7 @@ evaluation_protocol = {
     },
     'KOSMOS':{ # kosmos outputs special tokens for bbox
         'VOC2012': KOSMOS_Detection,
-    },  
+    },
     'LAMM': {
         'VOC2012': LAMM_Detection,
         'Flickr30k': LAMM_Caption,
