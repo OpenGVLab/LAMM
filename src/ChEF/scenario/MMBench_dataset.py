@@ -45,7 +45,7 @@ class MMBenchDataset(Dataset):
                  text_crp=False,
                  img_crp=False,
                  generative=False,
-                 data_c_path = 'data/datasets/ChEF/MMBench_C',
+                 data_c_path = '../data/ChEF/MMBench_C',
                  **kwargs
         ):
         self.df = pd.read_csv(os.path.join(base_data_path, f'mmbench_{split}_20230712.tsv'), sep='\t')
@@ -68,8 +68,10 @@ class MMBenchDataset(Dataset):
                 self.option_map=OPTION_MAP[self.map_type][option_map['ids']]
         self.text_crp = text_crp
         self.img_crp = img_crp
-        self.img_c_path = os.path.join(data_c_path, 'images')
-        self.txt_c = json.load(open(os.path.join(data_c_path, 'MMBench_C.json'), 'rb'))
+        if img_crp:
+            self.img_c_path = os.path.join(data_c_path, 'images')
+        if text_crp:
+            self.txt_c = json.load(open(os.path.join(data_c_path, 'MMBench_C.json'), 'rb'))
         self.generative = generative
 
         self.data = None

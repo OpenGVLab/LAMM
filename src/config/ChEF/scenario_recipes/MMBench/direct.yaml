@@ -1,6 +1,6 @@
 scenario_cfg:
   dataset_name: MMBench
-  base_data_path: data/datasets/MMBench
+  base_data_path: ../data/MMBench
   split: dev
   hint: True
 

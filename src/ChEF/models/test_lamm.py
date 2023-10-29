@@ -10,19 +10,16 @@ from model.LAMM import LAMMPEFTModel
 class TestLAMM(TestBase):
     def __init__(self, 
                  model_path,
-                 vicuna_ckpt_path,
-                 cfg_path = 'models/lamm/lamm_eval.yaml',
-                 encoder_ckpt_path = None, 
                  task_type = 'normal',
                  **kwargs
                  ):
         self.conv_mode = 'simple'
-        with open(cfg_path, 'r', encoding='utf-8') as f:
-            cfg_dict = yaml.load(f.read(), Loader=yaml.FullLoader)
-        cfg_dict['vicuna_ckpt_path'] = vicuna_ckpt_path
-        if encoder_ckpt_path is not None:
-            cfg_dict['encoder_ckpt_path'] = encoder_ckpt_path
-        self.model = LAMMPEFTModel(**cfg_dict)
+        # with open(cfg_path, 'r', encoding='utf-8') as f:
+        #     cfg_dict = yaml.load(f.read(), Loader=yaml.FullLoader)
+        # cfg_dict['vicuna_ckpt_path'] = vicuna_ckpt_path
+        # if encoder_ckpt_path is not None:
+        #     cfg_dict['encoder_ckpt_path'] = encoder_ckpt_path
+        self.model = LAMMPEFTModel(**kwargs)
         delta_ckpt = torch.load(model_path, map_location=torch.device('cpu'))
         self.model.load_state_dict(delta_ckpt, strict=False)
         self.model = self.model.eval().half()

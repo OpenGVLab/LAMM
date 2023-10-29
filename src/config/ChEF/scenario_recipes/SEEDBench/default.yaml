@@ -1,6 +1,6 @@
 scenario_cfg:
   dataset_name: SEEDBench
-  base_data_path: data/datasets/SEED-Bench
+  base_data_path: ../data/SEED-Bench
 
 eval_cfg:
   instruction_cfg: 

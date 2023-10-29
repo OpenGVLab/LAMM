@@ -1,6 +1,6 @@
 from sentence_transformers import SentenceTransformer
 from sentence_transformers import util
-
+from torch.utils.data import Dataset
 
 class Bert_Similarity:
     def __init__(self, model_path = 'sentence-transformers/all-MiniLM-L6-v2') -> None:
@@ -19,3 +19,13 @@ class Bert_Similarity:
     def embedding_similarity_score(self, emb1, emb2):
         score_metric = self.cos_func(emb1, emb2)
         return score_metric
+    
+
+mmbench_rand_acc = {'circular': 2.55,
+                    'vanilla': 27.67}
+
+sqa_rand_acc = {'circular': 35.8,
+                'vanilla': 35.8}
+
+rand_acc = {'MMBench': mmbench_rand_acc,
+            'ScienceQA': sqa_rand_acc}

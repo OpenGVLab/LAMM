@@ -38,6 +38,21 @@ class CG_Classification(Base_Metric):
             SYN_ACC = syn_acc,
         )
 
+class UCMerced_Classification(Base_Metric):
+    def __init__(self, dataset_name, **kwargs):
+        super().__init__(dataset_name)
+
+    def metric_func(self, answers):
+        correct = 0
+        for item in tqdm(answers, desc="Running Metric"):
+            gt = item['gt_answers']
+            pred = item['answer']
+            if gt in pred:
+                correct += 1
+        acc = correct / len(answers) * 100
+        return dict(
+            ACC = acc,
+        )
 
 class LAMM_Classification(Base_Metric):
     def __init__(self, dataset_name, **kwargs):

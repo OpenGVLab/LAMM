@@ -1,6 +1,6 @@
 scenario_cfg:
   dataset_name: CIFAR10
-  base_data_path: data/datasets/LAMM/2D_Benchmark
+  base_data_path: ../data/LAMM/2D_Benchmark
   ppl: True
 eval_cfg:
   instruction_cfg: 

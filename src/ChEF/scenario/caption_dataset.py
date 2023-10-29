@@ -2,7 +2,6 @@ import os
 import json
 from torch.utils.data import Dataset
 import random
-from .lamm_sysmsg import common_task2sysmsg
 
 
 class FlickrDataset(Dataset):
@@ -114,32 +113,3 @@ class FlickrDataset(Dataset):
                 option_list += self.candidate_sentence_list[index][:len(res_dict['gt_answers'])]
             res_dict['options'] = option_list
         return res_dict
-
-
-class FlickrLAMMDataset(Dataset):
-    task_name = 'caption_lamm'
-    dataset_name = 'Flickr30k'
-    
-    def __init__(self, base_data_path, **kwargs):
-        super().__init__()
-
-        self.base_data_path = base_data_path
-        json_path = os.path.join(self.base_data_path, 'meta_file', 'Caption_flickr30k.json')
-        self.data = json.load(open(json_path, 'rb'))
-
-        self.system_msg = common_task2sysmsg['Caption']
-
-    def __len__(self):
-        return len(self.data)
-    
-    def __getitem__(self, index):
-        item = self.data[index]
-        data_id =  str(item['id']) if 'id' in item else str(index)
-
-        data_dict = {
-            'id' : data_id,
-            'image_path' : os.path.join(self.base_data_path, item['image']),
-            'question' : item['query'],
-            'gt_sentences' : item['sentences'],
-        }
-        return data_dict

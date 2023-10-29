@@ -45,7 +45,6 @@ class Direct_inferencer:
             else:
                 prompts = self.instruction_handler.generate_basic_query(batch)
                 cot = None
-
             # compatible with LAMM-style inference
             sys_msg = None if not hasattr(dataset, 'system_msg') else dataset.system_msg
             outputs = model.batch_generate(

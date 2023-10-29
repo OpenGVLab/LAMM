@@ -160,6 +160,8 @@ class LAMM_Detection(Base_Metric):
         ret_boxes, ret_cls = [], []
         for i, box in enumerate(boxes):
             box = box.strip()
+            if len(box) == 0:
+                continue
             if i == len(boxes) - 1 and box[-1] == '.':
                 box = box[:-1]
             box += '.'
@@ -224,9 +226,9 @@ class LAMM_Detection(Base_Metric):
         metric_dict = dict()
         for iou_i, iou_thres in enumerate(self.iou_thres):
             metric_dict.update({
-                f'recall@{iou_thres:.2f}': (tp_with_cls[iou_i] / num_gt * 100).item(),
-                f'prec@{iou_thres:.2f}': (tp_with_cls[iou_i] / num_pred * 100).item(),
-                f'recall_wocat@{iou_thres:.2f}': (tp[iou_i] / num_gt * 100).item(),
-                f'prec_wocat@{iou_thres:.2f}': (tp[iou_i] / num_pred * 100).item(),
+                f'recall@{iou_thres:.2f}': (tp_with_cls[iou_i] / num_gt * 100),
+                f'prec@{iou_thres:.2f}': (tp_with_cls[iou_i] / (num_pred + 1e-7) * 100),
+                f'recall_wocat@{iou_thres:.2f}': (tp[iou_i] / num_gt * 100),
+                f'prec_wocat@{iou_thres:.2f}': (tp[iou_i] / (num_pred + 1e-7) * 100),
             })
         return metric_dict

@@ -6,8 +6,6 @@ from tqdm import tqdm
 import numpy as np
 import copy
 
-from .lamm_sysmsg import common_task2sysmsg
-
 
 def cal_iou(bbox1, bbox2):
     ixmin = np.maximum(bbox1[0], bbox2[0])
@@ -190,31 +188,3 @@ class VOC2012Dataset(Dataset):
             res_dict['grounding_options'] = grounding_options
             
         return res_dict
-
-
-class VOC2012LAMMDataset(Dataset):
-    task_name = 'detection_lamm'
-    dataset_name = 'VOC2012'
-
-    def __init__(self, base_data_path, **kwargs):
-        super().__init__()
-
-        self.base_data_path = base_data_path
-        json_path = os.path.join(self.base_data_path, 'meta_file', 'Detection_VOC2012.json')
-        self.data = json.load(open(json_path, 'rb'))
-
-        self.system_msg = common_task2sysmsg['Detection']
-    
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, index):
-        item = self.data[index]
-        data_id = str(item['id']) if 'id' in item else str(index)
-
-        data_dict = {
-            'id': data_id,
-            'image_path': os.path.join(self.base_data_path, item['image']),
-            'gt_answers': item['object'],
-        }
-        return data_dict

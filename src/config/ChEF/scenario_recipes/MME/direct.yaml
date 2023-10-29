@@ -1,6 +1,6 @@
 scenario_cfg:
   dataset_name: MME
-  base_data_path: data/datasets/MME_Benchmark_release_version
+  base_data_path: ../data/MME_Benchmark_release_version
 
 eval_cfg:
   instruction_cfg: 
