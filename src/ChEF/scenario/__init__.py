@@ -39,6 +39,7 @@ dataset_dict = {
     'CelebA(Hair)' : CelebAHairDataset,
     'CelebA(Smile)' : CelebASmileDataset,
     'AI2D': AI2DDataset,
+    'ScanQA_LAMM': ScanQALAMMDataset,
 
     # MMBench
     'MMBench': MMBenchDataset,

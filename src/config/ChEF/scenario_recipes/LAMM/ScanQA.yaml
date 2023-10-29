@@ -1,0 +1,14 @@
+scenario_cfg:
+  dataset_name: ScanQA_LAMM
+  base_data_path: /mnt/petrelfs/share_data/caojianjian/dataset/LAMM-Dataset/3D_Benchmark
+
+eval_cfg:
+  instruction_cfg:
+    query_type: standard_query
+  inferencer_cfg:
+    inferencer_type: Direct_LAMM3D
+    batch_size: 8
+    CoT: False
+    max_new_tokens: 256
+  metric_cfg:
+    metric_type: LAMM

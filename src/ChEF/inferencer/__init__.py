@@ -1,10 +1,11 @@
-from .Direct import Direct_inferencer, Direct3D_inferencer, Det_Direct_inferencer, Icl_Direct_inferencer
+from .Direct import Direct_inferencer, Direct3D_inferencer, Det_Direct_inferencer, Icl_Direct_inferencer, Direct_LAMM3D_inferencer
 from .PPL import PPL_inferencer, ICL_PPL_inferencer, Det_PPL_inferencer, Cali_inferencer
 from .Multiturn import Multi_Turn_PPL_inferencer
 
 inferencer_dict = {
     'Direct': Direct_inferencer,
     'Direct3D': Direct3D_inferencer, 
+    'Direct_LAMM3D': Direct_LAMM3D_inferencer, 
     'Det': Det_Direct_inferencer,
     'Det_PPL': Det_PPL_inferencer,
     'PPL': PPL_inferencer,

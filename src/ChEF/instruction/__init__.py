@@ -28,6 +28,8 @@ class InstructionHandler:
             query = self.query
         if 'image_path' in batch:
             cur_batch_len = len(batch['image_path'])
+        elif 'pcl_path' in batch:
+            cur_batch_len = len(batch['pcl_path'])
         elif 'task_type' in batch:
             cur_batch_len = len(batch['task_type'])
         else:
