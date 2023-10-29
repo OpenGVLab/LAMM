@@ -4,7 +4,7 @@ import yaml
 
 from ChEF.models import get_model
 from ChEF.scenario import dataset_dict
-from ChEF import Evaluator, load_config, sample_dataset
+from ChEF.evaluator import Evaluator, load_config, sample_dataset
 
 def main():
     model_cfg, recipe_cfg, save_dir, sample_len = load_config()

@@ -1,5 +1,5 @@
 scenario_cfg:
-  dataset_name: ScienceQA_LAMM
+  dataset_name: AI2D
   base_data_path: ../data/LAMM/2D_Benchmark
 
 eval_cfg:

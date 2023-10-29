@@ -9,4 +9,4 @@ eval_cfg:
     inferencer_type: Direct
     batch_size: 32
   metric_cfg:
-    metric_type: LAMM
+    metric_type: basic

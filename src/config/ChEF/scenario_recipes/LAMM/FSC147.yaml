@@ -1,5 +1,5 @@
 scenario_cfg:
-  dataset_name: ScienceQA_LAMM
+  dataset_name: FSC147_LAMM
   base_data_path: ../data/LAMM/2D_Benchmark
 
 eval_cfg:
@@ -7,8 +7,8 @@ eval_cfg:
     query_type: standard_query
   inferencer_cfg:
     inferencer_type: Direct
-    batch_size: 8
-    CoT: True
     max_new_tokens: 256
+    batch_size: 32
   metric_cfg:
-    metric_type: LAMM
+    metric_type: basic
+    inference_type: direct

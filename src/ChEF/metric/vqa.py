@@ -272,7 +272,7 @@ class LAMM_VQA(Base_Metric):
         score = 0.0
         for item in tqdm(answers, desc="Running Metric"):
             tmp_score = 0
-            pred_text = item['answer']
+            pred_text = item['CoT_answer'] + item['answer']
             gt_choice = item['gt_choice']
             gt_char = CHOICE[gt_choice]
             gt_choices = item['gt_choices']

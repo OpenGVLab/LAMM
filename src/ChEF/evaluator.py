@@ -52,6 +52,8 @@ class CustomSubset(Subset):
         self.task_name = dataset.task_name
         self.dataset_name = dataset.dataset_name
         self.data = dataset.data
+        if hasattr(dataset, 'system_msg'):
+            self.system_msg = dataset.system_msg
 
 
 def load_yaml(cfg_path):

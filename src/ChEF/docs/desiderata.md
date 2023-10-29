@@ -37,7 +37,7 @@ python tools/desiderata/eval_langperf.py --base-data-path dataset_path --answer-
 ## Robustness
 Robustness measures how robust an MLLM is to corruption in the multimodal inputs. ChEF provides the robustness evaluation on [MMBench](../configs/desiderata_recipes/Robust/MMBench.yaml) and [ScienceQA](../configs/desiderata_recipes/Robust/ScienceQA.yaml).
 ```shell
-python tools/desiderata/eval_robust.py configs/desiderata_recipes/Robust/evaluation.yaml
+python tools/desiderata/eval_robust.py --model_cfg configs/desiderata_recipes/Robust/evaluation.yaml 
 ```
 
 ## Hallucination

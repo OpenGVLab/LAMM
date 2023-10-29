@@ -202,8 +202,10 @@ def query_from_query_pool(
         **kwargs
         ):
     prompt_name = task_name + '_prompts'
-    query_pool = query_pool_dict[prompt_name]
-    query = query_pool[assigned_ids]
+    query = ''
+    if prompt_name in query_pool_dict:
+        query_pool = query_pool_dict[prompt_name]
+        query = query_pool[assigned_ids]
     return query
 
 def query_from_standard_query(
@@ -221,8 +223,10 @@ def multiturn_query_from_query_pool(
         return : list of tuple (prompt, multiturn_prompt, answer_template)
     """
     multiturn_name = task_name + '_multiturn_prompts'
-    multiturnppl_pool = multiturn_query_dict[multiturn_name]
-    multiturn_query = multiturnppl_pool[assigned_ids]
+    multiturn_query = ['', '']
+    if multiturn_name in multiturn_query_dict:
+        multiturnppl_pool = multiturn_query_dict[multiturn_name]
+        multiturn_query = multiturnppl_pool[assigned_ids]
     return multiturn_query
 
 def ppl_template(
@@ -232,8 +236,10 @@ def ppl_template(
         **kwargs
     ):
     template_name = task_name + '_templates'
-    template_pool = ppl_template_dict[template_name]
-    template = template_pool[assigned_ids]
+    template = '{}'
+    if template_name in ppl_template_dict:
+        template_pool = ppl_template_dict[template_name]
+        template = template_pool[assigned_ids]
     if query_type == 'multiturn' and isinstance(template, str): # each turn uses the same template
         template = [template, template]
     return template
