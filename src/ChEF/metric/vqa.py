@@ -245,7 +245,7 @@ class LAMM_VQA(Base_Metric):
 
     def metric_func(self, answers):
         import re
-        CHOICE = ['A', 'B', 'C', 'D', 'E']
+        CHOICE = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
         pattern_1 = re.compile(r'The answer is \(?[A-E]\)?\W|the answer is \(?[A-E]\)?\W')
         pattern_2 = re.compile(r'ANSWER: [A-E]')
         pattern_3 = re.compile(r'\([A-E]\)')
@@ -272,7 +272,10 @@ class LAMM_VQA(Base_Metric):
         score = 0.0
         for item in tqdm(answers, desc="Running Metric"):
             tmp_score = 0
-            pred_text = item['CoT_answer'] + item['answer']
+            if 'CoT_answer' in item:
+                pred_text = item['CoT_answer'] + item['answer']
+            else:
+                pred_text = item['answer']
             gt_choice = item['gt_choice']
             gt_char = CHOICE[gt_choice]
             gt_choices = item['gt_choices']

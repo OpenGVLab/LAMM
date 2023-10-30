@@ -247,6 +247,7 @@ class LAMM_3D_Detection(Base_Metric):
 
     def metric_func(self, answers):
         score = 0.0
+        cnt = 0
         for item in tqdm(answers, desc="Running Metric"):
             gt_objects = item['gt_answers']
             text = item['answer']
@@ -261,7 +262,7 @@ class LAMM_3D_Detection(Base_Metric):
                         score += 1
                         break
         return dict(
-            ACC = score/len(answers) * 100,
+            mAR = score/cnt * 100,
         )
 
 class LAMM_3D_Grounding(Base_Metric):
@@ -275,6 +276,7 @@ class LAMM_3D_Grounding(Base_Metric):
 
     def metric_func(self, answers):
         score = 0.0
+        cnt = 0
         for item in tqdm(answers, desc="Running Metric"):
             gtobject = item['gt_answers']
             text = item['answer']
@@ -287,5 +289,5 @@ class LAMM_3D_Grounding(Base_Metric):
             if iou > self.thres:
                 score += 1
         return dict(
-            ACC = score/len(answers) * 100,
+            mAR = score/cnt * 100,
         )
