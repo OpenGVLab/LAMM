@@ -2,7 +2,6 @@
 numgpu=4
 
 exp=$1
-dataname=$2
 visfeat_type=local
 now=$(date +"%Y%m%d_%H%M%S")
 
@@ -11,8 +10,8 @@ mkdir -p ${ckpt_dir}/${exp}/log_rest/
 deepspeed --include localhost:0,1,2,3 --master_addr 127.0.0.1 --master_port 28457 train.py \
     --stage 1 \
     --cfg ./config/train.yaml \
-    --data_path  ../data/3D_Instruct/meta_file/${dataname}.json \
-    --vision_root_path ../data/3D_Instruct/ \
+    --data_path  ../data/LAMM/3D_Instruct/meta_file/LAMM_3dinstruct_10k.json \
+    --vision_root_path ../data/LAMM/3D_Instruct/ \
     --max_tgt_len 400 \
     --vision_type pcl \
     --use_system \

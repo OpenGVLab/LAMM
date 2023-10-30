@@ -43,10 +43,10 @@ num_heads_rsp_3d: 8
 octavius_modality: ['pcl']
 
 # dataset
-data_path_2d: ../data/LAMM/2D_Instruct/meta_file/stg1_v2.1/LAMM_instruct_293k.json
-data_path_3d: ../data/LAMM/Octavius_3D_Instruct/meta_file/lamm_3d_train_no_vg.json
-vision_root_path_2d: ../data/LAMM/2D_Instruct
-vision_root_path_3d: ../data/LAMM/3D_Instruct
+data_path_2d: ../data/Octavius/2D_Instruct/meta_file/octavius_2d_train_293k.json
+data_path_3d: ../data/Octavius/3D_Instruct/meta_file/scan2inst_train.json
+vision_root_path_2d: ../data/Octavius/2D_Instruct
+vision_root_path_3d: ../data/Octavius/3D_Instruct
 loop_2d: 0
 loop_3d: 1
 

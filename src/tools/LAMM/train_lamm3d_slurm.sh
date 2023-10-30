@@ -3,7 +3,6 @@ numgpu=4
 
 partition=$1
 exp=$2
-dataname=$3
 visfeat_type=local
 now=$(date +"%Y%m%d_%H%M%S")
 
@@ -14,8 +13,8 @@ srun -p ${partition} -J ${exp} --gres=gpu:${numgpu} --ntasks-per-node 1 --kill-o
 torchrun --nnodes=1 --nproc_per_node=${numgpu} --master_port=25441 train.py \
     --stage 1 \
     --cfg ./config/train.yaml \
-    --data_path  ../data/3D_Instruct/meta_file/${dataname}.json \
-    --vision_root_path ../data/3D_Instruct/ \
+    --data_path  ../data/LAMM/3D_Instruct/meta_file/LAMM_3dinstruct_10k.json \
+    --vision_root_path ../data/LAMM/3D_Instruct/ \
     --max_tgt_len 400 \
     --vision_type pcl \
     --use_system \

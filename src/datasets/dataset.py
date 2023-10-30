@@ -235,9 +235,8 @@ class OctaviusDataset(Dataset):
     def prepare_3d_data(self):
         with open(self.data_file_path_3d, 'r') as f:
             json_data = json.load(f)
-        
-        pickle_root = '/'.join(self.data_file_path_3d.split('/')[:-1])
-        pickle_path = f'{pickle_root}/scan2inst_train.pickle'
+
+        pickle_path = os.path.join(self.vision_root_path_3d, 'scan2inst_train.pickle')
         if os.path.exists(pickle_path):
             with open(pickle_path, 'rb') as f:
                 data = pickle.load(f)

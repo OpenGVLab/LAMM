@@ -3,7 +3,7 @@ scenario_cfg:
   base_data_path: ../data/LAMM/3D_Benchmark
   task_name: Classification
   inference_dataset_name: shapenet
-  vision_root_path: ../data/LAMM/Octavius_3D_Instruct
+  vision_root_path: ../data/Octavius/3D_Instruct
 
 eval_cfg:
   instruction_cfg:

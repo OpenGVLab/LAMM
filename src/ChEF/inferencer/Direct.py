@@ -39,6 +39,7 @@ class Direct_inferencer:
         )
 
         predictions = []
+        import ipdb;ipdb.set_trace()
         for batch in tqdm(dataloader, desc="Running inference"):
             if self.CoT:
                 prompts, cot = self.instruction_handler.generate_CoT_query(model, batch)
