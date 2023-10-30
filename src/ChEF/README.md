@@ -25,9 +25,6 @@
     
 </div>
 
-
-**Official Repository of [CHEF: A COMPREHENSIVE EVALUATION FRAMEWORK FOR STANDARDIZED ASSESSMENT OF MULTIMODAL LARGE LANGUAGE MODEL](https://openlamm.github.io/)**
-
 ## Introduction
 ChEF is a Comprehensive Evaluation Framework for reliable and indicative assessment of MLLMs, which is highly scalable and can be flexibly modified to adapt to the evaluation of any new model or task.
 
@@ -65,7 +62,7 @@ Supported Scenarios:
 
 
 Supported MLLMs:
-> More details can be found in [models.md](docs/models.md).
+> More details can be found in [models.md](../../docs/ChEF/models.md).
 
 <details open>
 <summary>(click to collapse)</summary>
@@ -84,7 +81,7 @@ Supported MLLMs:
 
 ## Get Started 
 
-Please see [get_start.md](docs/get_start.md) for the basic usage of ChEF.
+Please see [get_start.md](../../docs/get_started) for the basic usage of ChEF.
 
 ## License 
 

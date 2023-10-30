@@ -1,7 +1,7 @@
 # Tutorial
 
 ## Evaluator
-In ChEF, all evaluation pipelines are managed by the [`Evaluator`](../tools/evaluator.py) class. This class serves as the control center for evaluation tasks and incorporates various components, including a scenario, an instruction, an inferencer, and a metric. These components are defined through recipe configurations.
+In ChEF, all evaluation pipelines are managed by the [`Evaluator`](../../src/ChEF/evaluator.py) class. This class serves as the control center for evaluation tasks and incorporates various components, including a scenario, an instruction, an inferencer, and a metric. These components are defined through recipe configurations.
 
 ### Key Components
 
@@ -27,39 +27,35 @@ The evaluation process in ChEF follows a structured workflow:
 6. **Output Evaluation Results**: The final evaluation results are provided as output, allowing you to assess the model's performance.
 
 
-
-
-
-
 ## Employ Your Model
 
 In ChEF, you can employ your own custom models by following these steps. This guide will walk you through the process of integrating your model into ChEF.
 
 ### Step 1: Prepare Your Model Files
 
-1.1. Navigate to the [models](../models/) folder in ChEF.
+1.1. Navigate to the [models](../../src/ChEF/models/) folder in ChEF.
 
 1.2. Paste all the necessary files for your custom model into this folder.
 
 ### Step 2: Write the Test Model
 
-2.1. Create a new Python file in [models](../models/) folder and name it something like `test_your_model.py`.
+2.1. Create a new Python file in models folder and name it something like `test_your_model.py`.
 
-2.2. In this file, you will need to inherit from the `TestBase` class defined in [test_base.py](../models/test_base.py). The `TestBase` class provides a set of interfaces that you should implement for testing your model. 
+2.2. In this file, you will need to inherit from the `TestBase` class defined in [test_base.py](../../src/ChEF/models/test_base.py). The `TestBase` class provides a set of interfaces that you should implement for testing your model. 
 
 ### Step 3: Test Your Model
-3.1. Add your model in [`__init__.py`](../models/__init__.py)
+3.1. Add your model in [`__init__.py`](../../src/ChEF/models/__init__.py)
 
-3.2 Prepare your model configuration in [configs/models](../configs/models/)
+3.2 Prepare your model configuration in [configs/models](../../src/config/ChEF/models/)
 
 3.3 Use the provided recipes for evaluation. 
 ```shell
-python tools/eval.py configs/evaluation.yaml
+python tools/eval.py --model_cfg configs/ChEF/models/your_model.yaml --recipe_cfg recipe_cfg
 ```
 
 ## Instruction
 
-In ChEF, the [`InstructionHandler`](../instruction/__init__.py) class plays a central role in managing instructions for generating queries when iterating through the dataset in the `inferencer`. These queries are then used as inputs to the model for various tasks. 
+In ChEF, the [`InstructionHandler`](../../src/ChEF/instruction/__init__.py) class plays a central role in managing instructions for generating queries when iterating through the dataset in the `inferencer`. These queries are then used as inputs to the model for various tasks. 
 
 ChEF supports three main query types: `standard query`, `query pool`, and `multiturn query`. For each query type, various query statements are defined based on the dataset's task type. 
 
@@ -67,13 +63,13 @@ ChEF supports three main query types: `standard query`, `query pool`, and `multi
 2. **Query Pool**: Query Pool specifies queries in the pool by assigned ids defined in configuration.
 3. **Multiturn Query**: Multiturn Query can get different queries depending on the turn id, which are also defined in the query pool
 
-For more details, refer to the [`query.py`](../instruction/query.py).
+For more details, refer to the [`query.py`](../../src/ChEF/instruction/query.py).
 
-`InstructionHandler` also supports generate in-context examples for query, using [ice_retriever](../instruction/ice_retriever/). ChEF supports four types of ice_retrievers: `random`, `fixed`, `topk_text`, and `topk_img`. The `generate_ices` function in `InstructionHandler` class outputs several in-context examples for input query.
+`InstructionHandler` also supports generate in-context examples for query, using [ice_retriever](../../src/ChEF/instruction/ice_retriever/). ChEF supports four types of ice_retrievers: `random`, `fixed`, `topk_text`, and `topk_img`. The `generate_ices` function in `InstructionHandler` class outputs several in-context examples for input query.
 
 ### Employ Your Instruction
 
-You can add special queries in `Query Pool`, and define the assigned ids in recipe configuration to use the new queries. You can also define a new type of query by defining the query in [query.py](../instruction/query.py) and adding a new function in `InstructionHandler`.
+You can add special queries in `Query Pool`, and define the assigned ids in recipe configuration to use the new queries. You can also define a new type of query by defining the query in [query.py](../../src/ChEF/instruction/query.py) and adding a new function in `InstructionHandler`.
 
 ## Inferencer
 
@@ -85,7 +81,7 @@ ChEF provides eight different inferencers that cover a range of use cases. You c
 
 ### Custom Inferencers
 
-For advanced users and specific requirements, ChEF offers the option to create custom inferencers. The basic structure of an inferencer is defined in the [`Direct.py`](../inferencer/Direct.py) file (`Direct_inferencer`). You can extend this structure to implement your custom inferencer logic.
+For advanced users and specific requirements, ChEF offers the option to create custom inferencers. The basic structure of an inferencer is defined in the [`Direct.py`](../../src/ChEF/inferencer/Direct.py) file (`Direct_inferencer`). You can extend this structure to implement your custom inferencer logic.
 ```python
 class Your_inferencer(Direct_inferencer)
     def __init__(self, **kwargs) -> None:
@@ -108,10 +104,10 @@ class Your_inferencer(Direct_inferencer)
 
 ## Metric
 
-In ChEF, the `Metric` component plays a crucial role in evaluating and measuring the performance of models across various scenarios and protocols. ChEF offers a wide range of pre-defined metrics, each tailored to different evaluation needs. Detailed information about these metrics can be found in the [`__init__.py`](../metric/__init__.py) file.
+In ChEF, the `Metric` component plays a crucial role in evaluating and measuring the performance of models across various scenarios and protocols. ChEF offers a wide range of pre-defined metrics, each tailored to different evaluation needs. Detailed information about these metrics can be found in the [`__init__.py`](../../src/ChEF/metric/__init__.py) file.
 
 ### Custom Metrics
-ChEF also allows users to define their custom metrics. The basic structure of a metric is defined in the [`utils.py`](../metric/utils.py) file (`Base_Metric`). You can extend this structure to implement your custom metric logic.
+ChEF also allows users to define their custom metrics. The basic structure of a metric is defined in the [`utils.py`](../../src/ChEF/metric/utils.py) file (`Base_Metric`). You can extend this structure to implement your custom metric logic.
 ```python
 class Your_metric(Base_metric):
     def __init__(self, **kwargs) -> None:

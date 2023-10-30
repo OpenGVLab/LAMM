@@ -11,7 +11,8 @@ LAMM
 └── data                      # dataset folder, see `Dataset Preparation` section for detail
 │   ├── LAMM                  # LAMM dataset
 │   ├── Octavius              # Octavius dataset
-│   └── ...                   # your custom dataset 
+│   ├── ChEF                  # ChEF dataset  
+│   └── ...                   # your custom dataset
 └── model_zoo                 # see `Model Preparation for Training` for detail 
 │   └── vicuna_ckpt
 └── src
@@ -242,7 +243,133 @@ data
 
 ### ChEF 
 
-**TBD**
+#### LAMM
+Download LAMM 2D Benchmark datasets. More details are in [LAMM-Dataset](#lamm-dataset). 
+
+<details><summary> Data Structure </summary> 
+
+```text
+ChEF
+├── configs
+└── data
+    ├── checkpoints
+    └── datasets
+        └── LAMM
+            └── 2D_Benchmark
+                ├── cifar10_images
+                ├── flickr30k_images
+                ├── fsc147_images
+                ├── meta_file
+                ├── sqaimage_images
+                └── voc2012_images
+```
+</details>
+
+#### Omnibenchmark
+Download [Omnibenchmark](https://entuedu-my.sharepoint.com/:f:/g/personal/yuanhan002_e_ntu_edu_sg/El2wmbzutJBOlu8Tz9HyDJABMmFtsG_8mq7uGh4Q7F1QSQ?e=NyroDS) for fine-grained classification dataset and [Bamboo Label System](https://github.com/ZhangYuanhan-AI/Bamboo) for hierarchical catergory labels. 
+
+<details><summary> Data Structure </summary>
+
+```text
+ChEF
+├── configs
+└── data
+    ├── checkpoints
+    └── datasets
+        ├── Omnibenchmark_raw
+        └── Bamboo
+            └── sensexo_visual_add_academic_add_state_V4.visual.json
+```
+
+We sampled and labeled Omnibenchmark meticulously by using a hierarchical chain of categories, facilitated by the Bamboo label system. 
+```shell
+python ChEF/data_process/Omnibenchmark.py
+```
+
+You can also directly download the labeled Omnibenchmark dataset from [OpenXLab](https://openxlab.org.cn/datasets/LAMM/ChEF).
+
+Finally, the dataset should have this structure:
+
+```text
+ChEF
+├── configs
+└── data
+    ├── checkpoints
+    └── datasets
+        ├── ChEF
+        |   └── Omnibenchmark_Bamboo
+        |       ├── meta_file
+        |       └── omnibenchmark_images
+        └── Bamboo
+            └── sensexo_visual_add_academic_add_state_V4.visual.json
+```
+</details>
+
+#### MMBench, MME and SEEDBench
+Refer to [MMBench](https://github.com/open-compass/MMBench), [MME](https://github.com/BradyFU/Awesome-Multimodal-Large-Language-Models) and [SEEDBench](https://github.com/AILab-CVC/SEED-Bench) for dataset and more details.
+
+<details><summary> Data Structure </summary>
+
+```text
+ChEF
+├── configs
+└── data
+    ├── checkpoints
+    └── datasets
+        ├── MMBench
+        |   ├── mmbench_dev_20230712.tsv
+        |   └── mmbench_test_20230712.tsv
+        ├── MME_Benchmark_release_version
+        └── SEED-Bench
+```
+
+</details>
+
+#### POPE
+POPE is a special labeled COCO dataset for hallucination evaluation based on the validation set of COCO 2014. Download [COCO](https://cocodataset.org/#download)  and [POPE](https://github.com/RUCAIBox/POPE).
+
+<details><summary> Data Structure </summary>
+
+```text
+ChEF
+├── configs
+└── data
+    ├── checkpoints
+    └── datasets
+        └── coco_pope
+            ├── val2014
+            ├── coco_pope_adversarial.json
+            ├── coco_pope_popular.json
+            └── coco_pope_random.json
+```
+
+</details>
+
+#### MMBench_C and ScienceQA_C
+MMBench_C and ScienceQA_C are datasets with image and text corruptions fot robustness evaluation. You can also directly download the MMBench_C and ScienceQA_C dataset from [OpenXLab](https://openxlab.org.cn/datasets/LAMM/ChEF).
+
+<details><summary> Data Structure </summary>
+
+```text
+ChEF
+├── configs
+└── data
+    ├── checkpoints
+    └── datasets
+        └── ChEF
+            ├── MMBench_C
+            |   ├── images
+            |   ├── Image_Corruptions_info.json
+            |   ├── Text_Corruptions_info.json
+            |   └── MMBench_C.json
+            └── ScienceQA_C
+                ├── sqaimage_images
+                ├── Image_Corruptions_info.json
+                ├── Text_Corruptions_info.json
+                └── VQA_ScienceQA_C.json
+```
+
+</details>
 
 ## Model Preparation
 
@@ -334,7 +461,18 @@ Pre-requist Packages: `gcc <= 7.5.0; nvcc >= 11.1`
     
 ### ChEF
 
-**TBD**
+1. Prepare the environment
+    ```shell
+    conda create -n ChEF python=3.10
+    conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+    pip install -r requirements/default.txt
+    pip install -r requirements/ChEF.txt
+    ```
+2. Prepare the MLLM
+
+    See [models.md](./ChEF/models.md) for details. 
+
+
 
 ## Training
 
@@ -395,6 +533,38 @@ For your reference, GPU memory consumption for different models are shown as fol
 
 ## Benchmark
 
-**Notes**: We replace original benchmark with ChEF framework, and ...
 
-**TBD**
+### LAMM-Benchmark
+
+**Notes**: LAMM-Benchmark has now been fully implemented using ChEF, and we highly recommend using the latest ChEF evaluation method for benchmarking in your work. Please refer to [ChEF](#chef-2) for detailed information.
+
+ChEF supports the common 2D and 3D tasks evaluation and locating tasks evaluation in LAMM. Please note that the GPT rank metric in LAMM is no longer applicable.
+
+To evaluate LAMM on LAMM-Benchmark in 2D common tasks, use the defined [model_cfg](../src/config/ChEF/models/lamm.yaml) and the defined recipes in [lamm_scenario_recipes](../src/config/ChEF/scenario_recipes/LAMM/). For example, to evaluate LAMM on ScienceQA, run:
+```shell
+python eval.py --model_cfg config/ChEF/models/lamm.yaml  --recipe_cfg config/ChEF/scenario_recipes/LAMM/ScienceQA.yaml
+```
+
+To evaluate LAMM on ScanNet Detection, run:
+```shell
+python eval.py --model_cfg config/ChEF/models/lamm_3d.yaml  --recipe_cfg config/ChEF/scenario_recipes/LAMM/ScanNet.yaml
+```
+If you want to automately running all the evaluations sequentially, you can run
+```shell
+sh tools/LAMM/eval_lamm2d.sh
+sh tools/LAMM/eval_lamm3d.sh
+```
+
+### ChEF
+
+1. Visual performance evaluation
+    We provide several recipes and model configs in ChEF/configs. Define the models and recipes in [configs](../src/config/ChEF/)
+
+    For example, to evaluate LAMM on CIFAR10 using the default recipe, run:
+    ```shell
+    python tools/eval.py --model_cfg config/ChEF/models/lamm.yaml --recipe_cfg config/ChEF/scenario_recipes/CIFAR10/default.yaml
+    ```
+2. Desiderata
+    To evaluate the desiderata, see [desiderata.md](./ChEF/desiderata.md) for details.
+3. Custom evaluation
+    To deploy your own model or design your own recipe, see [tutorial.md](./ChEF/tutorial.md) for details.
