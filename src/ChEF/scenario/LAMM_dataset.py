@@ -262,7 +262,7 @@ class ScienceQALAMMDataset(Dataset):
         super().__init__()
 
         self.base_data_path = base_data_path
-        json_path = os.path.join(self.base_data_path, 'meta_file', 'VQA_ScienceQA.json')
+        json_path = os.path.join(self.base_data_path, 'meta_file', 'VQA_SQAimage.json')
         self.data = json.load(open(json_path, 'rb'))
 
         self.system_msg = common_task2sysmsg['VQA']
