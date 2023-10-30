@@ -10,10 +10,11 @@ LAMM
 │   └── ...
 └── data                      # dataset folder, see `Dataset Preparation` section for detail
 │   ├── LAMM                  # LAMM dataset
+│   ├── Octavius              # Octavius dataset
 │   └── ...                   # your custom dataset 
 └── model_zoo                 # see `Model Preparation for Training` for detail 
 │   └── vicuna_ckpt
-└── src 
+└── src
 └── ...
 ```
 
@@ -196,7 +197,48 @@ data
 
 ### Octavius
 
-**TBD**
+You can download LAMM-Dataset from [here](https://opendatalab.com/LAMM/OctaviusDataset). 
+
+For 2D instruction dataset, we use the same dataset collection as LAMM (coco/bamboo/locount/textvqa), and provide corresponding meta file [here](https://opendatalab.com/LAMM/OctaviusDataset/tree/main/OctaviusDataset_2D/meta_file). 2D benchmark dataset is same as LAMM.
+
+For 3D instruction dataset,
+
+<details><summary> Dataset Structure </summary>
+
+```
+data
+└── Octavius
+    └── 2D_Instruct  
+    │   ├── coco_images.zip  
+    │   ├── bamboo_images.zip  
+    │   ├── textvqa_images.zip  
+    │   ├── locount_images.zip  
+    │   └── meta_file  
+    │       └── octavius_2d_train_293k.json
+    └── 3D_Instruct  
+    │   ├── scan2inst_train.pickle
+    │   └── meta_file  
+    │       └── scan2inst_train.json  
+    ├── 2D_Benchmark  # same as LAMM, make a symbol link to ../LAMM/2D_Benchmark
+    └── 3D_Benchmark  
+        ├── Caption_nr3d.pickle
+        ├── Caption_scannet.pickle
+        ├── Classification_scannet.pickle
+        ├── Classification_shapenet.pickle
+        ├── VQA_scannet.pickle
+        └── meta_file  
+            ├── Caption_nr3d.json
+            ├── Caption_scannet.json
+            ├── Classification_scannet.json
+            ├── Classification_shapenet.json
+            ├── Detection_ScanNet.json
+            ├── VG_ScanRefer.json
+            ├── VQA_scannet.json
+            └── VQA_ScanQA_multiplechoice.json
+```
+
+</p>
+</details> 
 
 ### ChEF 
 
@@ -220,7 +262,7 @@ data
 
 - Octavius Pretrained Models
 
-    **TBD**
+    Download pretrained Octavius model from [Here]().
 
 - ChEF Models
 
@@ -228,9 +270,7 @@ data
 
 Pre-requist Packages: `gcc <= 7.5.0; nvcc >= 11.1`
 
-### LAMM-Framework
-
-xxx
+### LAMM-Framework & Octavius
 
 1. Python & Pytorch Environment
 
@@ -294,8 +334,6 @@ xxx
     
 ### ChEF
 
-A general MLLM benchmark framework integrated in LAMM.
-
 **TBD**
 
 ## Training
@@ -306,18 +344,18 @@ A general MLLM benchmark framework integrated in LAMM.
     
     ```bash
     cd src
-    sh scripts/train_lamm2d.sh
-    or
-    sh scripts/train_lamm2d_slurm.sh       # for slurm
+    sh tools/LAMM/train_lamm2d.sh lamm_2d
+    # or
+    sh scripts/train_lamm2d_slurm.sh <YOUR_PARTITION> lamm_2d
     ```
 
 - 3D Models Training
 
     ```bash
     cd src
-    sh scripts/train_lamm3d.sh
-    or
-    sh scripts/train_lamm3d_slurm.sh       # for slurm
+    sh tools/LAMM/train_lamm3d.sh lamm_3d
+    # or
+    sh scripts/train_lamm3d_slurm.sh <YOUR_PARTITION> lamm_3d
     ```
 
 For your reference, GPU memory consumption for different models are shown as follows
@@ -330,6 +368,30 @@ For your reference, GPU memory consumption for different models are shown as fol
 |Vicuna_v0_13B | 2 | ~70GB |
 
 ### Octavius
+
+- Image modality only
+
+    ```bash
+    cd src
+    sh tools/Octavius/train_octavius_slurm.sh <YOUR_PARTITION> <NUM_GPU> \
+        config/Octavius/octavius_2d_e4_bs64.yaml octavius_2d_e4_bs64
+    ```
+
+- Point cloud modality only
+
+    ```bash
+    cd src
+    sh tools/Octavius/train_octavius_slurm.sh <YOUR_PARTITION> <NUM_GPU> \
+        config/Octavius/octavius_3d_e3_bs64.yaml octavius_3d_e3_bs64
+    ```
+
+- Image & point cloud modality joint
+
+    ```bash
+    cd src
+    sh tools/Octavius/train_octavius_slurm.sh <YOUR_PARTITION> <NUM_GPU> \
+        config/Octavius/octavius_2d+3d_e6_bs64.yaml octavius_2d+3d_e6_bs64
+    ```
 
 ## Benchmark
 

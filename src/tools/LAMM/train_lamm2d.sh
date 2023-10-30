@@ -10,9 +10,9 @@ mkdir -p ${ckpt_dir}/${exp}/log_rest/
 
 deepspeed --include localhost:0,1,2,3 --master_addr 127.0.0.1 --master_port 28457 train.py \
     --stage 1 \
-    --cfg ./config/train.yaml \
-    --data_path  ../data/2D_Instruct/meta_file/LAMM_instruct_186k.json \
-    --vision_root_path ../data/2D_Instruct/ \
+    --cfg ./config/LAMM/train.yaml \
+    --data_path  ../data/LAMM/2D_Instruct/meta_file/LAMM_instruct_186k.json \
+    --vision_root_path ../data/LAMM/2D_Instruct/ \
     --conv_template default \
     --max_tgt_len 400 \
     --vision_type image \

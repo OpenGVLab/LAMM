@@ -19,7 +19,7 @@ class OctaviusPCLDataset(Dataset):
         self.data = []
         self.system_msg = common_task2sysmsg[task_name + '3D']
 
-        data_file_path = os.path.join(base_data_path, 'meta_file', task_name + '_' + inference_dataset_name + '.json')
+        data_file_path = os.path.join(base_data_path, task_name + '_' + inference_dataset_name + '.json')
         with open(data_file_path, 'r') as f:
             json_data = json.load(f)
         pickle_root = '/'.join(data_file_path.split('/')[:-1])
