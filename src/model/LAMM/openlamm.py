@@ -666,7 +666,7 @@ class LAMMPEFTModel(nn.Module):
         p_before_tokens = self.llama_tokenizer(
             p_before, return_tensors="pt", add_special_tokens=False
         ).to(self.device)
-        p_before_embeds = self.llama_model.model.embed_tokens(
+        p_before_embeds = self.llama_model.model.model.embed_tokens(
             p_before_tokens.input_ids
         ).expand(
             batch_size, -1, -1
@@ -679,7 +679,7 @@ class LAMMPEFTModel(nn.Module):
             add_special_tokens=False, return_tensors="pt"
         ).to(self.device)
         p_after_masks_len = p_after_tokens.length.max() - p_after_tokens.length
-        p_after_embeds = self.llama_model.model.embed_tokens(p_after_tokens.input_ids)
+        p_after_embeds = self.llama_model.model.model.embed_tokens(p_after_tokens.input_ids)
 
         bos = (
             torch.ones(
@@ -689,7 +689,7 @@ class LAMMPEFTModel(nn.Module):
             )
             * self.llama_tokenizer.bos_token_id
         )  # bsz x 1
-        bos_embeds = self.llama_model.model.embed_tokens(
+        bos_embeds = self.llama_model.model.model.embed_tokens(
             bos
         )  # bsz x 1 x embed_dim
 

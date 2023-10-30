@@ -2,7 +2,7 @@ import os
 import json
 from torch.utils.data import Dataset
 import random
-from .lamm_sysmsg import common_task2sysmsg
+from .lamm_sysmsg import common_task2sysmsg, locating_task2sysmsg
 class FlickrLAMMDataset(Dataset):
     task_name = 'caption_lamm'
     dataset_name = 'Flickr30k'
@@ -27,7 +27,7 @@ class FlickrLAMMDataset(Dataset):
             'id' : data_id,
             'image_path' : os.path.join(self.base_data_path, item['image']),
             'question' : item['query'],
-            'gt_sentences' : item['sentences'],
+            'gt_answers' : item['sentences'],
         }
         return data_dict
     
@@ -283,6 +283,63 @@ class ScienceQALAMMDataset(Dataset):
         }
         return data_dict
 
+class LocatingVOC2012Dataset(Dataset):
+    task_name = 'locating'
+    dataset_name = 'Locating_VOC2012'
+
+    def __init__(self, base_data_path, **kwargs):
+        super().__init__()
+
+        self.base_data_path = base_data_path
+        json_path = os.path.join(self.base_data_path, 'meta_file', 'Locating_VOC2012.json')
+        self.data = json.load(open(json_path, 'rb'))
+
+        self.system_msg = locating_task2sysmsg['VOC2012']
+    
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        item = self.data[index]
+        data_id =  str(item['id']) if 'id' in item else str(index)
+
+        data_dict = {
+            'id' : data_id,
+            'image_path' : os.path.join(self.base_data_path, item['image']),
+            'question' : item['query'],
+            'gt_answers': item['object']
+        }
+        return data_dict
+    
+
+class LocatingLSPDataset(Dataset):
+    task_name = 'locating'
+    dataset_name = 'Locating_LSP'
+
+    def __init__(self, base_data_path, **kwargs):
+        super().__init__()
+
+        self.base_data_path = base_data_path
+        json_path = os.path.join(self.base_data_path, 'meta_file', 'Locating_LSP.json')
+        self.data = json.load(open(json_path, 'rb'))
+
+        self.system_msg = locating_task2sysmsg['LSP']
+    
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        item = self.data[index]
+        data_id =  str(item['id']) if 'id' in item else str(index)
+
+        data_dict = {
+            'id' : data_id,
+            'image_path' : os.path.join(self.base_data_path, item['image']),
+            'question' : item['query'],
+            'gt_answers': item['gt_joints']
+        }
+        return data_dict
+
 class ScanQALAMMDataset(Dataset):
     task_name = 'VQA_lamm_3D'
     dataset_name = 'ScanQA'
@@ -311,3 +368,4 @@ class ScanQALAMMDataset(Dataset):
             'gt_choices' : item['gt_choices'],
         }
         return data_dict
+    

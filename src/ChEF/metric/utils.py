@@ -344,6 +344,28 @@ def parse_bbox(text):
             bbox_list.append(cur_bbox)
     return bbox_list
 
+def parse_keypoints(text):
+    num_list = []
+    num_list = parse_num(num_list, '[', ']', text)
+    num_list = parse_num(num_list, '(', ')', text)
+    keypoints_list = []
+    num_list = num_list[:(len(num_list)//2) *2]
+    if len(num_list) == 0:
+        str_list = num_pattern.findall(text)
+        num_list = [float(item) for item in str_list]
+        num_list = num_list[:(len(num_list)//2) *2]
+    for i in range(0,len(num_list), 2):
+        cur_kps = [num_list[j] for j in range(i,i+2)]
+        keypoints_list.append(cur_kps)
+    return keypoints_list
+
+def check_inside_bbox(keypoints_list, bbox):
+    for keypoints in keypoints_list:
+        x = keypoints[0]
+        y = keypoints[1]
+        if x>bbox[0] and x < bbox[2] and y>bbox[1] and y < bbox[3]:
+            return True
+    return False
 
 def parse_kosmos_bbox(text):
     def extract_strings_between_tags(string):

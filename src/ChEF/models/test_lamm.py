@@ -20,8 +20,8 @@ class TestLAMM(TestBase):
         # if encoder_ckpt_path is not None:
         #     cfg_dict['encoder_ckpt_path'] = encoder_ckpt_path
         self.model = LAMMPEFTModel(**kwargs)
-        # delta_ckpt = torch.load(model_path, map_location=torch.device('cpu'))
-        # self.model.load_state_dict(delta_ckpt, strict=False)             # TODO: load delta_ckpt from model_path in lamm_3d.yaml
+        delta_ckpt = torch.load(model_path, map_location=torch.device('cpu'))
+        self.model.load_state_dict(delta_ckpt, strict=False)             # TODO: load delta_ckpt from model_path in lamm_3d.yaml
         self.model = self.model.eval().half()
         self.task_type = task_type
         self.move_to_device()

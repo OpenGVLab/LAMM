@@ -7,6 +7,7 @@ from .desiderata import MMBench_Calibration, ScienceQA_Calibration, POPE_Metric,
 from .detection import Detection, KOSMOS_Detection, LAMM_Detection 
 from .counting import Counting
 from .ocr import SVT_OCR
+from .lamm_locating import InsideBbox, InsideHumanBbox
 
 evaluation_protocol = {
     'basic':{
@@ -49,7 +50,9 @@ evaluation_protocol = {
         'SVT': SVT_OCR,
         'UCMerced': UCMerced_Classification,
         'AI2D': LAMM_VQA,
-        'ScanQA': LAMM_VQA_3D
+        'ScanQA': LAMM_VQA_3D,
+        'Locating_VOC2012': InsideBbox,
+        'Locating_LSP': InsideHumanBbox
     },
     'Octavius3D': {
         'scannet_Classification': LAMM_3D_Classification,

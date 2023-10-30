@@ -33,3 +33,4 @@ model_zoo/*
 !model_zoo/.gitkeep
 
 # package related
+src/run.sh
