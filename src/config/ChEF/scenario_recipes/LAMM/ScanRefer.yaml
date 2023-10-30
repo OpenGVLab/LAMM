@@ -1,5 +1,5 @@
 scenario_cfg:
-  dataset_name: ScanQA_LAMM
+  dataset_name: ScanRefer_LAMM
   base_data_path: ../data/LAMM/3D_Benchmark
 
 eval_cfg:

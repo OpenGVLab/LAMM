@@ -232,3 +232,60 @@ class LAMM_Detection(Base_Metric):
                 f'prec_wocat@{iou_thres:.2f}': (tp[iou_i] / (num_pred + 1e-7) * 100).item(),
             })
         return metric_dict
+
+
+
+class LAMM_3D_Detection(Base_Metric):
+
+    def __init__(self, dataset_name, thres = 0.5,  **kwargs):
+        super().__init__(dataset_name)
+        self.thres = thres
+        from .utils import parse_bbox_3d, classification_acc, cal_iou_3d
+        self.parse = parse_bbox_3d
+        self.cls = classification_acc
+        self.iou = cal_iou_3d
+
+    def metric_func(self, answers):
+        score = 0.0
+        for item in tqdm(answers, desc="Running Metric"):
+            gt_objects = item['gt_answers']
+            text = item['answer']
+            bboxes = self.parse(text)
+            cnt += len(gt_objects)
+            for object_info in gt_objects:
+                if not self.cls(object_info['label'], text):
+                    continue
+                for bbox in bboxes:
+                    iou = self.iou(object_info['bbox'], bbox)
+                    if iou > self.thres:
+                        score += 1
+                        break
+        return dict(
+            ACC = score/len(answers) * 100,
+        )
+
+class LAMM_3D_Grounding(Base_Metric):
+
+    def __init__(self, dataset_name, thres = 0.5,  **kwargs):
+        super().__init__(dataset_name)
+        self.thres = thres
+        from .utils import parse_bbox_3d, cal_iou_3d
+        self.parse = parse_bbox_3d
+        self.iou = cal_iou_3d
+
+    def metric_func(self, answers):
+        score = 0.0
+        for item in tqdm(answers, desc="Running Metric"):
+            gtobject = item['gt_answers']
+            text = item['answer']
+            bboxes = self.parse(text)
+            cnt += 1
+            if len(bboxes) < 1:
+                continue
+            bbox = bboxes[0]
+            iou = self.iou(gtobject, bbox)
+            if iou > self.thres:
+                score += 1
+        return dict(
+            ACC = score/len(answers) * 100,
+        )
