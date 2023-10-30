@@ -1,5 +1,0 @@
-model: configs/models/lamm.yaml
-
-save_dir: results
-
-recipe: configs/desiderata_recipes/Insfollow/MMBench.yaml

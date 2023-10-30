@@ -1,7 +1,7 @@
 model_name: LAMM
-model_path: ../model_zoo/LAMM/vicuna13b_v0_lamm186k_ep2_clip_system/pytorch_model.pt # define the model_path
-llm_ckpt_path: /mnt/petrelfs/chenzeren/archive/LAMM-src/model_zoo/vicuna_ckpt/13b_v0
-encoder_ckpt_path: /mnt/petrelfs/share_data/caojianjian/checkpoints/clip_vit-L-14_scannet_ddp_ep1080_vit256token_color/checkpoint_best.pth
+model_path: ../model_zoo/LAMM/vicuna13b_v0_lamm10k_ep2_epcl_system/pytorch_model.pt
+llm_ckpt_path: ../model_zoo/Vicuna/13B
+encoder_ckpt_path: ../model_zoo/clip_vit-L-14_scannet_ddp_ep1080_vit256token/checkpoint_best.pth
 task_type: noraml
 encoder_pretrain: epcl
 vision_type: pcl

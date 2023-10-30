@@ -122,15 +122,23 @@ class TestOctavius(TestBase):
         question_list, 
         sys_msg=None, 
         dataset_name=None, 
-        task_name=None, 
         **kwargs
     ):
         prompts = self.generate_conversation_text(question_list, history=[], sys_msg=sys_msg)
-        if task_name.endswith('octavius3d'):
-            outputs = self.do_generate_3d(modality_inputs, prompts)
+        if dataset_name == "ScienceQA":
+            outputs = self.do_generate_vqa(modality_inputs, prompts)
         else:
-            if dataset_name == "ScienceQA":
-                outputs = self.do_generate_vqa(modality_inputs, prompts)
-            else:
-                outputs = self.do_generate(modality_inputs, prompts)
+            outputs = self.do_generate(modality_inputs, prompts)
+        return outputs
+    
+    @torch.no_grad()
+    def batch_generate_3d(
+        self, 
+        modality_inputs, 
+        question_list, 
+        sys_msg=None, 
+        **kwargs
+    ):
+        prompts = self.generate_conversation_text(question_list, history=[], sys_msg=sys_msg)
+        outputs = self.do_generate_3d(modality_inputs, prompts)
         return outputs

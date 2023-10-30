@@ -97,12 +97,30 @@ class TestLAMM(TestBase):
         return outputs[0]
         
     @torch.no_grad()
-    def batch_generate(self, image_list, question_list, max_new_tokens=128, **kwargs):
+    def batch_generate(self, image_list, question_list, max_new_tokens=128, sys_msg = None, **kwargs):
         images = [get_image(image) for image in image_list]
-        prompts = self.generate_conversation_text(question_list)
+        prompts = self.generate_conversation_text(question_list, sys_msg=sys_msg)
         outputs = self.do_generate(images, prompts, max_new_tokens)
         return outputs
     
+    @torch.no_grad()
+    def do_generate_3d(self, modality_inputs, question_list, max_new_tokens=128):
+        modality_inputs.update({
+            'top_p': 0.9,
+            'temperature': 1.0,
+            'max_tgt_len': max_new_tokens,
+            'modality_embeds': [],
+            'prompt': question_list,
+        })
+        outputs = self.model.generate(modality_inputs)
+        return [output.split('\n###')[0] for output in outputs]
+
+    @torch.no_grad()
+    def batch_generate_3d(self, modality_inputs, question_list, max_new_tokens=128, sys_msg = None, **kwargs):
+        prompts = self.generate_conversation_text(question_list, sys_msg = sys_msg)
+        outputs = self.do_generate_3d(modality_inputs, prompts, max_new_tokens)
+        return outputs
+
     @torch.no_grad()
     def icl_batch_generate(self, image_list, question_list, ices, incontext_cfg, max_new_tokens=128):
         images = [get_image(image) for image in image_list]

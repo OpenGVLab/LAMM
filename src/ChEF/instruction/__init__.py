@@ -2,6 +2,18 @@ from .ice_retriever import build_retriever
 from .query import build_query, build_template
 import numpy as np
 
+def get_cur_batch_len(batch):
+    if 'image_path' in batch:
+        cur_batch_len = len(batch['image_path'])
+    elif 'pcl_paths' in batch:
+        cur_batch_len = len(batch['pcl_paths'])
+    elif 'task_type' in batch:
+        cur_batch_len = len(batch['task_type'])
+    elif 'id' in batch:
+        cur_batch_len = len(batch['id'])
+    else:
+        raise ValueError('cannot get batch size')
+    return cur_batch_len
 
 supported_query_types = ['standard_query', 'query_pool', 'multiturn']
 class InstructionHandler:
@@ -26,14 +38,7 @@ class InstructionHandler:
     def generate_basic_query(self, batch, query=None):
         if not query:
             query = self.query
-        if 'image_path' in batch:
-            cur_batch_len = len(batch['image_path'])
-        elif 'pcl_path' in batch:
-            cur_batch_len = len(batch['pcl_path'])
-        elif 'task_type' in batch:
-            cur_batch_len = len(batch['task_type'])
-        else:
-            raise ValueError('cannot get batch size')
+        cur_batch_len = get_cur_batch_len(batch)
 
         if 'question' in batch:
             question = batch['question']
@@ -43,7 +48,7 @@ class InstructionHandler:
         return prompts
     
     def generate_CoT_query(self, model, batch):
-        cur_batch_len = len(batch['image_path'])
+        cur_batch_len = get_cur_batch_len(batch)
         if 'question' in batch: # VQA tasks or predefined query
             question = batch['question']
             prompts = [f'{question[i]}\nLet\'s think step by step.' for i in range(cur_batch_len)]

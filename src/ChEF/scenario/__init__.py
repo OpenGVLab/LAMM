@@ -40,8 +40,11 @@ dataset_dict = {
     'CelebA(Smile)' : CelebASmileDataset,
     'AI2D': AI2DDataset,
     'ScanQA_LAMM': ScanQALAMMDataset,
+    'ScanNet_LAMM': ScanNetLAMMDataset,
+    'ScanRefer_LAMM': ScanReferLAMMDataset,
     'Locating_VOC2012': LocatingVOC2012Dataset,
     'Locating_LSP': LocatingLSPDataset,
+
 
     # MMBench
     'MMBench': MMBenchDataset,

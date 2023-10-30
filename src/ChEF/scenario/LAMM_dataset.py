@@ -342,7 +342,7 @@ class LocatingLSPDataset(Dataset):
 
 class ScanQALAMMDataset(Dataset):
     task_name = 'VQA_lamm_3D'
-    dataset_name = 'ScanQA'
+    dataset_name = 'ScanQA_LAMM'
 
     def __init__(self, base_data_path, **kwargs):
         super().__init__()
@@ -362,10 +362,65 @@ class ScanQALAMMDataset(Dataset):
 
         data_dict = {
             'id' : data_id,
-            'pcl_path' : os.path.join(self.base_data_path, item['pcl'][2:]),
+            'pcl_paths' : os.path.join(self.base_data_path, item['pcl'][2:]),
             'question' : item['query'],
             'gt_choice' : item['gt_choice'],
             'gt_choices' : item['gt_choices'],
         }
         return data_dict
     
+class ScanNetLAMMDataset(Dataset):
+    task_name = 'Detection_3D'
+    dataset_name = 'ScanNet_LAMM'
+
+    def __init__(self, base_data_path, **kwargs):
+        super().__init__()
+
+        self.base_data_path = base_data_path
+        json_path = os.path.join(self.base_data_path, 'meta_file', 'Detection_ScanNet.json')
+        self.data = json.load(open(json_path, 'rb'))
+
+        self.system_msg = common_task2sysmsg['Detection3D']
+    
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        item = self.data[index]
+        data_id =  str(item['id']) if 'id' in item else str(index)
+
+        data_dict = {
+            'id' : data_id,
+            'pcl_paths' : os.path.join(self.base_data_path, item['pcl'][2:]),
+            'question' : item['query'],
+            'gt_answers': item['object']
+        }
+        return data_dict
+    
+class ScanReferLAMMDataset(Dataset):
+    task_name = 'VG3D'
+    dataset_name = 'ScanRefer_LAMM'
+
+    def __init__(self, base_data_path, **kwargs):
+        super().__init__()
+
+        self.base_data_path = base_data_path
+        json_path = os.path.join(self.base_data_path, 'meta_file', 'VG_ScanRefer.json')
+        self.data = json.load(open(json_path, 'rb'))
+
+        self.system_msg = common_task2sysmsg['VG3D']
+    
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        item = self.data[index]
+        data_id =  str(item['id']) if 'id' in item else str(index)
+
+        data_dict = {
+            'id' : data_id,
+            'pcl_paths' : os.path.join(self.base_data_path, item['pcl'][2:]),
+            'question' : item['query'],
+            'gt_answers': item['object']
+        }
+        return data_dict
