@@ -73,7 +73,7 @@ class Direct_inferencer:
             f.write(json.dumps(predictions, indent=4))
         self.results_path = answer_path
         
-del_list = ['vision_embeds_3d_ref', 'vision_embeds_3d_scene_prop','vision_pos_3d_ref','vision_pos_3d_scene_prop','mask', 'question']        
+del_list = ['vision_embeds_3d_ref', 'vision_embeds_3d_scene_prop','vision_pos_3d_ref','vision_pos_3d_scene_prop','mask', 'question', 'modality_embeds']        
 class Direct3D_inferencer(Direct_inferencer):
 
     def __init__(self, **kwargs):

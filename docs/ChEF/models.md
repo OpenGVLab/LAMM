@@ -32,16 +32,15 @@ The checkpoints evaluated in ChEF are listed as follows:
 Please refer to the respective repositories of each model for their requirements.
 
 ## Usage
-Define the model configs in [models](../configs/models/), including `model_name`, `model_path` and other neccessary configs. For certain models, different configurations are required when testing on different recipes. For example, the default config for [KOSMOS-2](../configs/models/kosmos2.yaml):
+Define the model configs in [models](../../config/ChEF/models/), including `model_name`, `model_path` and other neccessary configs. For certain models, different configurations are required when testing on different recipes. For example, the default config for [KOSMOS-2](../../config/ChEF/models/kosmos2.yaml):
 ```yaml
 model_name: Kosmos2
-model_path: data/checkpoints/kosmos/kosmos-2.pt
-if_grounding: False
+model_path: ../model_zoo/kosmos/kosmos-2.pt
+if_grounding: False # set True for detection and grounding evaluation
 ``` 
 The config for KOSMOS-2 on detection tasks evaluation:
-
 ```yaml
 model_name: Kosmos2
-model_path: data/checkpoints/kosmos/kosmos-2.pt
+model_path: ../model_zoo/kosmos/kosmos-2.pt
 if_grounding: True
 ``` 

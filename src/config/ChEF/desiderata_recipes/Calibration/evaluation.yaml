@@ -1,0 +1,5 @@
+model: configs/models/lamm.yaml
+
+save_dir: results
+
+recipe: configs/desiderata_recipes/Calibration/MMBench.yaml
