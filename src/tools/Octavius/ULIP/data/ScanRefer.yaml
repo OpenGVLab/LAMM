@@ -1,0 +1,7 @@
+NAME: ScanRefer
+DATA_PATH: data/scanrefer
+PC_PATH: data/scanrefer/point_data
+IMAGE_PATH: data/scanrefer/image_feature
+TEXT_PATH: data/scanrefer/text_feature
+scannet_object_clip_root: data/scanrefer/image_memory_bank
+scannet_text_clip_root: data/scanrefer/text_memory_bank
