@@ -1,6 +1,6 @@
 scenario_cfg:
   dataset_name: OctaviusPCLDataset
-  base_data_path: ../data/Octavius/3D_Benchmark
+  base_data_path: ../data/Octavius/3D_Benchmark/meta_file
   task_name: Classification
   inference_dataset_name: scannet
   vision_root_path: ../data/Octavius/3D_Instruct
