@@ -202,7 +202,9 @@ You can download LAMM-Dataset from [here](https://opendatalab.com/LAMM/OctaviusD
 
 For 2D instruction dataset, we use the same dataset collection as LAMM (coco/bamboo/locount/textvqa), and provide corresponding meta file [here](https://opendatalab.com/LAMM/OctaviusDataset/tree/main/OctaviusDataset_2D/meta_file). 2D benchmark dataset is same as LAMM.
 
-For 3D instruction dataset,
+For 3D instruction dataset, we first use FCAF3D from [mmdetection3d](https://github.com/open-mmlab/mmdetection) to extract 3d object given a scene level point cloud. Then we utilize a ULIP-like encoder to extract linguistic-aligned object level 3d feature. In the end, to speed up the data loading process, we store the dataset to a pickle file. For convincely, we provide our pkl file scan2inst_train.pickle, you can train our model by just loading this file.
+
+Besides, if you want to utilize your own dataset, we also provide our ULIP model pretraining code, you can train your own ULIP model by following the instructions [Here](../src/tools/Octavius/ULIP/scripts/pretrain_pointbert.sh). You can also use our pretrained model [Here](https://drive.google.com/file/d/1-0Z3Q3Z3Z3Z3Z3Z3Z3Z3Z3Z3Z3Z3Z3Z/view?usp=sharing) to extract your own dataset.
 
 <details><summary> Dataset Structure </summary>
 
