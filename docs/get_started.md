@@ -416,6 +416,14 @@ Pre-requist Packages: `gcc <= 7.5.0; nvcc >= 11.1`
     conda install timm==0.6.7 deepspeed==0.9.3 transformers==4.31.0 -c conda-forge
     pip install peft==0.3.0 --no-dependencies
     pip install -r requirements/default.txt
+
+    ```
+    Install Faiss 
+    ```bash
+    # if cuda is available
+    conda install -c conda-forge faiss-gpu
+    # otherwise
+    conda install -c conda-forge faiss-cpu
     ```
     Download required NLTK data
 
