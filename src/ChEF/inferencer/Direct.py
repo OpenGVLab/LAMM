@@ -25,6 +25,8 @@ class Direct_inferencer:
         self.results_path = None
 
     def get_collate_fn(self, dataset):
+        if hasattr(dataset, 'dataset'):
+            dataset = dataset.dataset
         if hasattr(dataset, 'collate'):
             collate_fn = dataset.collate
         else:
@@ -85,7 +87,6 @@ class Direct3D_inferencer(Direct_inferencer):
         predictions = []
         for batch in tqdm(dataloader, desc="Running inference"):
             prompts = self.instruction_handler.generate_basic_query(batch)
-
             # compatible with LAMM-style inference
             sys_msg = None if not hasattr(dataset, 'system_msg') else dataset.system_msg
             outputs = model.batch_generate_3d(
@@ -95,9 +96,13 @@ class Direct3D_inferencer(Direct_inferencer):
                 dataset_name=dataset.dataset_name,
             )
             for i in range(len(outputs)):
-                answer_dict = copy_batch_dict(batch, i)
+                # answer_dict = copy_batch_dict(batch, i)
+                answer_dict = {}
                 answer_dict['query'] = prompts[i]
                 answer_dict['answer'] = outputs[i]
+                answer_dict['scene_id'] = batch['scene_id'][i]
+                answer_dict['gt'] = batch['gt'][i]
+                answer_dict['object_name'] = batch['object_name'][i]
                 
                 for delkey in del_list:
                     if delkey in answer_dict:

@@ -41,7 +41,7 @@ class OctaviusPCLDataset(Dataset):
         scene_id_to_3d_embeds = {}
         scene_id_to_3d_pos = {}
         
-        for item in tqdm(json_data, desc='loading 3d training data'):
+        for item in tqdm(json_data, desc='loading 3d data'):
             self.object_name_ilst.append(item['object_name'])
             
         if os.path.exists(pickle_path):
