@@ -19,7 +19,7 @@ from .utils.data import transform_vision_data
 try:
     LOAD_EPCL_EXT = True
     from .EPCL import build_epcl_encoder
-except ModuleNotFoundError as e:
+except ImportError as e:
     LOAD_EPCL_EXT = False
     logging.warning(f'{e.msg}. Please refer to README.md to install optional extension for 3D environment if required.')
 
@@ -27,7 +27,7 @@ except ModuleNotFoundError as e:
 try:
     LOAD_LIGHTLLM_EXT = True
     from .modeling_lightllm import LlamaLightForCausalLM
-except ModuleNotFoundError as e:
+except ImportError as e:
     LOAD_LIGHTLLM_EXT = False
     logging.warning(f'{e.msg}. Please refer to README.md to install optional LightLLM extension if required.')
 
@@ -241,7 +241,7 @@ class LAMMPEFTModel(nn.Module):
 
         elif self.encoder_pretrain.lower() == "epcl":
             if LOAD_EPCL_EXT is False:
-                raise ModuleNotFoundError('Please refer to README.md to install extension for 3D environment.')
+                raise ImportError('Please refer to README.md to install extension for 3D environment.')
 
             # PCL data Processing
             self.use_color = (
@@ -279,7 +279,7 @@ class LAMMPEFTModel(nn.Module):
 
         if args.get('use_lightllm', False):
             if LOAD_LIGHTLLM_EXT is False:
-                raise ModuleNotFoundError('Please refer to README.md to install LightLLM extension.')
+                raise ImportError('Please refer to README.md to install LightLLM extension.')
 
             self.llama_model = LlamaLightForCausalLM(
                 batch_size=self.args['bs'],

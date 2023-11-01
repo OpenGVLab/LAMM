@@ -1,10 +1,10 @@
 # choose one model_cfg from 2d, 3d, 2d+3d
-model_cfg=config/ChEF/models/octavius_2d+3d.yaml
+model_cfg=config/ChEF/models/octavius_2d.yaml
 # model_cfg=config/ChEF/models/octavius_3d.yaml
 # model_cfg=config/ChEF/models/octavius_2d.yaml
 
-recipe_cfg_list=(ScienceQA)
-# recipe_cfg_list=(CIFAR10 Flickr30k CelebA_hair CelebA_smile VOC2012 ScienceQA)
+# recipe_cfg_list=(ScienceQA)
+recipe_cfg_list=(CIFAR10 Flickr30k CelebA_hair CelebA_smile VOC2012 ScienceQA)
 
 for dataset in ${recipe_cfg_list[*]}; do
     srun -p AI4Good_X --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \

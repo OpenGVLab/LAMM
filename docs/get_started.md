@@ -411,9 +411,10 @@ Pre-requist Packages: `gcc <= 7.5.0; nvcc >= 11.1`
 2. Install Required Dependencies
 
     ```bash
+    conda install timm==0.6.7 deepspeed==0.9.3 transformers==4.31.0 -c conda-forge
+    pip install peft==0.3.0 --no-dependencies
     pip install -r requirements/default.txt
     ```
-
     Download required NLTK data
 
     ```python
@@ -484,7 +485,7 @@ Pre-requist Packages: `gcc <= 7.5.0; nvcc >= 11.1`
     cd src
     sh tools/LAMM/train_lamm2d.sh lamm_2d
     # or
-    sh scripts/train_lamm2d_slurm.sh <YOUR_PARTITION> lamm_2d
+    sh tools/LAMM/train_lamm2d_slurm.sh <YOUR_PARTITION> lamm_2d
     ```
 
 - 3D Models Training
@@ -493,7 +494,7 @@ Pre-requist Packages: `gcc <= 7.5.0; nvcc >= 11.1`
     cd src
     sh tools/LAMM/train_lamm3d.sh lamm_3d
     # or
-    sh scripts/train_lamm3d_slurm.sh <YOUR_PARTITION> lamm_3d
+    sh tools/LAMM/train_lamm3d_slurm.sh <YOUR_PARTITION> lamm_3d
     ```
 
 For your reference, GPU memory consumption for different models are shown as follows
