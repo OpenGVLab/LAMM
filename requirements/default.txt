@@ -10,8 +10,6 @@ peft==0.3.0
 Pillow==9.5.0
 PyYAML==6.0.1
 regex==2022.10.31
-torchvision==0.14.1
-torchaudio==0.13.1
 pytorchvideo
 fvcore
 decord==0.6.0
