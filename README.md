@@ -1,4 +1,4 @@
-# AI4Good
+# LAMM
 
 # Introduction
 
