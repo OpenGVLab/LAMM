@@ -35,7 +35,7 @@
 ## Introduction
 ChEF is a Comprehensive Evaluation Framework for reliable and indicative assessment of MLLMs, which is highly scalable and can be flexibly modified to adapt to the evaluation of any new model or task.
 
-<img src="../images/chef-benchmark.png"/>
+<img src="../images/ChEF-benchmark.png"/>
 <br/>
 
 ChEF decouples the evaluation pipeline into four components: 
