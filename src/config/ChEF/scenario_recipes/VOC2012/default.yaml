@@ -1,0 +1,16 @@
+scenario_cfg:
+  dataset_name: VOC2012
+  base_data_path: ../data/LAMM/2D_Benchmark
+  ppl_cfg:
+    negative_opt_num: 3
+    random_seed: 0
+   
+eval_cfg:
+  instruction_cfg:
+    query_type: multiturn
+  inferencer_cfg:
+    inferencer_type: Det_PPL
+    batch_size: 8
+  metric_cfg:
+    metric_type: basic
+    inference_type: ppl

@@ -1,0 +1,16 @@
+model_name: LAMM
+model_path: ../model_zoo/LAMM/vicuna13b_v0_lamm186k_ep2_clip_system/pytorch_model.pt
+llm_ckpt_path: ../model_zoo/vicuna/13b_v0
+encoder_ckpt_path: ../model_zoo/clip-vit-large-patch14
+task_type: noraml
+encoder_pretrain: clip
+vision_type: image
+vision_feature_type: local
+vision_output_layer: -2
+num_vision_token: 256
+lora_r: 32
+lora_alpha: 32
+lora_dropout: 0.1
+lora_target_modules: ['q_proj', 'k_proj', 'v_proj', 'o_proj']
+max_tgt_len: 1024
+stage: 2

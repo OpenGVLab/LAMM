@@ -1,0 +1,4 @@
+model_name: LLaMA-Adapter-v2
+model_path: ../model_zoo/LLaMA-Adapter-v2
+max_seq_len: 1024
+max_batch_size: 40

@@ -1,0 +1,14 @@
+scenario_cfg:
+  dataset_name: CIFAR10
+  base_data_path: ../data/LAMM/2D_Benchmark
+  ppl: True
+eval_cfg:
+  instruction_cfg: 
+    query_type: query_pool
+    query_assigned_ids: 0 # (mplug: 6) (default:0) 
+    template_assigned_ids: 0 # (otter, lamm, minigpt4 :1) (default:0) 
+  inferencer_cfg:
+    inferencer_type: PPL
+    batch_size: 4
+  metric_cfg:
+    metric_type: basic

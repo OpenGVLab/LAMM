@@ -1,0 +1,18 @@
+scenario_cfg:
+  dataset_name: ScienceQA
+  base_data_path: ../data/LAMM/2D_Benchmark
+  ppl: True
+  generative: True
+
+eval_cfg:
+  instruction_cfg: 
+    query_type: query_pool
+    query_assigned_ids: 0
+    template_assigned_ids: 0
+  inferencer_cfg:
+    inferencer_type: PPL
+    batch_size: 8
+    CoT: True
+    max_new_tokens: 256
+  metric_cfg:
+    metric_type: basic

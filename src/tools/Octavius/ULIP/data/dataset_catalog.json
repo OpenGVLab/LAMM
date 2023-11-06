@@ -1,0 +1,14 @@
+{
+    "scanrefer": {
+        "config": "./data/ScanRefer.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "train"
+    },
+    "scanrefer_valid": {
+        "config": "./data/ScanReferValid.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "test"
+    }
+}

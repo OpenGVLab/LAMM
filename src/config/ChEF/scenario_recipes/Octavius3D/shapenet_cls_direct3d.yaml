@@ -1,0 +1,15 @@
+scenario_cfg:
+  dataset_name: OctaviusPCLDataset
+  base_data_path: ../data/Octavius/3D_Benchmark/meta_file
+  task_name: Classification
+  inference_dataset_name: shapenet
+  vision_root_path: ../data/Octavius/3D_Instruct
+
+eval_cfg:
+  instruction_cfg:
+    query_type: standard_query
+  inferencer_cfg:
+    inferencer_type: Direct3D
+    batch_size: 1
+  metric_cfg:
+    metric_type: Octavius3D

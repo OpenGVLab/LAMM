@@ -1,0 +1,29 @@
+model_name: Octavius_3d
+stage: 2
+octavius_modality: ['pcl']
+
+llm_ckpt_path: ../model_zoo/vicuna_ckpt/13b_v0
+delta_ckpt_path: ../ckpt/octavius_3d_e3_bs64/pytorch_model.pt
+
+encoder_pretrain: clip
+vision_feature_type: local
+vision_output_layer: -2
+num_vision_token: 256
+
+# peft and lora
+peft_type: moe_lora
+moe_lora_num_experts: 3
+moe_gate_mode: top2_gate
+lora_r: 32
+lora_alpha: 32
+lora_dropout: 0.1
+lora_target_modules: ['q_proj', 'k_proj', 'v_proj', 'o_proj']
+
+# pcl modality
+num_query_rsp_3d: 16
+hidden_size_rsp_3d: 768
+num_layers_rsp_3d: 1
+num_heads_rsp_3d: 8
+
+max_tgt_len: 400
+conv_mode: simple

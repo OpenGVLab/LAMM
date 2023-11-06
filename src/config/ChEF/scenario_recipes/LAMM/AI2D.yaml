@@ -1,0 +1,14 @@
+scenario_cfg:
+  dataset_name: AI2D
+  base_data_path: ../data/LAMM/2D_Benchmark
+
+eval_cfg:
+  instruction_cfg:
+    query_type: standard_query
+  inferencer_cfg:
+    inferencer_type: Direct
+    batch_size: 8
+    CoT: True
+    max_new_tokens: 256
+  metric_cfg:
+    metric_type: LAMM

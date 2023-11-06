@@ -1,0 +1,12 @@
+scenario_cfg:
+  dataset_name: ScanQA_LAMM
+  base_data_path: ../data/LAMM/3D_Benchmark
+
+eval_cfg:
+  instruction_cfg:
+    query_type: standard_query
+  inferencer_cfg:
+    inferencer_type: Direct3D
+    batch_size: 1
+  metric_cfg:
+    metric_type: LAMM

@@ -19,15 +19,18 @@
 
 # result related
 answers/
-ckpt/
-ckpt3d/
+results/
+ckpt/*
+!ckpt/.gitkeep
 
 *.jsonl
 
 
 # assets related
-data/
-datasets/
-model_zoo/
+data/*
+!data/.gitkeep
+model_zoo/*
+!model_zoo/.gitkeep
 
 # package related
+src/run.sh

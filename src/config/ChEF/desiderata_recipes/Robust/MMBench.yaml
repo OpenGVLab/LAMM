@@ -1,0 +1,23 @@
+scenario_cfg:
+  dataset_name: MMBench
+  base_data_path: ../data/MMBench
+  ppl_cfg: 
+    content_only: False
+  split: dev
+  hint: True
+  img_crp: True
+  text_crp: True
+  data_c_path: ../data/ChEF/MMBench_C
+
+eval_cfg:
+  instruction_cfg: 
+    query_type: query_pool 
+    query_assigned_ids: 1 # (kosmos: 5) (default: 1) 
+    template_assigned_ids: 1 # (kosmos: 0) (default: 1) 
+  inferencer_cfg:
+    inferencer_type: PPL
+    batch_size: 4
+    CoT: True
+    max_new_tokens: 256
+  metric_cfg:
+    metric_type: basic

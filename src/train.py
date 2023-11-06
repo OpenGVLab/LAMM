@@ -1,7 +1,22 @@
-from config import *
-from datasets import *
-from header import *
-from model import *
+import argparse
+import deepspeed
+import json
+import logging
+import numpy as np
+import os
+import random
+import time
+import torch
+from tqdm import tqdm
+from transformers.deepspeed import HfDeepSpeedConfig
+import yaml
+
+from model import load_model
+from datasets import load_dataset
+
+logging.getLogger("transformers").setLevel(logging.WARNING)
+logging.getLogger("transformers.tokenization_utils").setLevel(logging.ERROR)
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
 def parser_args():
@@ -13,11 +28,14 @@ def parser_args():
     parser.add_argument(
         "--data_path",
         type=str,
-        required=True,
+        # required=True,
         help="the path that stores the data JSON",
     )
     parser.add_argument(
-        "--vision_root_path", type=str, required=True, help="Root dir for images"
+        "--vision_root_path", 
+        type=str, 
+        # required=True, 
+        help="Root dir for images"
     )
     parser.add_argument(
         "--max_tgt_len",
@@ -203,16 +221,16 @@ def main(**args):
         )
     
     if args['use_flash_attn']:
-        from model.flash_attn_patch import replace_llama_attn_with_flash_attn
+        from model.LAMM.flash_attn_patch import replace_llama_attn_with_flash_attn
         logging.info("⚡⚡⚡ enable flash attention.")
         replace_llama_attn_with_flash_attn()
 
     if args['use_xformers']:
-        from model.xformers_patch import replace_llama_attn_with_xformers_attn
+        from model.LAMM.xformers_patch import replace_llama_attn_with_xformers_attn
         logging.info("xxx enable xformers attention.")
         replace_llama_attn_with_xformers_attn()
 
-    train_data, train_iter, sampler = load_lamm_dataset(args)
+    train_data, train_iter, sampler = load_dataset(args)
 
     length = (
         args["epochs"]

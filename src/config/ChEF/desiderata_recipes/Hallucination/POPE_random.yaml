@@ -1,0 +1,15 @@
+scenario_cfg:
+  dataset_name: POPE_COCO_random
+  base_data_path: ../data/coco_pope
+  ppl: True
+  option_content: False
+
+eval_cfg:
+  instruction_cfg: 
+    query_type: standard_query
+  inferencer_cfg:
+    inferencer_type: PPL
+    batch_size: 16
+    max_new_tokens: 256
+  metric_cfg:
+    metric_type: Hallucination
