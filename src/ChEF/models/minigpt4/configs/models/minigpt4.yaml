@@ -13,7 +13,7 @@ model:
   num_query_token: 32
 
   # Vicuna
-  llama_model: model_zoo/Vicuna/7B
+  llama_model: model_zoo/vicuna/7b_v0
 
   # generation configs
   prompt: ""

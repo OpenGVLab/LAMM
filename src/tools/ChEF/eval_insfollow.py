@@ -111,17 +111,14 @@ def main():
 
     avg_acc, avg_mr = 0, 0
     for type,accs in types_accs.items():
-        tmp = 0
         for acc in accs:
-            tmp+=acc
-        avg_acc+=tmp/len(accs)
-    avg_acc/=3
+            avg_acc+=acc
+    avg_acc/=len(settings)
+
     for type,mrs in types_mrs.items():
-        tmp = 0
         for mr in mrs:
-            tmp+=mr
-        avg_mr+=tmp/len(mrs)
-    avg_mr/=3
+            avg_mr+=mr
+    avg_mr/=len(settings)
     
     print(f'weighted_avg_MR: {avg_mr}, weighted_avg_Acc: {avg_acc}')
     final_res = {

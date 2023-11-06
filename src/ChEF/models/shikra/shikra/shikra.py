@@ -26,8 +26,7 @@ class ShikraLlamaModel(LlamaModel):
 
         if hasattr(config, "mm_vision_tower"):
             # HACK: for FSDP
-            self.vision_tower = [CLIPVisionModel.from_pretrained('/mnt/petrelfs/shizhelun/shizhelun/data/checkpoints/clip-vit-large-patch14')]
-            # self.vision_tower = CLIPVisionModel.from_pretrained(config.mm_vision_tower)
+            self.vision_tower = CLIPVisionModel.from_pretrained(config.mm_vision_tower)
 
         if hasattr(config, "use_mm_proj"):
             self.mm_projector = nn.Linear(config.mm_hidden_size, config.hidden_size)

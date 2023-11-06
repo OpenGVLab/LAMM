@@ -11,9 +11,9 @@ scenario_cfg:
 
 eval_cfg:
   instruction_cfg: 
-    query_type: query_pool
-    query_assigned_ids: 1 
-    template_assigned_ids: 1
+    query_type: query_pool 
+    query_assigned_ids: 1 # (kosmos: 5) (default: 1) 
+    template_assigned_ids: 1 # (kosmos: 0) (default: 1) 
   inferencer_cfg:
     inferencer_type: PPL
     batch_size: 4
