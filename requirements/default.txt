@@ -12,7 +12,7 @@ regex==2022.10.31
 pytorchvideo
 fvcore
 decord==0.6.0
-tqdm==4.64.1
+tqdm
 setuptools==65.5.1
 bigmodelvis
 nltk
