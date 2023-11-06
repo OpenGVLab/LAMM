@@ -13,5 +13,3 @@ main.py \
 --lr_end 1e-5 \
 --output_dir ./outputs/pointbert_2kpts_xyz_$current_time \
 # --use_scanrefer \
-# --test_ckpt_addr /data2/wangzhen/ULIP_ICL/outputs/pointbert_2kpts_2023_09_01_02_18/checkpoint_last.pt
-# --test_ckpt_addr ./data/pretrained_models/pretrained_models_ckpt_zero-sho_classification_checkpoint_pointbert.pt
