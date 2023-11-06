@@ -3,7 +3,7 @@ stage: 2
 octavius_modality: ['image']
 
 llm_ckpt_path: ../model_zoo/vicuna_ckpt/13b_v0
-delta_ckpt_path: ../ckpt/octavius_2d_e4_bs64/pytorch_model.pt
+delta_ckpt_path: ../ckpt/octavius_2d_e4_bs64_raw/pytorch_model.pt
 
 encoder_pretrain: clip
 vision_feature_type: local

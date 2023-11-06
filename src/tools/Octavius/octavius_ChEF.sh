@@ -1,24 +1,24 @@
 # choose one model_cfg from 2d, 3d, 2d+3d
-model_cfg=config/ChEF/models/octavius_2d.yaml
+model_cfg=config/ChEF/models/octavius_3d.yaml
 # model_cfg=config/ChEF/models/octavius_3d.yaml
 # model_cfg=config/ChEF/models/octavius_2d.yaml
 
-# recipe_cfg_list=(ScienceQA)
-recipe_cfg_list=(CIFAR10 Flickr30k CelebA_hair CelebA_smile VOC2012 ScienceQA)
-
-for dataset in ${recipe_cfg_list[*]}; do
-    srun -p AI4Good_X --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
-        python eval.py \
-            --model_cfg ${model_cfg} \
-            --recipe_cfg config/ChEF/scenario_recipes/LAMM/${dataset}.yaml
-done
-
-
-# recipe_cfg_list=(nr3d_caption_direct3d scan_caption_direct3d scan_cls_direct3d scan_vqa_direct3d shapenet_cls_direct3d)
+# recipe_cfg_list=(Flickr30k)
+# recipe_cfg_list=(CIFAR10 Flickr30k CelebA_hair CelebA_smile VOC2012 ScienceQA)
 
 # for dataset in ${recipe_cfg_list[*]}; do
 #     srun -p AI4Good_X --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
 #         python eval.py \
 #             --model_cfg ${model_cfg} \
-#             --recipe_cfg config/ChEF/scenario_recipes/Octavius3D/${dataset}.yaml
+#             --recipe_cfg config/ChEF/scenario_recipes/LAMM/${dataset}.yaml
 # done
+
+
+recipe_cfg_list=(nr3d_caption_direct3d scan_caption_direct3d scan_cls_direct3d scan_vqa_direct3d shapenet_cls_direct3d)
+
+for dataset in ${recipe_cfg_list[*]}; do
+    srun -p AI4Good_X --gres=gpu:1 --ntasks-per-node=1 --kill-on-bad-exit \
+        python eval.py \
+            --model_cfg ${model_cfg} \
+            --recipe_cfg config/ChEF/scenario_recipes/Octavius3D/${dataset}.yaml
+done
