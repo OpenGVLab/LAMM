@@ -11,6 +11,8 @@ LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a
 ## Updates
 📆 [**2023-11**] 
 1. ChEF and Octavius are available!
+2. [ChEF](https://arxiv.org/abs/2311.02692) and [Octavius](https://arxiv.org/abs/2311.02684) released on Arxiv!
+3. Camera ready version of LAMM is available on [Arxiv](https://arxiv.org/abs/2306.06687).
 
 📆 [**2023-09**]
 1. LAMM is accepted by NeurIPS2023 Datasets & Benchmark Track! See you in December!'
@@ -54,13 +56,27 @@ LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a
 **ChEF**
 
 ```
-TODO
+@misc{shi2023chef,
+      title={ChEF: A Comprehensive Evaluation Framework for Standardized Assessment of Multimodal Large Language Models}, 
+      author={Zhelun Shi and Zhipin Wang and Hongxing Fan and Zhenfei Yin and Lu Sheng and Yu Qiao and Jing Shao},
+      year={2023},
+      eprint={2311.02692},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
 
 **Octavius**
 
 ```
-TODO
+@misc{chen2023octavius,
+      title={Octavius: Mitigating Task Interference in MLLMs via MoE}, 
+      author={Zeren Chen and Ziqin Wang and Zhen Wang and Huayang Liu and Zhenfei Yin and Si Liu and Lu Sheng and Wanli Ouyang and Yu Qiao and Jing Shao},
+      year={2023},
+      eprint={2311.02684},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
 
 

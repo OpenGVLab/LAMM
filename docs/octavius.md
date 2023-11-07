@@ -30,11 +30,11 @@
     <sup>†</sup> Corresponding Author
 </div>
 
-<PaperListButton 
-    arxiv_link="https://www.baidu.com"
-    code_link="https://www.google.com"
-    model_zoo_link="/tutorial/training#octavius-model-zoo"
-/>
+<p align="center" style={{paddingTop: '0.75rem'}}>
+    <font size='4'>
+    <a href="https://arxiv.org/abs/2311.02684" target="_blank">📄 Paper</a>
+    </font>
+</p>
 
 ## Introduction
 
@@ -84,7 +84,14 @@ We propose **Octavius**, a unified, multimodal large language with a novel capab
 ## Citation
 
 ```bibtex
-TODO
+@misc{chen2023octavius,
+      title={Octavius: Mitigating Task Interference in MLLMs via MoE}, 
+      author={Zeren Chen and Ziqin Wang and Zhen Wang and Huayang Liu and Zhenfei Yin and Si Liu and Lu Sheng and Wanli Ouyang and Yu Qiao and Jing Shao},
+      year={2023},
+      eprint={2311.02684},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
 
 ## License

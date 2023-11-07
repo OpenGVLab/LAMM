@@ -28,7 +28,7 @@
 
 <p align="center" style={{paddingTop: '0.75rem'}}>
     <font size='4'>
-    <a href="https://arxiv.org/pdf/2306.06687.pdf" target="_blank">📄 Paper</a>
+    <a href="https://arxiv.org/abs/2311.02692" target="_blank">📄 Paper</a>
     </font>
 </p>
 
@@ -88,7 +88,14 @@ versatile evaluations in a standardized framework. Users can easily build new ev
 ## Citation
 
 ```bibtex
-TODO
+@misc{shi2023chef,
+      title={ChEF: A Comprehensive Evaluation Framework for Standardized Assessment of Multimodal Large Language Models}, 
+      author={Zhelun Shi and Zhipin Wang and Hongxing Fan and Zhenfei Yin and Lu Sheng and Yu Qiao and Jing Shao},
+      year={2023},
+      eprint={2311.02692},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
 
 ## License 

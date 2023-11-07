@@ -112,6 +112,44 @@ class LAMM_Caption(Base_Metric):
             scorers.append((Spice(), "SPICE"))
 
         tokenizer = PTBTokenizer()
+        res = {value['id']:[{'caption': value['answer']}] for value in answers}
+        gts = {value['id']:[{'caption': ans} for ans in value['gt_answers']] for value in answers}
+        
+        gts  = tokenizer.tokenize(gts)
+        res = tokenizer.tokenize(res)
+        rlt={}
+        for scorer, method in scorers:
+            print('computing %s score...'%(scorer.method()))
+            score, scores = scorer.compute_score(gts, res)
+            if type(method) == list:
+                for sc, scs, m in zip(score, scores, method):
+                    print("%s: %0.3f"%(m, sc*100))
+                    rlt[m]=sc*100
+            else:
+                print("%s: %0.3f"%(method, score*100))
+                rlt[method]=score*100
+        return rlt
+    
+    
+class LAMM_3D_Caption(Base_Metric):
+
+    def __init__(self, dataset_name):
+        super().__init__(dataset_name)
+
+    def metric_func(self, answers, use_spice=False):
+        score_list = ['Top1 (EM)','Top10 (EM)','Top1 (F-value)','BLEU-1','BLEU-2','BLEU-3','BLEU-4']
+        score = {s:[] for s in score_list}
+        
+        scorers = [
+                (Bleu(4), ["Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4"]),
+                (Meteor(),"METEOR"),
+                (Rouge(), "ROUGE_L"),
+                (Cider(), "CIDEr"),
+        ]
+        if use_spice:
+            scorers.append((Spice(), "SPICE"))
+
+        tokenizer = PTBTokenizer()
         res = {value['scene_id']:[{'caption': value['answer']}] for value in answers}
         gts = {value['scene_id']:[{'caption': value['gt']}] for value in answers}
         
