@@ -58,7 +58,7 @@ class CIFAR10LAMMDataset(Dataset):
         data_dict = {
             'id' : data_id,
             'label' : item['label'],
-            'question' : f"{item['query']} {additional_sentence}({shuffled_labels_str})",
+            'question' : f"{item['query']} {additional_sentence}{shuffled_labels_str}.",
             'image_path' : os.path.join(self.base_data_path, item['image']),
         }
         return data_dict
