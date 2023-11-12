@@ -7,7 +7,7 @@ import ast
 from fairseq_cli.generate import get_symbols_to_strip_from_output
 
 import torch.nn.functional as F
-from .utils import get_image
+from .utils import get_image, get_multi_imgs
 from .kosmos2 import unilm
 from .kosmos2.utils import get_interactive_tokens_and_lengths, post_process_prediction, get_token_src
 from .test_base import TestBase
@@ -322,3 +322,23 @@ class TestKOSMOS2(TestBase): # TODO: batch_size = 1
     
     def do_calibration(self, image_list, question_list, answer_list, answer_pool, CoT_list=None):
         return super().do_calibration(image_list, question_list, answer_list, answer_pool, CoT_list)
+    
+
+    @torch.no_grad()
+    def ppl_inference_multi_imgs(self, image_list, question_list, answer_list, answer_pool, CoT_list = None, calib = False):
+        self.generator.ppl = True
+        batch_size = len(images)
+        images = [get_multi_imgs(image) for image in image_list]
+        images = [item for sublist in images for item in sublist]
+        self.cfg.dataset.batch_size = batch_size
+        prefix = "[image]<image><tab><grounding>" if self.if_grounding else "[image]<image><tab>"
+        prompts = [" ".join([prefix] * len(images)) + {question} for question, images in zip(question_list, image_list)]
+        for i in range(batch_size):
+            answer = ''
+            if CoT_list is not None:
+                answer = CoT_list[i] + '\n'
+            answer += answer_list[i]
+            prompts[i] += ' ' + answer
+        sample = self.make_batches(images, prompts)
+        results = self.do_ppl(sample, answer_list, answer_pool, calib=calib)
+        return results

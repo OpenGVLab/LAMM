@@ -446,7 +446,9 @@ class LAMMPEFTModel(nn.Module):
             return None
         image_ouputs = []
         for image_path in image_paths:
-            if os.path.exists(image_path):
+            if isinstance(image_path, Image.Image):
+                image = image_path
+            elif os.path.exists(image_path):
                 image = Image.open(image_path)
             elif image_path.startswith("http://"):
                 image = Image.open(requests.get(image_path, stream=True).raw)

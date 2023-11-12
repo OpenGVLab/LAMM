@@ -6,9 +6,10 @@ import numpy as np
 import torch
 
 class PPL_inferencer(Direct_inferencer):
-    def __init__(self, calib=False, **kwargs) -> None:
+    def __init__(self, calib=False, multi_img=False, **kwargs) -> None:
         super().__init__(**kwargs)
         self.calib = calib
+        self.multi_img = multi_img
 
     def inference(self, model, dataset):
         predictions=[]
@@ -23,6 +24,8 @@ class PPL_inferencer(Direct_inferencer):
             image_path, questions, answers, ppl_batch_mask, answer_options, CoT_answer, _ = self.instruction_handler.generate_ppl_query(prompts, batch, batch_options, CoT = cot)
             if self.calib:
                 outputs = model.cali_inference(image_path, questions, answers, answer_options, CoT_answer)
+            elif self.multi_img:
+                outputs = model.ppl_inference_multi_imgs(image_path, questions, answers, answer_options, CoT_answer)
             else:
                 outputs = model.ppl_inference(image_path, questions, answers, answer_options, CoT_answer)
 

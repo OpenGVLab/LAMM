@@ -20,6 +20,11 @@ def get_image(image):
     else:
         raise NotImplementedError(f"Invalid type of Image: {type(image)}")
 
+def get_multi_imgs(images):
+    imgs = []
+    for image in images:
+        imgs.append(get_image(image))
+    return imgs
 
 def get_BGR_image(image):
     image = get_image(image)

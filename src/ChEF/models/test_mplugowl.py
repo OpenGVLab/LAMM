@@ -5,10 +5,11 @@ from transformers.models.llama.tokenization_llama import LlamaTokenizer
 
 from .mplug_owl.processing_mplug_owl import MplugOwlProcessor, MplugOwlImageProcessor
 from .mplug_owl.modeling_mplug_owl import MplugOwlForConditionalGeneration
-from .utils import get_image, Conversation, SeparatorStyle
+from .utils import get_image, get_multi_imgs, Conversation, SeparatorStyle
 from .test_base import TestBase
 
 prompt_template = "The following is a conversation between a curious human and AI assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.\nHuman: <image>\nHuman: {}\nAI:"
+prompt_template_multi = "The following is a conversation between a curious human and AI assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.\n"
 
 CONV_VISION = Conversation(
     system="The following is a conversation between a curious human and AI assistant. "
@@ -297,4 +298,14 @@ class TestMplugOwl(TestBase):
             loss = loss.reshape(-1, target_ids.shape[1]).float()
             for idx, item_loss in enumerate(loss):
                 results.append(item_loss[start_indices[idx]: end_indices[idx]].mean().item())
+        return results
+    
+    @torch.no_grad()
+    def ppl_inference_multi_imgs(self, image_list, question_list, answer_list, answer_options, CoT_list = None, calib = False):
+        images = [get_multi_imgs(image) for image in image_list]
+        images = [item for sublist in images for item in sublist]
+        images = [self.image_processor(image, return_tensors='pt').pixel_values for image in images]
+        images = torch.cat(images, dim=0).to(self.device, dtype=self.dtype)
+        prompts = [prompt_template_multi + "Human: ".join(["<image>"] * len(images)) + f"\nHuman: {question}\nAI:" for question, images in zip(question_list, image_list)]
+        results = self.do_ppl(images, prompts, answer_list, answer_options, CoT_list = CoT_list, calib = calib)
         return results

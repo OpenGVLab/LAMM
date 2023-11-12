@@ -115,3 +115,10 @@ class TestMiniGPT4(TestBase):
     @torch.no_grad()
     def do_calibration(self, image_list, question_list, answer_list, answer_pool, CoT_list=None):
         return super().do_calibration(image_list, question_list, answer_list, answer_pool, CoT_list)
+    
+    @torch.no_grad()
+    def ppl_inference_multi_imgs(self, image_list, question_list, answer_list, answer_options, CoT_list = None, calib = False):
+        # image_list = [get_image(image) for image in image_list]
+        chat_list = [CONV_VISION.copy() for _ in range(len(image_list))]
+        ppl_results = self.chat.ppl_answer_multi(image_list, question_list, chat_list, answer_list, answer_options, CoT_list=CoT_list, calib=calib)
+        return ppl_results
