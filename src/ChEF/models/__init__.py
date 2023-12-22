@@ -11,6 +11,9 @@ def get_model(cfg):
     if model_name == 'InstructBLIP':
         from .test_instructblip import TestInstructBLIP
         return TestInstructBLIP()
+    elif model_name == 'InstructBLIPT5':
+        from .test_instructblip_t5 import TestInstructBLIPT5
+        return TestInstructBLIPT5()
     elif model_name == 'LLaMA-Adapter-v2':
         from .test_llamaadapterv2 import TestLLamaAdapterV2
         return TestLLamaAdapterV2(**cfg)
