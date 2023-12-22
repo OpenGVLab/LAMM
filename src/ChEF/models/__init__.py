@@ -20,6 +20,9 @@ def get_model(cfg):
     elif model_name == 'LLaVA':
         from .test_llava import TestLLaVA
         return TestLLaVA(**cfg)
+    elif model_name == 'LLaVA1.5':
+        from .test_llava15 import TestLLaVA15
+        return TestLLaVA15(**cfg)
     elif model_name == 'MiniGPT-4':
         from .test_minigpt4 import TestMiniGPT4
         return TestMiniGPT4(**cfg)
