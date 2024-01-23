@@ -1,0 +1,12 @@
+model_name: LAMM_SFT
+model_path: ../ckpt/LAMM15_stage2/pytorch_model.pt
+llm_ckpt_path: ../model_zoo/vicuna_ckpt/13b_v0
+encoder_ckpt_path: ../model_zoo/clip-vit-large-patch14
+task_type: noraml
+encoder_pretrain: clip
+vision_type: image
+vision_feature_type: local
+vision_output_layer: -2
+num_vision_token: 256
+max_tgt_len: 1024
+stage: 3

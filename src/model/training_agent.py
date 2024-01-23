@@ -14,9 +14,6 @@ class DeepSpeedAgent:
         self.model = model
 
         self.writer = SummaryWriter(args["log_path"])
-        if args["stage"] == 2:
-            self.load_stage_1_parameters(args["delta_ckpt_path"])
-            print(f'[!] load stage 1 checkpoint from {args["delta_ckpt_path"]}')
 
         # load config parameters of deepspeed
         ds_params = args["deepspeed"]
@@ -99,8 +96,3 @@ class DeepSpeedAgent:
             self.model.llama_model.config.save_pretrained(path)
             print(f"[!] save model into {path}")
         
-
-
-    def load_stage_1_parameters(self, path):
-        delta_ckpt = torch.load(path, map_location=torch.device("cpu"))
-        self.model.load_state_dict(delta_ckpt, strict=False)

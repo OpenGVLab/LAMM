@@ -11,18 +11,12 @@ def get_model(cfg):
     if model_name == 'InstructBLIP':
         from .test_instructblip import TestInstructBLIP
         return TestInstructBLIP()
-    elif model_name == 'InstructBLIPT5':
-        from .test_instructblip_t5 import TestInstructBLIPT5
-        return TestInstructBLIPT5()
     elif model_name == 'LLaMA-Adapter-v2':
         from .test_llamaadapterv2 import TestLLamaAdapterV2
         return TestLLamaAdapterV2(**cfg)
     elif model_name == 'LLaVA':
         from .test_llava import TestLLaVA
         return TestLLaVA(**cfg)
-    elif model_name == 'LLaVA1.5':
-        from .test_llava15 import TestLLaVA15
-        return TestLLaVA15(**cfg)
     elif model_name == 'MiniGPT-4':
         from .test_minigpt4 import TestMiniGPT4
         return TestMiniGPT4(**cfg)
@@ -38,6 +32,9 @@ def get_model(cfg):
     elif model_name == 'LAMM':
         from .test_lamm import TestLAMM
         return TestLAMM(**cfg)
+    elif model_name == 'LAMM_SFT' :
+        from .test_lamm15 import TestLAMM15
+        return TestLAMM15(**cfg)
     elif model_name == 'Octavius' or model_name == 'Octavius_3d' or model_name == 'Octavius_2d':
         from .test_octavius import TestOctavius
         return TestOctavius(**cfg)

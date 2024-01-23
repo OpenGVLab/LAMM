@@ -86,6 +86,17 @@ def parser_args():
         type=str,
         help="path of delta parameters from previous stage; Only matter for stage 2",
     )
+    parser.add_argument(
+        "--llm_proj_path",
+        type=str,
+        help="path of LLM projection matrix; Only matter for stage 2",
+    )
+    parser.add_argument(
+        "--gradient_checkpointing",
+        default=False,
+        action="store_true",
+        help="whether to use gradient checkpointing to save memory",
+    )
     # embedding configurations
     parser.add_argument(
         "--vision_feature_type",
