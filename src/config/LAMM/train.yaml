@@ -9,6 +9,11 @@ models:
       agent_name: DeepSpeedAgent
       stage1_train_dataset: LAMMDataset
       test_dataset: SelfInstructTestDataset
+  lamm_sft:
+      model_name: LAMMSFTModel
+      agent_name: DeepSpeedAgent
+      stage1_train_dataset: LAMMDataset
+      test_dataset: SelfInstructTestDataset
 
 # ========= Global configuration ========== #
 logging_step: 5

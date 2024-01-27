@@ -1,0 +1,90 @@
+models: 
+  lamm:
+      model_name: LAMMModel
+      agent_name: DeepSpeedAgent
+      stage1_train_dataset: LAMMDataset
+      test_dataset: SelfInstructTestDataset
+  lamm_peft:
+      model_name: LAMMPEFTModel
+      agent_name: DeepSpeedAgent
+      stage1_train_dataset: LAMMDataset
+      test_dataset: SelfInstructTestDataset
+  lamm_sft:
+      model_name: LAMMSFTModel
+      agent_name: DeepSpeedAgent
+      stage1_train_dataset: LAMMDataset
+      test_dataset: SelfInstructTestDataset
+
+
+# ========= Global configuration ========== #
+logging_step: 5
+# ========= Global configuration ========== #
+
+# generation hyper-parameters
+max_len: 512
+penalty_alpha: 0.6
+top_k: 10
+top_p: 0.7
+random_prefix_len: 5
+sample_num: 2
+decoding_method: sampling
+generate_len: 512
+# some train configuration, more can be found under dsconfig folder
+seed: 0
+warmup_rate: 0.1
+epochs: 2
+max_length: 1024
+max_shard_size: 10GB
+
+# deepspeed arguments
+deepspeed:
+  train_batch_size: 128
+  train_micro_batch_size_per_gpu: 2
+  gradient_accumulation_steps: 8
+  gradient_clipping: 1.0
+  steps_per_print: 1
+
+  zero_optimization:
+    sub_group_size: 1000000000
+    overlap_comm : true
+    reduce_bucket_size : auto
+    contiguous_gradients: true
+    stage: 2
+  
+  optimizer:
+    type: Adam
+    params:
+      betas:
+      - 0.9
+      - 0.95
+      eps: 1.0e-08
+      lr: 0.00002
+      weight_decay: 0
+  
+  scheduler:
+    type: WarmupDecayLR
+    params:
+      total_num_steps: 20000
+      warmup_max_lr: 0.00002
+      warmup_min_lr: 0
+      warmup_num_steps: 10
+  
+  fp16:
+    enabled: true
+    loss_scale: 0
+    loss_scale_window: 1000
+    initial_scale_power: 16
+    hysteresis: 2
+    min_loss_scale: 1
+
+  
+  bf16:
+    enable: true
+  
+  activation_checkpointing:
+    partition_activations: true
+    cpu_checkpointing: true
+    contiguous_memory_optimization: false
+    number_checkpoints: null
+    synchronize_checkpoint_boundary: false
+    profile: false

@@ -4,7 +4,7 @@ from transformers import CLIPImageProcessor
 
 from .otter.modeling_otter import OtterForConditionalGeneration
 from .instruct_blip.models.eva_vit import convert_weights_to_fp16
-from .utils import get_image
+from .utils import get_image, get_multi_imgs
 from .utils import Conversation, SeparatorStyle
 from .test_base import TestBase
 
@@ -268,3 +268,18 @@ class TestOtter(TestBase):
 
     def do_calibration(self, image_list, question_list, answer_list, answer_pool, CoT_list=None):
         return super().do_calibration(image_list, question_list, answer_list, answer_pool, CoT_list)
+    
+    @torch.no_grad()
+    def ppl_inference_multi_imgs(self, image_list, question_list, answer_list, answer_pool, CoT_list = None, calib = False):
+        imgs = [get_multi_imgs(img) for img in image_list]
+        imgs = [item for sublist in imgs for item in sublist]
+        imgs = [self.image_processor.preprocess([x], return_tensors="pt")["pixel_values"].unsqueeze(0) for x in imgs]
+        vision_x = (torch.stack(imgs, dim=0))
+        vision_x=vision_x.to(self.model.device, dtype=self.dtype)
+        prompts = [" ".join(["<image>"] * len(images)) + f" User: {question} GPT: <answer>" for question, images in zip(question_list, image_list)]
+        if CoT_list is not None:
+            prompts = [prompt + ' ' + cot + '\n' for prompt, cot in zip(prompts, CoT_list)]
+        prompts = [prompt + ' ' + answer for prompt, answer in zip(prompts, answer_list)]
+        lang_x = self.model.text_tokenizer(prompts, return_tensors="pt", padding=True)
+        results = self.do_ppl(vision_x, lang_x, answer_list, answer_pool, calib)
+        return results

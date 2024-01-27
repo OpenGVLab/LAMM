@@ -3,14 +3,12 @@ import sys
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from copy import deepcopy
 import time
-from model.openlamm import LAMMPEFTModel
+from model.LAMM import LAMMPEFTModel
 import torch
 import json
 import argparse
-from conversations import conv_templates
+from model.LAMM.conversations import conv_templates
 from tqdm import tqdm
-import shortuuid
-from bigmodelvis import Visualization
 
 INPUT_KEYS = ['image_path', 'images', 'pcl_path']
 SYS_MSG = """
@@ -132,9 +130,16 @@ def predict(
     prompt_text = generate_conversation_text(args, input, history)
     if show_prompt:
         print(f'[!] prompt text: \n\t{prompt_text}', flush=True)
+    if image_path:
+        if isinstance(image_path, list):
+            image_paths = image_path
+        else:
+            image_paths = [image_path]
+    else:
+        image_paths = []
     response = model.generate({
         'prompt': [prompt_text] if not isinstance(prompt_text, list) else prompt_text,
-        'image_paths': [image_path] if image_path else [],
+        'image_paths': image_paths,
         'pcl_paths': [pcl_path] if pcl_path else [],
         'images': [images] if images else [],
         'top_p': top_p,
@@ -177,15 +182,27 @@ def main(args):
         print(f'>>>>>>>>>>>>>>>>>>>>>[!][!][!] start the conversation ...<<<<<<<<<<<<<<<<<<<<<<<<<', flush=True)
         conversation = True
         while conversation:
-            vision_path = ""
-            print("Input a file path: ", flush=True)
-            while not os.path.isfile(vision_path):
-                vision_path = input("Vision path: ")
-                if not os.path.isfile(vision_path):
-                    print(f'{vision_path} not found!')
-            print(f'[!] vision content path: {vision_path}', flush=True)
+            vision_paths = []
+            print("Input file paths (type 'done' when finished): ", flush=True)
+            while True:
+                input_path = input("Vision path: ").strip()
+                if input_path.lower() == 'done':
+                    break
+
+                if os.path.isfile(input_path):
+                    vision_paths.append(input_path)
+                    print(f"Added: {input_path}")
+                else:
+                    print(f"{input_path} not found!")
+            if len(vision_paths) == 1:
+                vision_path = vision_paths[0]
+            elif len(vision_paths) == 0:
+                print("No vision content provided!")
+                continue
+            else:
+                vision_path = vision_paths
             input_dict = make_input_dict(args, vision_path)
-            print("------------Conversation of {}-----------".format(os.path.basename(vision_path)))
+            print("------------Conversation Begins-----------")
             history = []
             for i in range(args.num_round):
                 print(f'[!] round {i + 1}')
@@ -246,12 +263,10 @@ def main(args):
             )
             response = history[-1][1]
             print(f'[!] Assistant ({item_time:3f}s): {history[-1][1]}')
-            ans_id = shortuuid.uuid()
             ans_dict = {
                 "question_id": question_id,
                 "prompt": input,
                 "response": response,
-                "answer_id": ans_id,
                 "model_id": args.delta_ckpt_path,
                 f"{args.vision_type}": vision_path
                 }

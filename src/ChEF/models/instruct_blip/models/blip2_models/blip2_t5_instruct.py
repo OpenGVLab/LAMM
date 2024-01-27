@@ -199,7 +199,7 @@ class Blip2T5Instruct(Blip2Base):
             )
             loss = outputs.loss
 
-            return {"loss": loss}
+            return outputs, targets
 
     def prepare_few_shot_embeds(self, samples):
         this_n_fs = random.choices(

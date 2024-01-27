@@ -445,3 +445,41 @@ class Chat:
             for idx, item_loss in enumerate(loss):
                 results.append(item_loss[loss_mask[idx]][answer_start_indices[idx]: answer_end_indices[idx]].mean().item())
         return results
+    
+
+    def ppl_answer_multi(self, image_list, question_list, chat_list, answer_list, answer_options, CoT_list = None, calib = False):
+        embs_list = []
+        for idx,(image, question, conv, answer) in enumerate(zip(image_list, question_list, chat_list, answer_list)):
+            img_list = []
+            self.upload_imgs(image, conv, img_list)
+            self.ask(question, conv)
+            conv.append_message(conv.roles[1], None)
+            if CoT_list is not None:
+                embs = self.get_context_emb(conv, img_list, answer = CoT_list[idx] + answer)
+            else:
+                embs = self.get_context_emb(conv, img_list, answer = answer)
+            embs_list.append(embs)
+        results = self.do_ppl(embs_list, answer_list, answer_options, calib = calib)
+        
+        return results
+    
+    def upload_imgs(self, images, conv, img_list):
+        for image in images:
+            if isinstance(image, str):  # is a image path
+                raw_image = Image.open(image).convert('RGB')
+                image = self.vis_processor(raw_image).unsqueeze(0).to(self.device)
+            elif isinstance(image, Image.Image):
+                raw_image = image
+                image = self.vis_processor(raw_image).unsqueeze(0).to(self.device)
+            elif isinstance(image, torch.Tensor):
+                if len(image.shape) == 3:
+                    image = image.unsqueeze(0)
+                image = image.to(self.device)
+
+            image_emb, _ = self.model.encode_img(image)
+            # print(f'Check the shape of image emb: {image_emb.shape}')
+            img_list.append(image_emb)
+        conv.append_message(conv.roles[0], " ".join(["<Img><ImageHere></Img>"] * len(images)))
+        msg = "Received."
+        # self.conv.append_message(self.conv.roles[1], msg)
+        return msg

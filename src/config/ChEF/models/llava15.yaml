@@ -1,0 +1,3 @@
+model_name: LLaVA1.5
+model_path: ../model_zoo/LLaVA1.5/models--liuhaotian--llava-v1.5-7b
+vis_processor_path: ../model_zoo/clip-vit-large-patch14

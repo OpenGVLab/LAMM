@@ -1,4 +1,6 @@
 import logging
+import io
+from petrel_client.client import Client
 import numpy as np
 import os
 from peft import LoraConfig, TaskType, get_peft_model
@@ -195,6 +197,7 @@ class LAMMPEFTModel(nn.Module):
     def __init__(self, **args):
         super(LAMMPEFTModel, self).__init__()
         self.args = args
+        self.client = None
 
         self.vision_type = args["vision_type"] if "vision_type" in args else "image"
         encoder_pretrain = (
@@ -212,7 +215,7 @@ class LAMMPEFTModel(nn.Module):
         llm_ckpt_path = args["llm_ckpt_path"]
         use_system = args["use_system"] if "use_system" in args else False
         self.conv_template = conversations.conv_templates[args['conv_template']] if 'conv_template' in args else conversations.default_conversation
-        stage = args["stage"]
+        self.stage = args["stage"]
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -272,28 +275,9 @@ class LAMMPEFTModel(nn.Module):
             param.requires_grad = False
         self.visual_encoder.eval()
         print("Visual encoder initialized.")
-
         print(f"Initializing language decoder from {llm_ckpt_path} ...")
-        # add the lora module
-        peft_config = self.build_peft_config()
-
-        if args.get('use_lightllm', False):
-            if LOAD_LIGHTLLM_EXT is False:
-                raise ImportError('Please refer to README.md to install LightLLM extension.')
-
-            self.llama_model = LlamaLightForCausalLM(
-                batch_size=self.args['bs'],
-                max_input_len=1024,
-                max_output_len=args['max_tgt_len'],
-                weight_dir=llm_ckpt_path,
-                lora_path=args['delta_ckpt_path'],
-                lora_config=peft_config,
-            )
-        else:
-            self.llama_model = LlamaForCausalLM.from_pretrained(llm_ckpt_path)
-            self.llama_model = get_peft_model(self.llama_model, peft_config)
-            self.llama_model.print_trainable_parameters()
-
+        self.initialize_language_model(llm_ckpt_path)
+        print("Language decoder initialized.")
         self.llama_tokenizer = LlamaTokenizer.from_pretrained(
             llm_ckpt_path, use_fast=False
         )
@@ -301,8 +285,6 @@ class LAMMPEFTModel(nn.Module):
         self.llama_tokenizer.padding_side = "right"
         tokens = self.get_special_tokens()
         self.add_tokens(tokens)
-        print("Language decoder initialized.")
-
         self.build_projection_layer()
 
         self.max_tgt_len = args["max_tgt_len"]
@@ -310,6 +292,33 @@ class LAMMPEFTModel(nn.Module):
         self.use_flash_attn = args.get('use_flash_attn', False)
         self.use_xformers = args.get('use_xformers', False)
         self.device = torch.cuda.current_device()
+        
+    
+    def initialize_language_model(self, llm_ckpt_path):
+        # add the lora module
+        peft_config = self.build_peft_config()
+
+        if self.args.get('use_lightllm', False):
+            if LOAD_LIGHTLLM_EXT is False:
+                raise ImportError('Please refer to README.md to install LightLLM extension.')
+
+            self.llama_model = LlamaLightForCausalLM(
+                batch_size=self.args['bs'],
+                max_input_len=1024,
+                max_output_len=self.args['max_tgt_len'],
+                weight_dir=llm_ckpt_path,
+                lora_path=self.args['delta_ckpt_path'],
+                lora_config=peft_config,
+            )
+        else:
+            self.llama_model = LlamaForCausalLM.from_pretrained(llm_ckpt_path)
+            self.llama_model = get_peft_model(self.llama_model, peft_config)
+            self.llama_model.print_trainable_parameters()
+
+    def init_client(self):
+        if self.client is not None:
+            return
+        self.client = Client("~/petreloss.conf")
 
     def build_projection_layer(self):
         self.llama_proj = nn.Linear(
@@ -442,14 +451,24 @@ class LAMMPEFTModel(nn.Module):
         return inputs_llama
 
     def load_and_transform_image_data_clip(self, image_paths, device):
+        self.init_client()
         if image_paths is None:
             return None
         image_ouputs = []
         for image_path in image_paths:
-            if os.path.exists(image_path):
+            if isinstance(image_path, Image.Image):
+                image = image_path
+            elif os.path.exists(image_path):
                 image = Image.open(image_path)
             elif image_path.startswith("http://"):
                 image = Image.open(requests.get(image_path, stream=True).raw)
+            elif 'gqa' in image_path:
+                idx = image_path.find('gqa')
+                image_path = f'gqa:s3://mmg_gqa/train_images{image_path[idx+10:]}'
+                img_bytes = self.client.get(image_path)
+                assert img_bytes is not None, f'data path {image_path} is invalid'
+                byte_stream = io.BytesIO(img_bytes)
+                image = Image.open(byte_stream).convert('RGB')
             else:
                 print("can not load image: ", image_path)
             image_output = self.visual_preprocess(image).to(device)  # 3 x 224 x 224
@@ -480,6 +499,10 @@ class LAMMPEFTModel(nn.Module):
             )
             pcl_output.append(torch.from_numpy(point_cloud))
         return torch.stack(pcl_output, dim=0).to(device)  # bsz x num_points x 3
+
+    def embed_tokens(self, token_ids):
+        # peft model need deeper call
+        return self.llama_model.model.model.embed_tokens(token_ids)
 
     def prompt_wrap(
         self, img_embeds, input_ids, target_ids, attention_mask, use_system, task_type
@@ -525,13 +548,8 @@ class LAMMPEFTModel(nn.Module):
             p_before_attn_mask = p_before_tokens.attention_mask.expand(
                 batch_size, -1
             )  # bsz x s1
-        # peft model need deeper call
-        p_before_embeds = self.llama_model.model.model.embed_tokens(
-            p_before_token_ids
-        )  # .expand(batch_size, -1, -1) # bsz x s1 x embed_dim
-        p_after_embeds = self.llama_model.model.model.embed_tokens(input_ids).expand(
-            batch_size, -1, -1
-        )  # bsz x s2 x embed_dim
+        p_before_embeds = self.embed_tokens(p_before_token_ids) # .expand(batch_size, -1, -1) # bsz x s1 x embed_dim
+        p_after_embeds = self.embed_tokens(input_ids).expand(batch_size, -1, -1)  # bsz x s2 x embed_dim
         bos = (
             torch.ones(
                 [batch_size, 1],
@@ -540,9 +558,7 @@ class LAMMPEFTModel(nn.Module):
             )
             * self.llama_tokenizer.bos_token_id
         )  # bsz x 1
-        bos_embeds = self.llama_model.model.model.embed_tokens(
-            bos
-        )  # bsz x 1 x embed_dim
+        bos_embeds = self.embed_tokens(bos)  # bsz x 1 x embed_dim
         inputs_embeds = torch.cat(
             [bos_embeds, p_before_embeds, img_embeds, p_after_embeds], dim=1
         )  # bsz x (1+s1+NumToken+s2) x embed_dim
@@ -622,6 +638,42 @@ class LAMMPEFTModel(nn.Module):
         gen_acc = valid_tokens.sum().item() / valid_mask.sum().item()
         return loss, gen_acc
 
+    def ppl_forward(self, inputs):
+        assert (
+            self.vision_type == inputs["vision_type"]
+        ), "{} expected but {} given".format(self.valid_type, inputs["vision_type"])
+        task_type = inputs["task_type"]
+        vision_paths = inputs["vision_paths"]
+        if self.vision_type == "image":
+            vision_embeds, _ = self.encode_image(vision_paths)
+        elif self.vision_type == "pcl":
+            vision_embeds, _ = self.encode_pcl(vision_paths)  # Bsz x N token x C
+        else:
+            raise ValueError("vision type [{}] not supported".format(self.vision_type))
+
+        output_texts = inputs["output_texts"]
+        input_ids, target_ids, attention_mask = process_batch_instance(
+            self.llama_tokenizer, output_texts, self.max_tgt_len, self.vision_type, self.conv_template
+        )
+        inputs_embeds, targets, attention_mask = self.prompt_wrap(
+            vision_embeds,
+            input_ids,
+            target_ids,
+            attention_mask,
+            self.use_system,
+            task_type,
+        )
+
+        outputs = self.llama_model(
+            inputs_embeds=inputs_embeds,
+            attention_mask=attention_mask,
+            return_dict=True,
+            labels=targets,
+            use_cache=not self.use_flash_attn,
+        )
+        logits = outputs.logits
+        return logits, targets
+
     def extract_multimodal_feature(self, inputs):
         """Extract multimodal features from the input in Generation (Test)
 
@@ -666,7 +718,7 @@ class LAMMPEFTModel(nn.Module):
         p_before_tokens = self.llama_tokenizer(
             p_before, return_tensors="pt", add_special_tokens=False
         ).to(self.device)
-        p_before_embeds = self.llama_model.model.model.embed_tokens(
+        p_before_embeds = self.embed_tokens(
             p_before_tokens.input_ids
         ).expand(
             batch_size, -1, -1
@@ -679,7 +731,7 @@ class LAMMPEFTModel(nn.Module):
             add_special_tokens=False, return_tensors="pt"
         ).to(self.device)
         p_after_masks_len = p_after_tokens.length.max() - p_after_tokens.length
-        p_after_embeds = self.llama_model.model.model.embed_tokens(p_after_tokens.input_ids)
+        p_after_embeds = self.embed_tokens(p_after_tokens.input_ids)
 
         bos = (
             torch.ones(
@@ -689,7 +741,7 @@ class LAMMPEFTModel(nn.Module):
             )
             * self.llama_tokenizer.bos_token_id
         )  # bsz x 1
-        bos_embeds = self.llama_model.model.model.embed_tokens(
+        bos_embeds = self.embed_tokens(
             bos
         )  # bsz x 1 x embed_dim
 
@@ -734,7 +786,7 @@ class LAMMPEFTModel(nn.Module):
             max_new_tokens=inputs["max_tgt_len"],
             top_p=inputs["top_p"],
             temperature=inputs["temperature"],
-            do_sample=True,
+            do_sample=False,
             use_cache=True,
             stopping_criteria=stopping_criteria,
         )
@@ -742,3 +794,46 @@ class LAMMPEFTModel(nn.Module):
             outputs, skip_special_tokens=True
         )
         return output_text
+
+
+class LAMMSFTModel(LAMMPEFTModel):
+    """SFT for LAMM model"""
+
+    def initialize_language_model(self, llm_ckpt_path):
+        self.llama_model = LlamaForCausalLM.from_pretrained(llm_ckpt_path)
+        
+        # freeze language decoder
+        if self.stage == 1:
+            print('Freeze language decoder for stage 1 trainning')
+            self.llama_model.model.requires_grad_(False)
+        
+        if self.stage == 2:
+            self.gradient_checkpointing = self.args['gradient_checkpointing']
+            # enable gradient checkpointing
+            if self.gradient_checkpointing:
+                print('Enable gradient checkpointing for SFT')
+                self.llama_model.model.gradient_checkpointing = True
+            print("Enable language decoder for stage 2 training")
+            self.llama_model.model.requires_grad_(True)
+        # self.llama_model.print_trainable_parameters()
+
+    def build_projection_layer(self):
+        super().build_projection_layer()
+        if self.stage == 2:
+            print("Load projector weights for stage 2 training")
+            self.load_stage1_weights(self.args['llm_proj_path'])
+
+    def load_stage1_weights(self, ckpt_path):
+        original_state_dict = torch.load(ckpt_path)
+        lm_head_weights = {}
+        llama_proj_weights = {}
+        for key, value in original_state_dict.items():
+            if key.startswith('llama_model.lm_head'):
+                lm_head_weights[key.split('.')[-1]] = value
+            elif key.startswith('llama_proj'):
+                llama_proj_weights[key.split('.')[-1]] = value
+        self.llama_proj.load_state_dict(llama_proj_weights)
+        self.llama_model.lm_head.load_state_dict(lm_head_weights)
+
+    def embed_tokens(self, token_ids):
+        return self.llama_model.model.embed_tokens(token_ids)
