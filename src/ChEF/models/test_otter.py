@@ -272,8 +272,7 @@ class TestOtter(TestBase):
     @torch.no_grad()
     def ppl_inference_multi_imgs(self, image_list, question_list, answer_list, answer_pool, CoT_list = None, calib = False):
         imgs = [get_multi_imgs(img) for img in image_list]
-        imgs = [item for sublist in imgs for item in sublist]
-        imgs = [self.image_processor.preprocess([x], return_tensors="pt")["pixel_values"].unsqueeze(0) for x in imgs]
+        imgs = [self.image_processor.preprocess(x, return_tensors="pt")["pixel_values"].unsqueeze(0) for x in imgs]
         vision_x = (torch.stack(imgs, dim=0))
         vision_x=vision_x.to(self.model.device, dtype=self.dtype)
         prompts = [" ".join(["<image>"] * len(images)) + f" User: {question} GPT: <answer>" for question, images in zip(question_list, image_list)]

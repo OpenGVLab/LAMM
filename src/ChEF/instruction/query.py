@@ -102,6 +102,8 @@ Classification_octavius3d_prompts = ['']
 VQA_octavius3d_prompts = ['']
 Caption_octavius3d_prompts = ['']
 
+winoground_prompts = ['']
+
 # vqa answer templates for ppl inference
 vqa_templates = [
     'The answer is {}',
@@ -159,6 +161,8 @@ octavius3d_templates = [
     "{}",
 ]
 
+winoground_templates = ['{}']
+    
 query_pool_dict = {
     'coarse_grained_classification_prompts': coarse_grained_classification_prompts,
     'fine_grained_classification_prompts': fine_grained_classification_prompts,
@@ -174,6 +178,7 @@ query_pool_dict = {
     'Classification_octavius3d_prompts': Classification_octavius3d_prompts,
     'VQA_octavius3d_prompts': VQA_octavius3d_prompts,
     'Caption_octavius3d_prompts': Caption_octavius3d_prompts,
+    'Winoground_prompts': winoground_prompts,
 }
 
 ppl_template_dict = {
@@ -187,6 +192,7 @@ ppl_template_dict = {
     'Classification_octavius3d_templates': octavius3d_templates,
     'Caption_octavius3d_templates': octavius3d_templates,
     'VQA_octavius3d_templates': octavius3d_templates,
+    'Winoground_templates': winoground_templates,
 }
 
 multiturn_query_dict = {
