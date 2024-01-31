@@ -1,6 +1,6 @@
 # LAMM
 
-LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a growing open-source community aimed at helping researchers and developers quickly train and evaluate Multi-modal Large Language Models (MLLM), and futher build multi-modal AI agents capable of bridging the gap between ideas and execution, enabling seamless interaction between humans and AI machines.
+LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a growing open-source community aimed at helping researchers and developers quickly train and evaluate Multi-modal Large Language Models (MLLM), and further build multi-modal AI agents capable of bridging the gap between ideas and execution, enabling seamless interaction between humans and AI machines.
 
 <p align="center">
     <font size='4'>
