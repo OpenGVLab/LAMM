@@ -15,6 +15,7 @@
 *.pth
 *.pt
 *.model
+!*.bpe.model
 *.0
 
 # result related

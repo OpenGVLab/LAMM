@@ -193,7 +193,7 @@ class TestLAMM(TestBase):
                     break
             assert len(answer_start_indices) == len(template_token_list), "tokenizer encode answer in template different from answer only"
             
-        logits, target_ids = self.model(dict(
+        logits, target_ids = self.model.ppl_forward(dict(
             vision_type = 'image',
             task_type = self.task_type,
             vision_paths = images,
