@@ -8,6 +8,7 @@ from .detection import Detection, KOSMOS_Detection, LAMM_Detection , LAMM_3D_Det
 from .counting import Counting
 from .ocr import SVT_OCR
 from .lamm_locating import InsideBbox, InsideHumanBbox
+from .winoground import Winoground_Metric, Winoground_Cap_Metric
 
 evaluation_protocol = {
     'basic':{
@@ -62,6 +63,10 @@ evaluation_protocol = {
         'scannet_VQA': LAMM_3D_Caption,
         'nr3d_Caption': LAMM_3D_Caption,
         'shapenet_Classification': LAMM_3D_Classification,
+    },
+    'Winoground': {
+        'Winoground': Winoground_Metric,
+        'Winoground_Cap': Winoground_Cap_Metric,
     }
 }
 
