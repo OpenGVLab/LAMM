@@ -25,6 +25,8 @@ class InstructionHandler:
             self.retriever = build_retriever(dataset, dataset, **icl_cfg)
             self.retriever.seed = icl_cfg['random_seed']
             self.ice_idx_list = self.retriever.retrieve()
+
+            # TODO: all_use_pic
             if icl_cfg['ice_with_image']:
                 self.icl_cfg['use_pic'] = True
                 self.icl_cfg['add_sysmsg'] = False

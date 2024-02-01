@@ -32,12 +32,18 @@ class CIFAR10Dataset(Dataset):
 
 
 class OmnibenchmarkDataset(Dataset):
+    '''
+        Omnibenchmark is a fine-grained classification dataset. The default setting is multiturn ppl.
+    '''
     task_name = 'fine_grained_classification'
     dataset_name = 'Omnibenchmark'
     def __init__(self, 
                  bamboo_tree_path, 
                  base_data_path, 
-                 ppl_cfg = None,
+                 ppl_cfg = {
+                    'negative_opt_num': 3,
+                    'random_seed': 0,
+                 },
                  **kwargs):
         self.bamboo_tree_path = bamboo_tree_path
         self.base_data_path = base_data_path
@@ -45,14 +51,12 @@ class OmnibenchmarkDataset(Dataset):
         json_path = os.path.join(base_data_path,'meta_file', f'Classification_Omnibenchmark.json')
         self.data = json.load(open(json_path,'rb'))
         self.ppl_cfg = ppl_cfg
-        self.ppl = False
-        if self.ppl_cfg is not None:
-            self.ppl = True
-            self.negative_opt_num = self.ppl_cfg.get('negative_opt_num', 3)
-            self.random_seed = self.ppl_cfg.get('random_seed', 0)
-            self.single_turn = self.ppl_cfg.get('single_turn', True)
-            random.seed(self.random_seed)
-            self.load_ppl_options()
+        if self.ppl_cfg is None:
+            return 
+        self.negative_opt_num = self.ppl_cfg.get('negative_opt_num', 3)
+        self.random_seed = self.ppl_cfg.get('random_seed', 0)
+        random.seed(self.random_seed)
+        self.load_ppl_options()
             
 
     def load_ppl_options(self):
@@ -124,23 +128,23 @@ class OmnibenchmarkDataset(Dataset):
             'gt_answers': self.data[index]['chain'],
             'realm_name' : self.data[index]['realm_name'],
         }
-        if self.ppl:
+        if self.ppl_cfg is not None:
             ppl_options = self.ppl_options[index]
-            if self.single_turn:
-                options = []
-                for ppl_option in ppl_options:
-                    options += ppl_option
-                random.shuffle(options)
-                res_dict['options'] = options
-            else:
-                res_options = [dict(
-                    fore_label = None,
-                    options = ppl_options[0]
-                )]
-                for i in range(1,len(ppl_options),1):
-                    res_options.append(dict(
-                        fore_label = self.data[index]['chain'][i-1],
-                        options = ppl_options[i]
-                    ))
-                res_dict['options'] = res_options
+            res_options = [dict(
+                prefix = None,
+                options = ppl_options[0]
+            )]
+            for i in range(1,len(ppl_options),1):
+                res_options.append(dict(
+                    prefix = self.data[index]['chain'][i-1],
+                    options = ppl_options[i]
+                ))
+            res_dict['options'] = res_options
         return res_dict
+
+
+if __name__ == '__main__':
+    omnidata = OmnibenchmarkDataset(
+        bamboo_tree_path='../../../data/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json', 
+        base_data_path='../../../data/ChEF/OmniBenchmark_Bamboo')
+    import ipdb;ipdb.set_trace()

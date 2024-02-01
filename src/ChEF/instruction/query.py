@@ -21,27 +21,14 @@ coarse_grained_classification_prompts = [
     "Can you suggest any potential alternate category labels that might be appropriate for this image based on its attributes?",
     "According to the image's attributes, what label would you assign to it?",
 ]
-fine_grained_classification_prompts = [
-    'What is the fine-grained category label for this image?',
-]
+
 fine_grained_classification_multiturn_prompts = [
-    ['What is the fine-grained category label for this image?',
-     'As the coarse-grained category label for this image is {}, what is the fine-grained category label for this image?']
-     # replace {} with the fore_label (defined in scenario) 
+    'As the coarse-grained category label for this image is {prefix}, what is the fine-grained category label for this image?',
 ]
 
 # LAMM-style classfication prompts
 classification_lamm_prompts = [
     '',
-]
-
-# classification answer templates for ppl inference
-coarse_grained_classification_templates = [
-    'The object in the image is {}',
-    '{}',
-]
-fine_grained_classification_templates = [
-    'The fine-grained category label for this image is {}',
 ]
 
 # caption
@@ -74,12 +61,6 @@ caption_lamm_prompts = [
     '',
 ]
 
-# caption answer templates for ppl inference
-caption_templates = [
-    'The caption for this image is \" {}',
-    '{}',
-]
-
 # vqa
 vqa_prompts = [
     'The answer is',
@@ -92,7 +73,6 @@ vqa_prompts = [
     'Answer:',
 ]
 
-# vqa
 # LAMM-style standard prompts
 vqa_lamm_prompts = [
     '',
@@ -102,22 +82,10 @@ Classification_octavius3d_prompts = ['']
 VQA_octavius3d_prompts = ['']
 Caption_octavius3d_prompts = ['']
 
-# vqa answer templates for ppl inference
-vqa_templates = [
-    'The answer is {}',
-    'The correct option for the question is {}',
-    '{}',
-]
-
 # counting, question defined in dataset
 # example: 'How many {} are there in this image?'
 counting_prompts = [
     "",
-]
-
-# counting answer templates for ppl inference
-counting_templates = [
-    "{}",
 ]
 
 # detection
@@ -129,39 +97,20 @@ detection_lamm_prompts = [
 # Two-turn detection prompts, with the first turn query for the category and the second turn query for the bounding box.
 detection_multi_turn_prompts = [
     ['The image shows',
-     'Give all the bounding boxes of {} in the image. The bounding box should be represented as [x1, y1, x2, y2] with floating numbers indicating the coordinates of the object in a normalized range of 0-1. These values correspond to the top left x, top left y, bottom right x, and bottom right y.' # replace {} with the fore_label
+     'Give all the bounding boxes of {prefix} in the image. The bounding box should be represented as [x1, y1, x2, y2] with floating numbers indicating the coordinates of the object in a normalized range of 0-1. These values correspond to the top left x, top left y, bottom right x, and bottom right y.'
     ],
-    ['Detect all the objects in the image.', 'Provide coordinates [x0,y0,x1,y1] for {} in the image.'], # For shikra
-    ['Detect all the objects in the image.', '<grounding><phrase>{}</phrase>'] # For kosmos2
+    ['Detect all the objects in the image.', 'Provide coordinates [x0,y0,x1,y1] for {prefix} in the image.'], # For shikra
+    ['Detect all the objects in the image.', '<grounding><phrase>{prefix}</phrase>'] # For kosmos2
 ]
-
-# templates for two-turn ppl inference
-detection_templates = [
-    ['The object in the image is {}', 'It is located at the bbox {}'], # default
-    ['The object in the image is {}', 'The {}'], # For shikra
-    ['The object in the image is {}', '{}'] # For kosmos2
-]
-
 
 # POPE
 # The prompts for POPE are defined in dataset. 
 pope_prompts = [
     "",
 ]
-# POPE answer templates for ppl inference
-pope_templates=[ 
-    "{}",
-    'The answer is {}'
-]
 
-# octavius3d
-octavius3d_templates = [
-    "{}",
-]
-
-query_pool_dict = {
+singleturn_query_dict = {
     'coarse_grained_classification_prompts': coarse_grained_classification_prompts,
-    'fine_grained_classification_prompts': fine_grained_classification_prompts,
     'caption_prompts': caption_prompts,
     'VQA_prompts': vqa_prompts,
     'counting_prompts': counting_prompts,
@@ -176,19 +125,6 @@ query_pool_dict = {
     'Caption_octavius3d_prompts': Caption_octavius3d_prompts,
 }
 
-ppl_template_dict = {
-    'coarse_grained_classification_templates': coarse_grained_classification_templates,
-    'fine_grained_classification_templates': fine_grained_classification_templates,
-    'VQA_templates': vqa_templates,
-    'counting_templates': counting_templates,
-    'caption_templates': caption_templates,
-    'detection_templates': detection_templates,
-    'POPE_templates': pope_templates,
-    'Classification_octavius3d_templates': octavius3d_templates,
-    'Caption_octavius3d_templates': octavius3d_templates,
-    'VQA_octavius3d_templates': octavius3d_templates,
-}
-
 multiturn_query_dict = {
     'fine_grained_classification_multiturn_prompts':
     fine_grained_classification_multiturn_prompts,
@@ -196,32 +132,28 @@ multiturn_query_dict = {
     detection_multi_turn_prompts,
 }
 
-def query_from_query_pool(
+def singleturn_query(
         task_name,
         assigned_ids = 0,
+        defined_query = None,
         **kwargs
         ):
+    if defined_query is not None:
+        assert isinstance(defined_query, str), f'The defined query must be string. '
     prompt_name = task_name + '_prompts'
     query = ''
+
+    query = singleturn_query_dict.get(prompt_name, )
     if prompt_name in query_pool_dict:
         query_pool = query_pool_dict[prompt_name]
         query = query_pool[assigned_ids]
     return query
 
-def query_from_standard_query(
-        task_name,
-        **kwargs
-        ):
-    return query_from_query_pool(task_name, assigned_ids=0)
-
-def multiturn_query_from_query_pool(
+def multiturn_query(
         task_name, 
         assigned_ids = 0,
         **kwargs
     ):
-    """
-        return : list of tuple (prompt, multiturn_prompt, answer_template)
-    """
     multiturn_name = task_name + '_multiturn_prompts'
     multiturn_query = ['', '']
     if multiturn_name in multiturn_query_dict:
@@ -229,39 +161,13 @@ def multiturn_query_from_query_pool(
         multiturn_query = multiturnppl_pool[assigned_ids]
     return multiturn_query
 
-def ppl_template(
-        task_name, 
-        assigned_ids = 0,
-        query_type = '', 
-        **kwargs
-    ):
-    template_name = task_name + '_templates'
-    template = '{}'
-    if template_name in ppl_template_dict:
-        template_pool = ppl_template_dict[template_name]
-        template = template_pool[assigned_ids]
-    if query_type == 'multiturn' and isinstance(template, str): # each turn uses the same template
-        template = [template, template]
-    return template
-
 query_func_dict = {
-    'standard_query': query_from_standard_query,
-    'query_pool': query_from_query_pool,
-    'multiturn': multiturn_query_from_query_pool,
+    'singleturn': singleturn_query,
+    'multiturn': multiturn_query,
 }
 
-
 def build_query(query_type, **kwargs):
-    build_func = query_func_dict[query_type]
-    return build_func(**kwargs)
-
-def build_template(**kwargs):
-    # LAMM-style inference does not require template
-    if kwargs['task_name'].endswith('lamm'):
-        return None
-
-    return ppl_template(**kwargs)
-
+    return query_func_dict[query_type](**kwargs)
 
 if __name__ == "__main__":
     test_dict = {

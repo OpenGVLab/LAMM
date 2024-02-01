@@ -38,9 +38,9 @@ class Evaluator:
         result = self.metric.metric(results_path)
         with open(os.path.join(self.save_base_dir, 'results.json'), 'w', encoding='utf-8') as f:
             f.write(json.dumps(dict(
-                        answer_path = results_path,
-                        result = result
-                    ), indent=4))
+                answer_path = results_path,
+                result = result
+            ), indent=4))
     
         return results_path, result
 

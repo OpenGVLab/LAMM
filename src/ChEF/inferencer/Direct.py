@@ -5,7 +5,6 @@ import os
 import datetime
 from .utils import copy_batch_dict
 
-
 class Direct_inferencer:
 
     def __init__(self,
