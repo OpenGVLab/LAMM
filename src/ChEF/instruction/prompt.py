@@ -27,9 +27,7 @@ fine_grained_classification_multiturn_prompts = [
 ]
 
 # LAMM-style classfication prompts
-classification_lamm_prompts = [
-    '',
-]
+classification_lamm_prompts = ['{question}']
 
 # caption
 caption_prompts = [
@@ -57,36 +55,34 @@ caption_prompts = [
 ]
 
 # LAMM-style standard prompts
-caption_lamm_prompts = [
-    '',
-]
+caption_lamm_prompts = ['{question}']
 
 # vqa
 vqa_prompts = [
-    'The answer is',
-    'What is the correct option for this question?',
-    '',
-    'What is the answer?',
-    'The answer for the question is',
-    'ANSWER:',
-    'The answer (option) is',
-    'Answer:',
+    '{question}The answer is',
+    '{question}What is the correct option for this question?',
+    '{question}',
+    '{question}What is the answer?',
+    '{question}The answer for the question is',
+    '{question}ANSWER:',
+    '{question}The answer (option) is',
+    '{question}Answer:',
 ]
 
 # LAMM-style standard prompts
-vqa_lamm_prompts = [
-    '',
-]
+vqa_lamm_prompts = ['{question}']
 
-Classification_octavius3d_prompts = ['']
-VQA_octavius3d_prompts = ['']
-Caption_octavius3d_prompts = ['']
+# Octavius
+Classification_octavius3d_prompts = ['{question}']
+VQA_octavius3d_prompts = ['{question}']
+Caption_octavius3d_prompts = ['{question}']
+
+# multiimage
+winoground_prompts = ['{question}']
 
 # counting, question defined in dataset
 # example: 'How many {} are there in this image?'
-counting_prompts = [
-    "",
-]
+counting_prompts = ['{question}']
 
 # detection
 # We provide both LAMM-style standard prompts and multi-turn prompts
@@ -94,8 +90,8 @@ detection_lamm_prompts = [
     'Identify all the objects in the image and provide their positions. Your answer needs to give the object name and the bounding box of the object. The bounding box should be represented as [x1, y1, x2, y2] with floating numbers ranging from 0 to 1. These values correspond to the top left x, top left y, bottom right x, and bottom right y.'
 ]
 
-# Two-turn detection prompts, with the first turn query for the category and the second turn query for the bounding box.
-detection_multi_turn_prompts = [
+# Two-turn detection prompts, with the first turn prompt for the category and the second turn prompt for the bounding box.
+detection_multiturn_prompts = [
     ['The image shows',
      'Give all the bounding boxes of {prefix} in the image. The bounding box should be represented as [x1, y1, x2, y2] with floating numbers indicating the coordinates of the object in a normalized range of 0-1. These values correspond to the top left x, top left y, bottom right x, and bottom right y.'
     ],
@@ -105,16 +101,17 @@ detection_multi_turn_prompts = [
 
 # POPE
 # The prompts for POPE are defined in dataset. 
-pope_prompts = [
-    "",
-]
+pope_prompts = ['{question}']
 
-singleturn_query_dict = {
+
+    
+singleturn_prompt_dict = {
     'coarse_grained_classification_prompts': coarse_grained_classification_prompts,
     'caption_prompts': caption_prompts,
     'VQA_prompts': vqa_prompts,
     'counting_prompts': counting_prompts,
     'POPE_prompts':pope_prompts,
+    'detection_prompts': detection_lamm_prompts,
     'detection_lamm_prompts': detection_lamm_prompts,
     'VQA_lamm_prompts' : vqa_lamm_prompts,
     'caption_lamm_prompts' : caption_lamm_prompts,
@@ -123,67 +120,87 @@ singleturn_query_dict = {
     'Classification_octavius3d_prompts': Classification_octavius3d_prompts,
     'VQA_octavius3d_prompts': VQA_octavius3d_prompts,
     'Caption_octavius3d_prompts': Caption_octavius3d_prompts,
+    'Winoground_prompts': winoground_prompts,
 }
 
-multiturn_query_dict = {
-    'fine_grained_classification_multiturn_prompts':
-    fine_grained_classification_multiturn_prompts,
-    'detection_multiturn_prompts':
-    detection_multi_turn_prompts,
+multiturn_prompt_dict = {
+    'fine_grained_classification_multiturn_prompts': fine_grained_classification_multiturn_prompts,
+    'detection_multiturn_prompts': detection_multiturn_prompts,
 }
 
-def singleturn_query(
+def singleturn_prompt(
         task_name,
         assigned_ids = 0,
-        defined_query = None,
+        defined_prompt = None,
         **kwargs
         ):
-    if defined_query is not None:
-        assert isinstance(defined_query, str), f'The defined query must be string. '
+    '''
+        return prompt: str
+    '''
+    print('Using singleturn prompt...')
+    if defined_prompt is not None:
+        assert isinstance(defined_prompt, str), f'The defined prompt must be string. '
+        print(f'Using user defined prompt: {defined_prompt} for task: {task_name}')
+        return defined_prompt
     prompt_name = task_name + '_prompts'
-    query = ''
+    prompt = ''
+    if prompt_name in singleturn_prompt_dict:
+        prompt = singleturn_prompt_dict[prompt_name][assigned_ids]
+        print(f'Using prompt pool prompt: {prompt} for task: {task_name}')
+        return prompt
+    print(f'No prompt defined for task: {task_name}. Make sure you have the key \'question\' in dataset for prompt.')
+    return prompt
 
-    query = singleturn_query_dict.get(prompt_name, )
-    if prompt_name in query_pool_dict:
-        query_pool = query_pool_dict[prompt_name]
-        query = query_pool[assigned_ids]
-    return query
-
-def multiturn_query(
+def multiturn_prompt(
         task_name, 
         assigned_ids = 0,
+        defined_prompt = None,
         **kwargs
     ):
-    multiturn_name = task_name + '_multiturn_prompts'
-    multiturn_query = ['', '']
-    if multiturn_name in multiturn_query_dict:
-        multiturnppl_pool = multiturn_query_dict[multiturn_name]
-        multiturn_query = multiturnppl_pool[assigned_ids]
-    return multiturn_query
+    '''
+        return [prompt_1: str, prompt_2: str]
+    '''
+    print('Using multiturn prompt...')
+    if defined_prompt is not None:
+        if isinstance(defined_prompt, str):
+            defined_prompt = [defined_prompt, defined_prompt]
+        print(f'Using user defined prompt: {defined_prompt} for task: {task_name}')
+        return defined_prompt
+    prompt_name = task_name + '_multiturn_prompts'
+    prompt = ['', '']
+    if prompt_name in multiturn_prompt_dict:
+        prompt = multiturn_prompt_dict[prompt_name][assigned_ids]
+        if isinstance(prompt, str):
+            prompt = [prompt, prompt]
+        print(f'Using prompt pool prompt: {prompt} for task: {task_name}')
+        return prompt
+    print(f'No prompt defined for task: {task_name}. Make sure you have the key \'question\' in dataset for prompt.')
+    return prompt
 
-query_func_dict = {
-    'singleturn': singleturn_query,
-    'multiturn': multiturn_query,
+prompt_func_dict = {
+    'singleturn': singleturn_prompt,
+    'multiturn': multiturn_prompt,
 }
 
-def build_query(query_type, **kwargs):
-    return query_func_dict[query_type](**kwargs)
+def build_prompt(prompt_type, **kwargs):
+    return prompt_func_dict[prompt_type](**kwargs)
 
 if __name__ == "__main__":
     test_dict = {
-        'coarse_grained_classification': ['standard_query', 'query_pool'],
-        'fine_grained_classification': ['standard_query', 'query_pool', 'multiturn'],
-        'VQA': ['standard_query', 'query_pool'],
-        'counting': ['standard_query', 'query_pool'],
-        'caption': ['standard_query', 'query_pool'],
-        'detection': ['multiturn'],
-        'POPE': ['standard_query', 'query_pool'],
+        'coarse_grained_classification': ['singleturn'],
+        'fine_grained_classification': ['singleturn', 'multiturn'],
+        'VQA': ['singleturn'],
+        'counting': ['singleturn'],
+        'caption': ['singleturn'],
+        'detection': ['singleturn', 'multiturn']
     }
     for key, value in test_dict.items():
-        for query_type in value:
-            query = build_query(query_type, task_name = key, assigned_ids = -1)
-            print(f'The query from {query_type} for {key} is "{query}".')
+        for prompt_type in value:
+            prompt = build_prompt(prompt_type, task_name=key, assigned_ids = -1)
+    
+    for key, value in test_dict.items():
+        for prompt_type in value:
+            prompt = build_prompt(prompt_type, task_name=key, defined_prompt='Test question:')
 
-    for key in test_dict.keys():
-        template = build_template(task_name = key, assigned_ids = -1)
-        print(f'The template for {key} is "{template}".')
+
+    

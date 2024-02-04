@@ -27,8 +27,7 @@ def main():
     base_path = args.result_path
     cfg_path = os.path.join(base_path, 'config.yaml')
     yaml_dict = load_yaml(cfg_path)
-    recipe_cfg_path = yaml_dict['recipe']
-    recipe_cfg = load_yaml(recipe_cfg_path)
+    recipe_cfg = yaml_dict['recipe_cfg']
 
     # dataset
     scenario_cfg = recipe_cfg['scenario_cfg']

@@ -23,10 +23,37 @@ class Detection(Base_Metric):
         pre_cnt = 0
         for item in tqdm(answers, desc="Running Metric"):
             gt_objects = item['gt_answers']
-            text = item['answer']
-            if isinstance(text, str):
+            rec_cnt += len(gt_objects)
+            if 'turn_answer' in item: # multiturn
+                detection_turn_info = item['multi_turn_prefix'][1:]
+                classification_answer = item['turn_answer'][0]['answer']
+                detection_turn_answer = [answer['answer'] for answer in item['turn_answer'][1:]]
+                correct_pred_objects = []
+                for object_info in gt_objects:
+                    if self.check_func(object_info['label'], classification_answer):
+                        correct_pred_objects.append(object_info['label'])
+                        break
+                gt_label_bbox = {key: [gt_object['bbox'] for gt_object in gt_objects \
+                    if gt_object['label'] == key] \
+                        for key in correct_pred_objects}
+
+                for turn_info, turn_answer in zip(detection_turn_info, detection_turn_answer):
+                    if turn_info['prefix'] in correct_pred_objects:
+                        pred_bbox_list = self.parse_func(turn_answer)
+                        gt_bbox_list = gt_label_bbox[turn_info['prefix']]
+                        pre_cnt += len(pred_bbox_list)
+
+                        for pred_bbox in pred_bbox_list:
+                            for gt_bbox in gt_bbox_list:
+                                iou = self.iou(gt_bbox, pred_bbox)
+                                if iou > self.threshold:
+                                    score += 1
+                                    break
+            else: # singleturn
+                text = item['answer']
+                assert isinstance(text, str)
                 bboxes = self.parse_func(text)
-                cnt += len(gt_objects)
+                pre_cnt += len(bboxes)
                 for object_info in gt_objects:
                     if not self.check_func(object_info['label'], text):
                         continue
@@ -35,19 +62,6 @@ class Detection(Base_Metric):
                         if iou > self.threshold:
                             score += 1
                             break
-            elif isinstance(text,dict):
-                pred_bboxes = {key: self.parse_func(value) if value is not None else [] for key, value in text.items()}
-                pre_cnt += sum([len(bboxes) for bboxes in pred_bboxes.values()])
-                rec_cnt += len(gt_objects)
-                for object_info in gt_objects:
-                    pred_object_bbox = pred_bboxes[object_info['label']]
-                    for bbox in pred_object_bbox:
-                        iou = self.iou(object_info['bbox'], bbox)
-                        if iou > self.threshold:
-                            score += 1
-                            break
-            else:
-                raise NotImplementedError
         return {
             f"mAP@{self.threshold}": (score / pre_cnt) * 100,
             f"mAR@{self.threshold}": (score / rec_cnt) * 100,
@@ -57,24 +71,42 @@ class Detection(Base_Metric):
         classification_score, grounding_score = 0, 0
         classification_cnt, grounding_cnt = 0, 0
         recall_cnt = 0
-        for item in tqdm(answers, desc="Running Metric"):
+        for item in tqdm(answers, desc="Running Metric"): # multiturn answer
             gt_objects = item['gt_answers']
-            pred_classification = item['classification_answer']
-            pred_bboxes = item['grounding_answer']
+            recall_cnt += len(gt_objects)
+            turn_answers = item['turn_answer']
+            pred_classification = []
+            for turn_answer in turn_answers:
+                if turn_answer['prompt_idx'] == 0:
+                    pred_classification.append(turn_answer['answer'])
+
             classification_cnt += len(pred_classification)
-            recall_cnt += len(pred_bboxes)
-            gt_class_names = [item['label'] for item in gt_objects]
+
+            gt_class_names = set([item['label'] for item in gt_objects])
+            correct_pred_objects = []
             for class_name in pred_classification:
-                if class_name in gt_class_names:
-                    classification_score += 1
-            for idx, object in enumerate(gt_objects):
-                if object['label'] not in pred_classification:
-                    continue
-                grounding_cnt += 1
-                pred_bbox = self.parse_func(pred_bboxes[idx])[0]
-                iou = self.iou(object['bbox'], pred_bbox)
-                if iou > self.threshold:
-                    grounding_score +=1
+                for gt_class_name in gt_class_names:
+                    if self.check_func(gt_class_name, class_name):
+                        correct_pred_objects.append(gt_class_name)
+                        classification_score += 1
+                        break
+            
+            import ipdb;ipdb.set_trace()
+            multi_turn_prefix = item['multi_turn_prefix']
+            for turn_answer, prefix_info in zip(turn_answers, multi_turn_prefix):
+                if turn_answer['prompt_idx'] == 1 and prefix_info['prefix'] in correct_pred_objects:
+                    grounding_cnt += 1
+                    for object in gt_objects:
+                        if object['label'] != prefix_info['prefix']:
+                            continue
+                        try:
+                            pred_bbox = self.parse_func(turn_answer['answer'])[0]
+                        except:
+                            import ipdb;ipdb.set_trace()
+                        iou = self.iou(object['bbox'], pred_bbox)
+                        if iou > self.threshold:
+                            grounding_score +=1
+                            break
         return {
             "classification_acc": (classification_score / classification_cnt) * 100,
             "grounding_acc": (grounding_score / grounding_cnt) * 100,
@@ -93,7 +125,6 @@ class KOSMOS_Detection(Detection):
         super().__init__(dataset_name, threshold, inference_type, **kwargs)
         from .utils import parse_kosmos_bbox
         self.parse_func = parse_kosmos_bbox
-
 
 class LAMM_Detection(Base_Metric):
 
@@ -232,8 +263,6 @@ class LAMM_Detection(Base_Metric):
                 f'prec_wocat@{iou_thres:.2f}': (tp[iou_i] / (num_pred + 1e-7) * 100).item(),
             })
         return metric_dict
-
-
 
 class LAMM_3D_Detection(Base_Metric):
 

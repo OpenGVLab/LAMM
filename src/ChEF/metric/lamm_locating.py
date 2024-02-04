@@ -1,7 +1,12 @@
 from tqdm import tqdm
 import numpy as np
-from .utils import Base_Metric, parse_keypoints, classification_acc, check_inside_bbox
-from ..models.utils import get_image
+from .utils import (
+    Base_Metric, 
+    parse_keypoints, 
+    classification_acc, 
+    check_inside_bbox,
+    get_image
+)
 
 def inside_human_bbox_eval(dataset, pred_data):
     correct_cnt, total_cnt = 0,0

@@ -1,0 +1,15 @@
+scenario_cfg:
+  dataset_name: Winoground
+  base_data_path: ../data/Winoground
+  ppl: True
+
+eval_cfg:
+  instruction_cfg: 
+    query_type: standard_query
+  inferencer_cfg:
+    inferencer_type: PPL
+    batch_size: 16
+    max_new_tokens: 32
+    multi_img: True
+  metric_cfg:
+    metric_type: Winoground

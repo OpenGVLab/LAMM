@@ -13,7 +13,7 @@ from .POPE_dataset import *
 from .octavius_pcl_dataset import OctaviusPCLDataset
 
 from .LAMM_dataset import *
-
+from .Winoground_dataset import *
 
 dataset_dict = {
     # Caption 
@@ -59,4 +59,7 @@ dataset_dict = {
     
     # 3D
     'OctaviusPCLDataset': OctaviusPCLDataset,
+
+    'Winoground': WinogroundDataset,
+    'Winoground_Cap': Winoground_Cap_Dataset
 }

@@ -7,9 +7,9 @@ scenario_cfg:
    
 eval_cfg:
   instruction_cfg:
-    query_type: multiturn
+    prompt_type: multiturn
   inferencer_cfg:
-    inferencer_type: Det_PPL
+    inferencer_type: Multi_PPL
     batch_size: 8
   metric_cfg:
     metric_type: basic

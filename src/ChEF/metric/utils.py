@@ -9,6 +9,7 @@ import numpy as np
 from nltk.corpus import wordnet as wn
 import re
 import json
+from PIL import Image
 
 
 voc_syndict = {
@@ -464,6 +465,20 @@ def parse_bbox_3d(text):
         bbox_list.append(cur_bbox)
     return bbox_list
 
+def get_image(image):
+    if type(image) is str:
+        try:
+            return Image.open(image).convert("RGB")
+        except Exception as e:
+            print(f"Fail to read image: {image}")
+            exit(-1)
+    
+    elif isinstance(image, Image.Image):
+        return image
+    elif type(image) is np.ndarray:
+        return Image.fromarray(image)
+    else:
+        raise NotImplementedError(f"Invalid type of Image: {type(image)}")
 
 if __name__ == "__main__":
     test = '<object><patch_index_0035><patch_index_1023></object> at the station <object><patch_index_0035><patch_index_1023></object> at the station'

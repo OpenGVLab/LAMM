@@ -41,6 +41,9 @@ def get_model(cfg):
     elif model_name == 'Shikra':
         from .test_shikra import TestShikra
         return TestShikra(**cfg)
+    elif model_name == 'LLaVA1.5':
+        from .test_llava15 import TestLLaVA15
+        return TestLLaVA15(**cfg)
     elif model_name == 'Test':
         from .test_base import TestBase
         return TestBase(**cfg)

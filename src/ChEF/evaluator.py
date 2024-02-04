@@ -1,35 +1,41 @@
-from torch.utils.data import Subset
-import yaml
-import numpy as np
-import argparse
 import os
 import json
+import yaml
+import argparse
+import numpy as np
+from torch.utils.data import Subset
+
 from .instruction import build_instructionhandler
 from .inferencer import build_inferencer
 from .metric import build_metric
 
-
 class Evaluator:
-    def __init__(self,
-                 dataset,
-                 save_base_dir,
-                 cfg,
-                 **kwargs) -> None:
+    def __init__(
+        self,
+        dataset,
+        save_base_dir,
+        cfg,
+        **kwargs) -> None:
         self.dataset = dataset
         self.dataset_name = self.dataset.dataset_name
         self.task_name = self.dataset.task_name
         self.save_base_dir = save_base_dir
         instruction_cfg = cfg['instruction_cfg']
-        self.instruction_handler = build_instructionhandler(task_name=self.task_name, dataset=self.dataset, **instruction_cfg)
+        self.instruction_handler = build_instructionhandler(
+            task_name=self.task_name, 
+            dataset=self.dataset, 
+            **instruction_cfg)
         inferencer_cfg = cfg['inferencer_cfg']
-        self.inferencer = build_inferencer(dataset_name = self.dataset_name,
-                                           save_base_dir = save_base_dir,
-                                           instruction_handler = self.instruction_handler,
-                                           **inferencer_cfg)
+        self.inferencer = build_inferencer(
+            dataset_name=self.dataset_name,
+            save_base_dir=save_base_dir,
+            instruction_handler=self.instruction_handler,
+            **inferencer_cfg)
         
         metric_cfg = cfg['metric_cfg']
-        self.metric = build_metric(dataset_name=self.dataset_name, 
-                                   **metric_cfg)
+        self.metric = build_metric(
+            dataset_name=self.dataset_name, 
+            **metric_cfg)
         
     def evaluate(self, model):
         model.ice_imgs_emb = None
@@ -100,6 +106,3 @@ def load_config():
     else:
         sample_len = -1
     return model_cfg, recipe_cfg, save_dir, sample_len
-
-def build_evaluator(dataset, task_name, save_base_dir, eval_cfg, **kwargs):
-    return Evaluator(dataset=dataset, save_base_dir=save_base_dir, cfg=eval_cfg)
