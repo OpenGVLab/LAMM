@@ -13,6 +13,7 @@ class Direct_Inferencer:
                  dataset_name,
                  save_base_dir,
                  instruction_handler,
+                 dist_args,
                  batch_size = 1,
                  max_new_tokens = 16,
                  CoT = False,
@@ -24,6 +25,7 @@ class Direct_Inferencer:
         self.CoT = CoT # whether generates CoT answer before final answer
         self.instruction_handler = instruction_handler
         self.results_path = None
+        self.dist_args = dist_args
 
     def get_collate_fn(self, dataset):
         if hasattr(dataset, 'dataset'):
@@ -73,8 +75,14 @@ class Direct_Inferencer:
         return predictions
 
     def _after_inference_step(self, predictions):
-        time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        answer_path = os.path.join(self.save_base_dir, f"{self.dataset_name}_{time}.json")
+        if self.dist_args['world_size'] == 1:
+            time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            answer_path = os.path.join(self.save_base_dir, f"{self.dataset_name}_{time}.json")
+        else:
+            base_dir = os.path.join(self.save_base_dir, 'tmp')
+            os.makedirs(base_dir, exist_ok=True)
+            global_rank = self.dist_args['global_rank']
+            answer_path = os.path.join(base_dir, f"{self.dataset_name}_{global_rank}.json")
         with open(answer_path, "w") as f:
             f.write(json.dumps(predictions, indent=4))
         self.results_path = answer_path

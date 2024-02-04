@@ -6,7 +6,7 @@ torch.nn.init.kaiming_uniform_ = skip
 torch.nn.init.uniform_ = skip
 torch.nn.init.normal_ = skip
 
-def get_model(cfg):
+def get_model(cfg, device):
     model_name = cfg['model_name']
     if model_name == 'InstructBLIP':
         from .test_instructblip import TestInstructBLIP
@@ -43,7 +43,7 @@ def get_model(cfg):
         return TestShikra(**cfg)
     elif model_name == 'LLaVA1.5':
         from .test_llava15 import TestLLaVA15
-        return TestLLaVA15(**cfg)
+        return TestLLaVA15(device=device, **cfg)
     elif model_name == 'Test':
         from .test_base import TestBase
         return TestBase(**cfg)

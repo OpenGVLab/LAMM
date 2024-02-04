@@ -30,13 +30,14 @@ def batch_tokenizer_image_token(prompts: list, tokenizer, add_special_tokens=Tru
         input_ids_list,
         batch_first=True,
         padding_value=tokenizer.pad_token_id if add_special_tokens else IGNORE_INDEX)
-    return input_ids_list.cuda()
+    return input_ids_list
 
 class TestLLaVA15(TestBase):
-    def __init__(self, model_path, model_base = None, vis_processor_path = None, **kwargs):
+    def __init__(self, model_path, model_base = None, vis_processor_path = None, device='cuda', **kwargs):
         model_name = get_model_name_from_path(model_path)
+        print(f'Load model on device map: {device}')
         self.tokenizer, self.model, self.image_processor, self.context_len = \
-            load_pretrained_model(model_path, model_base, model_name, vis_processor_path = vis_processor_path)
+            load_pretrained_model(model_path, model_base, model_name, vis_processor_path=vis_processor_path, device=device)
         self.conv = get_conv(model_name)
         self.stop_str = [self.conv.sep if self.conv.sep_style!=SeparatorStyle.TWO else self.conv.sep2]
         self.image_process_mode = "Resize" # Crop, Resize, Pad
@@ -68,7 +69,7 @@ class TestLLaVA15(TestBase):
         image_list = self.get_image_list(image_list)
         image_tensors = []
         for image in image_list:
-            image_tensor = self.image_processor.preprocess(image, return_tensors='pt')['pixel_values'].half().cuda()
+            image_tensor = self.image_processor.preprocess(image, return_tensors='pt')['pixel_values'].half().to(self.device)
             image_tensors.append(image_tensor)
         image_tensors = torch.cat(image_tensors)
         return image_tensors
@@ -79,7 +80,7 @@ class TestLLaVA15(TestBase):
         prompt, 
         max_new_tokens=30,
         **kwargs):
-        input_ids = tokenizer_image_token(prompt, self.tokenizer, IMAGE_TOKEN_INDEX, return_tensors='pt').unsqueeze(0).cuda()
+        input_ids = tokenizer_image_token(prompt, self.tokenizer, IMAGE_TOKEN_INDEX, return_tensors='pt').unsqueeze(0).to(self.device)
         stopping_criteria = KeywordsStoppingCriteria(self.stop_str, self.tokenizer, input_ids)
         input_token_len = input_ids.shape[1]
         with torch.inference_mode():
@@ -102,8 +103,8 @@ class TestLLaVA15(TestBase):
             
     @torch.no_grad()
     def do_ppl(self, batch_images, batch_prompt, batch_options, **kwargs):
-        batch_input_ids = batch_tokenizer_image_token(batch_prompt, self.tokenizer)
-        batch_option_ids = batch_tokenizer_image_token(batch_options, self.tokenizer, add_special_tokens=False)
+        batch_input_ids = batch_tokenizer_image_token(batch_prompt, self.tokenizer).to(self.device)
+        batch_option_ids = batch_tokenizer_image_token(batch_options, self.tokenizer, add_special_tokens=False).to(self.device)
 
         (input_ids, position_ids, attention_mask, past_key_values, inputs_embeds, labels) = \
             self.model.prepare_inputs_labels_for_multimodal(

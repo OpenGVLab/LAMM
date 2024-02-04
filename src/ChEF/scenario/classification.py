@@ -7,6 +7,7 @@ import random
 class CIFAR10Dataset(Dataset):
     task_name = 'coarse_grained_classification'
     dataset_name = 'CIFAR10'
+    cifar_classes = ['cat','ship','airplane','frog','automobile','truck', 'dog', 'horse', 'deer', 'bird']
     def __init__(self, base_data_path, ppl=False, split='', **kwargs):
         self.base_data_path = base_data_path
         super().__init__()
@@ -27,7 +28,7 @@ class CIFAR10Dataset(Dataset):
             'gt_answers': self.data[index]['label'],
         }
         if self.ppl:
-            res_dict['options']=['cat','ship','airplane','frog','automobile','truck', 'dog', 'horse', 'deer', 'bird']
+            res_dict['options'] = self.cifar_classes
         return res_dict
 
 
