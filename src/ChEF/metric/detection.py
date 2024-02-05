@@ -91,7 +91,6 @@ class Detection(Base_Metric):
                         classification_score += 1
                         break
             
-            import ipdb;ipdb.set_trace()
             multi_turn_prefix = item['multi_turn_prefix']
             for turn_answer, prefix_info in zip(turn_answers, multi_turn_prefix):
                 if turn_answer['prompt_idx'] == 1 and prefix_info['prefix'] in correct_pred_objects:
@@ -99,10 +98,7 @@ class Detection(Base_Metric):
                     for object in gt_objects:
                         if object['label'] != prefix_info['prefix']:
                             continue
-                        try:
-                            pred_bbox = self.parse_func(turn_answer['answer'])[0]
-                        except:
-                            import ipdb;ipdb.set_trace()
+                        pred_bbox = self.parse_func(turn_answer['answer'])[0]
                         iou = self.iou(object['bbox'], pred_bbox)
                         if iou > self.threshold:
                             grounding_score +=1
