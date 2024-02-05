@@ -129,10 +129,13 @@ def sample_dataset(dataset, sample_len=1000, sample_seed=0, dist_args=None):
         end = (rank + 1) * data_per_rank
         if rank == world_size - 1:
             end = len(dataset)
-
-        original_indices = dataset.indices
-        sliced_indices = original_indices[start:end]
-        dataset = CustomSubset(dataset.dataset, sliced_indices)
+        if isinstance(dataset, CustomSubset):
+            original_indices = dataset.indices
+            sliced_indices = original_indices[start:end]
+            dataset = CustomSubset(dataset.dataset, sliced_indices)
+        else:
+            sliced_indices = [i for i in range(len(dataset))][start:end]
+            dataset = CustomSubset(dataset, sliced_indices)
     return dataset
 
 def load_config():
