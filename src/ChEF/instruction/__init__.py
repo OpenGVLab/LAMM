@@ -28,7 +28,7 @@ class InstructionHandler:
             self.retriever.seed = incontext_cfg['random_seed']
             self.ice_idx_list = self.retriever.retrieve()
 
-    def _query_format(self, prompt, question):
+    def _query_format(self, prompt, question): # TODO: add icl
         if '{question}' in prompt:
             return prompt.format(question=question)
         assert question == '', f'Need question formatted in prompt, but \"{prompt}\" does not support.'

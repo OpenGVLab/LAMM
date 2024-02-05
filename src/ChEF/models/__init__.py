@@ -31,10 +31,10 @@ def get_model(cfg, device):
         return TestKOSMOS2(**cfg)
     elif model_name == 'LAMM':
         from .test_lamm import TestLAMM
-        return TestLAMM(**cfg)
+        return TestLAMM(device=device, **cfg)
     elif model_name == 'LAMM_SFT' :
         from .test_lamm15 import TestLAMM15
-        return TestLAMM15(**cfg)
+        return TestLAMM15(device=device, **cfg)
     elif model_name == 'Octavius' or model_name == 'Octavius_3d' or model_name == 'Octavius_2d':
         from .test_octavius import TestOctavius
         return TestOctavius(**cfg)

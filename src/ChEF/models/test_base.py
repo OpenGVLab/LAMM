@@ -38,7 +38,7 @@ class TestBase:
     ):
         raise NotImplementedError
 
-    def get_image_list(self, image_list):
+    def get_image_list(self, image_list): # [multi_image_len]
         if not isinstance(image_list, list):
             image_list = [image_list]
         return get_multi_imgs(image_list)

@@ -10,6 +10,7 @@ from model.LAMM import LAMMPEFTModel
 class TestLAMM(TestBase):
     def __init__(self, 
                  model_path,
+                 device=None,
                  task_type = 'normal',
                  **kwargs
                  ):
@@ -19,9 +20,14 @@ class TestLAMM(TestBase):
         self.model.load_state_dict(delta_ckpt, strict=False)             # TODO: load delta_ckpt from model_path in lamm_3d.yaml
         self.model = self.model.eval().half()
         self.task_type = task_type
-        self.move_to_device()
+        self.move_to_device(device)
 
-    def move_to_device(self):
+    def move_to_device(self, device):
+        if device is not None:
+            self.device = device
+            self.dtype = torch.float16
+            self.model = self.model.to(self.device, dtype=self.dtype)
+            return 
         if torch.cuda.is_available():
             self.dtype = torch.float16
             self.device = 'cuda'
