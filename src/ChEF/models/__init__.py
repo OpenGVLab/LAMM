@@ -40,7 +40,7 @@ def get_model(cfg, device):
         return TestOctavius(**cfg)
     elif model_name == 'Shikra':
         from .test_shikra import TestShikra
-        return TestShikra(**cfg)
+        return TestShikra(device=device,**cfg)
     elif model_name == 'LLaVA1.5':
         from .test_llava15 import TestLLaVA15
         return TestLLaVA15(device=device, **cfg)

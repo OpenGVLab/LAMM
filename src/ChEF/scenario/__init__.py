@@ -15,6 +15,8 @@ from .octavius_pcl_dataset import OctaviusPCLDataset
 from .LAMM_dataset import *
 from .Winoground_dataset import *
 
+from .HHH_dataset import *
+
 dataset_dict = {
     # Caption 
     'Flickr30k': FlickrDataset,
@@ -61,5 +63,7 @@ dataset_dict = {
     'OctaviusPCLDataset': OctaviusPCLDataset,
 
     'Winoground': WinogroundDataset,
-    'Winoground_Cap': Winoground_Cap_Dataset
+    'Winoground_Cap': Winoground_Cap_Dataset,
+
+    'HHH': HHHDataset
 }

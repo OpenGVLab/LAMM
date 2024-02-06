@@ -9,6 +9,7 @@ from .counting import Counting
 from .ocr import SVT_OCR
 from .lamm_locating import InsideBbox, InsideHumanBbox
 from .winoground import Winoground_Metric, Winoground_Cap_Metric
+from .HHH import HHH_Metric
 
 evaluation_protocol = {
     'basic':{
@@ -67,6 +68,9 @@ evaluation_protocol = {
     'Winoground': {
         'Winoground': Winoground_Metric,
         'Winoground_Cap': Winoground_Cap_Metric,
+    },
+    'HHH':{
+        'HHH': HHH_Metric,
     }
 }
 
