@@ -47,6 +47,9 @@ def get_model(cfg, device):
     elif model_name == 'InternLMXComposer':
         from .test_internlmxcomposer import TestInternlmXcomposer
         return TestInternlmXcomposer(device=device, **cfg)
+    elif model_name == 'QwenVL':
+        from .test_qwenvl import TestQwenVL
+        return TestQwenVL(device=device, **cfg)
     elif model_name == 'Test':
         from .test_base import TestBase
         return TestBase(**cfg)

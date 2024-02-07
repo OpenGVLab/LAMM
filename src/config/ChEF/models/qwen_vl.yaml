@@ -1,0 +1,2 @@
+model_name: QwenVL
+model_path: ../model_zoo/Qwen/Qwen-VL-Chat
