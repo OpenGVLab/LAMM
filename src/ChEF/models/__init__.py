@@ -44,6 +44,9 @@ def get_model(cfg, device):
     elif model_name == 'LLaVA1.5':
         from .test_llava15 import TestLLaVA15
         return TestLLaVA15(device=device, **cfg)
+    elif model_name == 'InternLMXComposer':
+        from .test_internlmxcomposer import TestInternlmXcomposer
+        return TestInternlmXcomposer(device=device, **cfg)
     elif model_name == 'Test':
         from .test_base import TestBase
         return TestBase(**cfg)

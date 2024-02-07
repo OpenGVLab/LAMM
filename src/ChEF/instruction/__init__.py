@@ -65,7 +65,7 @@ class InstructionHandler:
         ppl_batch_mask = np.zeros((batch_size, ppl_len))
         ppl_batch_mask_tmp_index = 0
         image_path, answers, questions, options= [], [], [], []
-        return_dict = {key: [] for key in kwargs.keys()}
+        return_dict = {key: [] for key in kwargs.keys() if kwargs[key] is not None}
 
         for i in range(batch_size):
             answers += [answer_template.format(option=option) for option in batch_options[i]]
@@ -136,7 +136,7 @@ class InstructionHandler:
         multi_turn_batch_index = []
         multi_turn_batch_tmp_index = 0
         image_path, questions = [], []
-        return_dict = {key: [] for key in kwargs.keys()}
+        return_dict = {key: [] for key in kwargs.keys() if kwargs[key] is not None}
 
         for i, (prompt_idx, prefix) in enumerate(zip(prompt_idx_list, prefix_list)):
             if prompt_idx is None:

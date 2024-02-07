@@ -1,0 +1,3 @@
+from .configuration_internlm_xcomposer2 import InternLMXcomposer2Config
+from .rewrite_modeling_internlm_xcomposer2 import RewriteInternLMXComposer2ForCausalLM as InternLMXComposer2ForCausalLM
+from .tokenization_internlm_xcomposer2 import InternLMXComposer2Tokenizer
