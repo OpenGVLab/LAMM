@@ -5,15 +5,16 @@ scenario_cfg:
   ppl_cfg: 
     negative_opt_num: 3
     random_seed: 0
-    single_turn: True
+  multiturn: False
 
 eval_cfg:
   instruction_cfg: 
-    query_type: standard_query
+    prompt_type: multiturn
   inferencer_cfg:
-    inferencer_type: PPL
+    inferencer_type: Multi_Direct
     batch_size: 8
   metric_cfg:
     metric_type: basic
-    inference_type: single_ppl
+    inference_type: multiturn
+    ppl: False
     bamboo_tree_path: ../data/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json

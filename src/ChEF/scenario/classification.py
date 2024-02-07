@@ -41,6 +41,7 @@ class OmnibenchmarkDataset(Dataset):
     def __init__(self, 
                  bamboo_tree_path, 
                  base_data_path, 
+                 multi_turn=True,
                  ppl_cfg = {
                     'negative_opt_num': 3,
                     'random_seed': 0,
@@ -52,6 +53,7 @@ class OmnibenchmarkDataset(Dataset):
         json_path = os.path.join(base_data_path,'meta_file', f'Classification_Omnibenchmark.json')
         self.data = json.load(open(json_path,'rb'))
         self.ppl_cfg = ppl_cfg
+        self.multi_turn = multi_turn
         if self.ppl_cfg is None:
             return 
         self.negative_opt_num = self.ppl_cfg.get('negative_opt_num', 3)
@@ -129,18 +131,36 @@ class OmnibenchmarkDataset(Dataset):
             'gt_answers': self.data[index]['chain'],
             'realm_name' : self.data[index]['realm_name'],
         }
-        if self.ppl_cfg is not None:
-            ppl_options = self.ppl_options[index]
-            res_options = [dict(
-                prefix = None,
-                options = ppl_options[0]
+        ppl_options = self.ppl_options[index]
+        if self.multi_turn:
+            # multiturn direct inference
+            multi_turn_prefix = [dict(
+                prompt_idx = 0,
+                prefix = None
             )]
-            for i in range(1,len(ppl_options),1):
-                res_options.append(dict(
-                    prefix = self.data[index]['chain'][i-1],
-                    options = ppl_options[i]
+            for i in range(1, len(ppl_options), 1):
+                multi_turn_prefix.append(dict(
+                    prompt_idx = 1,
+                    prefix = self.data[index]['chain'][i-1]
                 ))
-            res_dict['options'] = res_options
+            res_dict['multi_turn_prefix'] = multi_turn_prefix
+
+        if self.ppl_cfg is not None:
+            if self.multi_turn:
+                res_options = [dict(
+                    prompt_idx = 0,
+                    prefix = None,
+                    options = ppl_options[0]
+                )]
+                for i in range(1,len(ppl_options),1):
+                    res_options.append(dict(
+                        prompt_idx = 1,
+                        prefix = self.data[index]['chain'][i-1],
+                        options = ppl_options[i]
+                    ))
+                res_dict['options'] = res_options
+            else:
+                res_dict['options'] = self.ppl_options[index][-1]
         return res_dict
 
 

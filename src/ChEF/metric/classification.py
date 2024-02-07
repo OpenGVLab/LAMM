@@ -105,7 +105,7 @@ class LAMM_Classification(Base_Metric):
 
 class FG_Classification(Base_Metric):
     
-    def __init__(self, dataset_name, bamboo_tree_path, inference_type = 'direct', **kwargs):
+    def __init__(self, dataset_name, bamboo_tree_path, inference_type, ppl, **kwargs):
         super().__init__(dataset_name)         
         self.bamboo_tree_path = bamboo_tree_path
         annot_data = json.load(open(self.bamboo_tree_path,'rb'))
@@ -119,20 +119,20 @@ class FG_Classification(Base_Metric):
         self.child2father = annot_data['child2father']
         
         self.inference_type = inference_type
-        assert self.inference_type in ['direct', 'single_ppl', 'multi_ppl']
+        self.ppl = ppl
+        assert self.inference_type in ['singleturn', 'multiturn']
 
     def weighted_ACC_multi(self, pred, gt):
         assert len(pred) == len(gt)
-        for i in range(len(pred)):
-            if pred[i] != gt[i]:
-                return i/len(pred)
-        return 1
-
-    def weighted_ACC_single(self, pred, gt):
         deep_idx = 0
-        for i in range(len(gt)):
-            if pred == gt[i]:
-                deep_idx = i+1
+        for i in range(len(pred)):
+            if gt[i] in pred[i]['answer']:
+                deep_idx = i+1 
+                continue
+            if not self.ppl:
+                father = self.name2id[gt[i-1]] if i>0 else self.child2father[self.name2id[gt[i-1]]][0]
+                if self.share_father(father, pred[i]['answer']):
+                    deep_idx = i
         return deep_idx/len(gt)
     
     def share_father(self, father_id, pred):
@@ -142,12 +142,13 @@ class FG_Classification(Base_Metric):
                 return True
         return False
 
-    def weighted_ACC_direct(self, pred, gt):
+    def weighted_ACC_single(self, pred, gt):
         deep_idx = 0
         for i in range(len(gt)):
             if gt[i] in pred:
                 deep_idx = i+1
-            else:
+                continue
+            if not self.ppl:
                 # whether the class is the brother of the gt
                 father = self.name2id[gt[i-1]] if i>0 else self.child2father[self.name2id[gt[i-1]]][0]
                 if self.share_father(father, pred):
@@ -158,13 +159,14 @@ class FG_Classification(Base_Metric):
         wcorrect = 0
         for item in tqdm(answers, desc="Running Metric"):
             gt = item['gt_answers']
-            pred = item['answer']
-            if self.inference_type == 'multi_ppl':
+            if self.inference_type == 'multiturn':
+                pred = item['turn_answer']
                 wcorrect += self.weighted_ACC_multi(pred, gt)
-            elif self.inference_type == 'single_ppl':
+            elif self.inference_type == 'singleturn':
+                pred = item['answer']
                 wcorrect += self.weighted_ACC_single(pred, gt)
             else:
-                wcorrect += self.weighted_ACC_direct(pred, gt)
+                raise NotImplementedError
 
         wacc = wcorrect / len(answers) * 100
         return wacc

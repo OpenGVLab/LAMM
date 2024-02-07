@@ -4,7 +4,7 @@ scenario_cfg:
   ppl: True
 eval_cfg:
   instruction_cfg: 
-    query_type: singleturn
+    prompt_type: singleturn
     prompt_assigned_ids: 0 # (mplug: 6) (default:0) 
     template_assigned_ids: 0 # (otter, lamm, minigpt4 :1) (default:0) 
   inferencer_cfg:

@@ -22,8 +22,12 @@ coarse_grained_classification_prompts = [
     "According to the image's attributes, what label would you assign to it?",
 ]
 
+fine_grained_classification_prompts = [
+    "What is the fine-grained category label for the object in this image?",
+]
+
 fine_grained_classification_multiturn_prompts = [
-    'As the coarse-grained category label for this image is {prefix}, what is the fine-grained category label for this image?',
+    ["What is the fine-grained category label for the object in this image?", "As the coarse-grained category label for this image is {prefix}, what is the fine-grained category label for this image?"]
 ]
 
 # LAMM-style classfication prompts
@@ -107,6 +111,7 @@ pope_prompts = ['{question}']
     
 singleturn_prompt_dict = {
     'coarse_grained_classification_prompts': coarse_grained_classification_prompts,
+    'fine_grained_classification_prompts': fine_grained_classification_prompts,
     'caption_prompts': caption_prompts,
     'VQA_prompts': vqa_prompts,
     'counting_prompts': counting_prompts,
