@@ -4,7 +4,7 @@ import torch
 import transformers
 from torch import nn
 
-from ..shikra import ShikraLlamaForCausalLM
+from ..shikra import ShikraLlamaForCausalLM, ShikraConfig
 
 PREPROCESSOR = Dict[str, Any]
 
@@ -15,9 +15,14 @@ DEFAULT_UNK_TOKEN = "<unk>"
 
 
 def load_pretrained_shikra(model_args, training_args, **kwargs) -> Tuple[nn.Module, PREPROCESSOR]:
+    model_config = ShikraConfig.from_pretrained(
+        model_args.model_name_or_path
+    )
+    model_config.mm_vision_tower = model_args.vision_tower
     model = ShikraLlamaForCausalLM.from_pretrained(
         model_args.model_name_or_path,
         cache_dir=model_args.cache_dir,
+        config=model_config,
         **kwargs
     )
     model.config.use_cache = False
@@ -33,21 +38,7 @@ def load_pretrained_shikra(model_args, training_args, **kwargs) -> Tuple[nn.Modu
     )
 
     assert model_args.version == 'v1'
-    if model_args.version == "v0":
-        if tokenizer.pad_token is None:
-            smart_tokenizer_and_embedding_resize(
-                special_tokens_dict=dict(pad_token=DEFAULT_PAD_TOKEN),
-                tokenizer=tokenizer,
-                model=model,
-            )
-        if "llama" in model_args.model_name_or_path:
-            tokenizer.add_special_tokens({
-                "eos_token": DEFAULT_EOS_TOKEN,
-                "bos_token": DEFAULT_BOS_TOKEN,
-                "unk_token": DEFAULT_UNK_TOKEN,
-            })
-    else:
-        tokenizer.pad_token = tokenizer.unk_token
+    tokenizer.pad_token = tokenizer.unk_token
 
     model_vision_dict = model.model.initialize_vision_modules(
         vision_tower=model_args.vision_tower,
@@ -60,11 +51,11 @@ def load_pretrained_shikra(model_args, training_args, **kwargs) -> Tuple[nn.Modu
     if training_args.bf16:
         dtype = torch.bfloat16
     # HACK for quantization
-    if model.model.vision_tower[0].device != torch.device('meta'):
-        model.model.vision_tower[0].to(dtype=dtype, device=training_args.device)
+    if model.model.vision_tower.device != torch.device('meta'):
+        model.model.vision_tower.to(dtype=dtype, device=training_args.device)
     else:
         from transformers import CLIPVisionModel
-        model.model.vision_tower[0] = CLIPVisionModel.from_pretrained(model_args.vision_tower)  # not quantize clip
+        model.model.vision_tower = CLIPVisionModel.from_pretrained(model_args.vision_tower)  # not quantize clip
         # model.model.vision_tower[0] = CLIPVisionModel.from_pretrained(model_args.vision_tower, **kwargs)  # quantize clip、
     vision_config = model_vision_dict['vision_config']
 

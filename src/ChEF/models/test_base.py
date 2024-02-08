@@ -57,7 +57,7 @@ class TestBase:
         return outputs
     
     @torch.no_grad()
-    def do_ppl(self, batch_images, batch_prompt, batch_answers, batch_options, **kwargs):
+    def do_ppl(self, batch_images, batch_prompt, batch_options, **kwargs):
         raise NotImplementedError
 
     @torch.no_grad()
