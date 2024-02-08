@@ -5,6 +5,7 @@ from transformers.models.llama.tokenization_llama import LlamaTokenizer
 
 from .mplug_owl.processing_mplug_owl import MplugOwlProcessor, MplugOwlImageProcessor
 from .mplug_owl.modeling_mplug_owl import MplugOwlForConditionalGeneration
+from .mplug_owl.configuration_mplug_owl import MplugOwlConfig
 from .utils import get_image, get_multi_imgs, Conversation, SeparatorStyle
 from .test_base import TestBase
 
@@ -24,8 +25,12 @@ CONV_VISION = Conversation(
 
 
 class TestMplugOwl(TestBase):
-    def __init__(self, model_path, **kwargs):
+    def __init__(self, model_path, device, **kwargs):
+        # import pdb
+        # pdb.set_trace()
+        # config = MplugOwlConfig.from_pretrained(model_path)
         self.model = MplugOwlForConditionalGeneration.from_pretrained(model_path, torch_dtype=torch.float32)
+        import ipdb;ipdb.set_trace()
         self.image_processor = MplugOwlImageProcessor.from_pretrained(model_path)
         self.tokenizer = LlamaTokenizer.from_pretrained(model_path)
         self.processor = MplugOwlProcessor(self.image_processor, self.tokenizer)

@@ -290,7 +290,7 @@ class MplugOwlConfig(PretrainedConfig):
         Returns:
             `Dict[str, any]`: Dictionary of all the attributes that make up this configuration instance,
         """
-        output = copy.deepcopy(self.__dict__)
+        output = {}
         output["vision_config"] = self.vision_config.to_dict()
         output["visual_abstractor_config"] = self.visual_abstractor_config.to_dict()
         output["text_config"] = self.text_config.to_dict()
