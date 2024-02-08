@@ -5,7 +5,6 @@ scenario_cfg:
   ppl_cfg: 
     negative_opt_num: 3
     random_seed: 0
-  multiturn: False
 
 eval_cfg:
   instruction_cfg: 

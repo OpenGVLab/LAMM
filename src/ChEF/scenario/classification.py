@@ -160,12 +160,14 @@ class OmnibenchmarkDataset(Dataset):
                     ))
                 res_dict['options'] = res_options
             else:
-                res_dict['options'] = self.ppl_options[index][-1]
+                res_dict['options'] = ppl_options[-1]
         return res_dict
 
 
 if __name__ == '__main__':
     omnidata = OmnibenchmarkDataset(
         bamboo_tree_path='../../../data/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json', 
-        base_data_path='../../../data/ChEF/OmniBenchmark_Bamboo')
+        base_data_path='../../../data/ChEF/OmniBenchmark_Bamboo',
+        multi_turn=False,
+        ppl_cfg={})
     import ipdb;ipdb.set_trace()

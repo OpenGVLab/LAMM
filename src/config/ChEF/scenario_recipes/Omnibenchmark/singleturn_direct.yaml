@@ -2,7 +2,7 @@ scenario_cfg:
   dataset_name: Omnibenchmark
   base_data_path: ../data/ChEF/OmniBenchmark_Bamboo
   bamboo_tree_path: ../data/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json
-  multiturn: False
+  multi_turn: False
 
 eval_cfg:
   instruction_cfg: 
