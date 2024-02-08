@@ -10,7 +10,7 @@ def get_model(cfg, device):
     model_name = cfg['model_name']
     if model_name == 'InstructBLIP':
         from .test_instructblip import TestInstructBLIP
-        return TestInstructBLIP()
+        return TestInstructBLIP(device=device)
     elif model_name == 'LLaMA-Adapter-v2':
         from .test_llamaadapterv2 import TestLLamaAdapterV2
         return TestLLamaAdapterV2(**cfg)
@@ -19,10 +19,10 @@ def get_model(cfg, device):
         return TestLLaVA(**cfg)
     elif model_name == 'MiniGPT-4':
         from .test_minigpt4 import TestMiniGPT4
-        return TestMiniGPT4(**cfg)
+        return TestMiniGPT4(device=device, **cfg)
     elif model_name == 'mPLUG-Owl':
         from .test_mplugowl import TestMplugOwl
-        return TestMplugOwl(**cfg)
+        return TestMplugOwl(device=device,**cfg)
     elif model_name == 'Otter':
         from .test_otter import TestOtter
         return TestOtter(**cfg)

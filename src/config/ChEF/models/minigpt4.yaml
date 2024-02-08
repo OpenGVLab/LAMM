@@ -1,2 +1,3 @@
 model_name: MiniGPT-4
 model_path: ../model_zoo/MiniGPT4
+cfg_path: ChEF/models/minigpt4/configs/models/minigpt4.yaml
