@@ -1464,114 +1464,6 @@ class MplugOwlForConditionalGeneration(MplugOwlPreTrainedModel):
         #                 ).sum()/loss_mask.sum()
         return outputs
 
-    @torch.no_grad() ### llj ###
-    def multiple_generate(
-        self,
-        pixel_values: torch.FloatTensor = None,
-        input_ids: Optional[torch.LongTensor] = None,
-        attention_mask: Optional[torch.LongTensor] = None,
-        isdecoder=True,
-        **generate_kwargs,
-    ) -> torch.LongTensor:
-        if pixel_values is not None:
-            pixel_values = pixel_values.to(self.vision_model.embeddings.cls_token.data.dtype)
-
-        if input_ids is None:
-            return self.language_model.generate(attention_mask=attention_mask, **generate_kwargs)
-
-        if attention_mask is None:
-            attention_mask = input_ids.new_ones(*input_ids.shape)
-
-        batch_size = input_ids.size(0)
-        media_token_indices = [get_media_indices(input_ids[i]) for i in range(batch_size)]
-        num_images_per_sample = [len(x) for x in media_token_indices]
-        input_ids = input_ids.clone()  # prevent inplace modify
-        input_ids[input_ids < 0] = 0  # Not used
-
-        if hasattr(self, "hf_device_map"):
-            # preprocess for `accelerate`
-            self._preprocess_accelerate()
-        batch_size = input_ids.shape[0]
-        # get text embedding
-        inputs_embeds = self.get_input_embeddings()(input_ids)
-        # get visual embedding
-        if pixel_values is not None:
-            pixel_values = pixel_values.to(input_ids.device)
-            with torch.no_grad():
-                if pixel_values.dim() == 5:
-                    img_feat = []
-                    img_mask = []
-                    for frame_num in range(pixel_values.size(1)):
-                        this_frame = pixel_values[:,frame_num,:,:,:]
-                        frame_embeds = self.vision_model(this_frame, return_dict=True).last_hidden_state
-                        image_attention_mask = torch.ones(
-                            frame_embeds.size()[:-1], dtype=torch.long, device=frame_embeds.device
-                        )
-                        query_tokens = self.query_tokens.expand(frame_embeds.shape[0], -1, -1)
-                        query_outputs = self.abstractor(
-                            query_embeds=query_tokens,
-                            encoder_hidden_states=frame_embeds,
-                            encoder_attention_mask=image_attention_mask,
-                            return_dict=True,
-                        )
-                        query_output = query_outputs["last_hidden_state"]
-                        frame_embeds = query_output
-                        img_feat.append(frame_embeds)
-                    image_embeds = torch.cat(img_feat, dim=1)
-                else:
-                    image_embeds = self.vision_model(pixel_values, return_dict=True).last_hidden_state
-                    image_attention_mask = torch.ones(
-                        image_embeds.size()[:-1], dtype=torch.long, device=image_embeds.device
-                    )
-                    query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
-                    query_outputs = self.abstractor(
-                        query_embeds=query_tokens,
-                        encoder_hidden_states=image_embeds,
-                        encoder_attention_mask=image_attention_mask,
-                        return_dict=True,
-                    )
-                    query_output = query_outputs["last_hidden_state"]
-                    image_embeds = query_output
-                    # print(f'Check the shape of image embeds: {image_embeds.shape}')
-            img_seq_length = image_embeds.shape[1]
-
-            # ===================
-            # Get actual input embeddings
-            # ===================
-            text_chunk_embeds = []
-            text_chunk_attns = []
-            img_idx = 0
-
-            for b in range(batch_size):
-                start = 0
-                result = []
-                result_attn = []
-                for i, pos in enumerate(media_token_indices[b]):
-                    if pos > start:
-                        result.append(inputs_embeds[b, start:pos])
-                        result_attn.append(attention_mask[b, start:pos])
-                    result.append(image_embeds[img_idx + i])
-                    result_attn.append(torch.ones(image_embeds[img_idx + i].shape[0], device=inputs_embeds.device))
-                    start = pos + img_seq_length
-                if start < inputs_embeds.shape[1]:
-                    result.append(inputs_embeds[b, start:])
-                    result_attn.append(attention_mask[b, start:])
-
-                img_idx += num_images_per_sample[b]
-                text_chunk_embeds.append(torch.cat(result, dim=0))
-                text_chunk_attns.append(torch.cat(result_attn, dim=0))
-            inputs_embeds = torch.stack(text_chunk_embeds, dim=0)
-            attention_mask = torch.stack(text_chunk_attns, dim=0)
-
-        outputs = self.language_model.generate(
-            inputs_embeds=inputs_embeds,
-            # input_ids=input_ids,
-            attention_mask=attention_mask,
-            **generate_kwargs,
-        )
-
-        return outputs
-
     @torch.no_grad()
     def generate(
         self,
@@ -1579,6 +1471,7 @@ class MplugOwlForConditionalGeneration(MplugOwlPreTrainedModel):
         input_ids: Optional[torch.LongTensor] = None,
         attention_mask: Optional[torch.LongTensor] = None,
         isdecoder=True,
+        ppl=False,
         **generate_kwargs,
     ) -> torch.LongTensor:
         """
@@ -1609,7 +1502,7 @@ class MplugOwlForConditionalGeneration(MplugOwlPreTrainedModel):
         num_images_per_sample = [len(x) for x in media_token_indices]
         input_ids = input_ids.clone()  # prevent inplace modify
         input_ids[input_ids < 0] = 0  # Not used
-
+        
         if hasattr(self, "hf_device_map"):
             # preprocess for `accelerate`
             self._preprocess_accelerate()
@@ -1642,7 +1535,6 @@ class MplugOwlForConditionalGeneration(MplugOwlPreTrainedModel):
             text_chunk_embeds = []
             text_chunk_attns = []
             img_idx = 0
-
             for b in range(batch_size):
                 start = 0
                 result = []
@@ -1664,166 +1556,20 @@ class MplugOwlForConditionalGeneration(MplugOwlPreTrainedModel):
             inputs_embeds = torch.stack(text_chunk_embeds, dim=0)
             attention_mask = torch.stack(text_chunk_attns, dim=0)
 
-        outputs = self.language_model.generate(
-            inputs_embeds=inputs_embeds,
-            # input_ids=input_ids,
-            attention_mask=attention_mask,
-            **generate_kwargs,
-        )
-
+        if ppl:
+            outputs = self.language_model(
+                inputs_embeds=inputs_embeds,
+                attention_mask=attention_mask,
+            )
+        else:
+            outputs = self.language_model.generate(
+                inputs_embeds=inputs_embeds,
+                # input_ids=input_ids,
+                attention_mask=attention_mask,
+                **generate_kwargs,
+            )
         return outputs
     
-    @torch.no_grad()
-    def ppl_generate(
-        self,
-        pixel_values: torch.FloatTensor,
-        input_ids: torch.FloatTensor,
-        num_images,
-        attention_mask: Optional[torch.LongTensor] = None,
-        **generate_kwargs,
-    ):
-        pixel_values = pixel_values.to(self.vision_model.embeddings.cls_token.data.dtype)
-        text_tokens_ = input_ids.clone()
-        batch_size = input_ids.shape[0]
-        # find the media start token
-        media_token_indices = [
-            # [:-1] since we would not use the last token for embedding
-            get_media_indices(text_tokens_[i][:-1])
-            for i in range(batch_size)
-        ]
-        text_tokens_[text_tokens_ < 0] = 1  # Not used
-        text_embeds = self.get_input_embeddings()(text_tokens_)  # Temporally Embedding
-
-        image_embeds = self.vision_model(pixel_values, return_dict=True).last_hidden_state
-
-        image_attention_mask = torch.ones(image_embeds.size()[:-1], dtype=torch.long, device=image_embeds.device)
-        query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
-
-        query_features = self.abstractor(
-            query_embeds=query_tokens,
-            encoder_hidden_states=image_embeds,
-            encoder_attention_mask=image_attention_mask,
-        )["last_hidden_state"]
-        torch.ones(query_features.size()[:-1], dtype=torch.long).to(query_features.device)
-        img_seq_length = query_features.shape[1]
-
-        outputs = self.get_ppl_results(num_images, text_embeds, query_features, attention_mask, media_token_indices, batch_size, img_seq_length)
-        
-        return outputs
-
-
-    @torch.no_grad()
-    def icl_generate(
-        self,
-        ice_imgs_emb: torch.FloatTensor = None,
-        pixel_values: torch.FloatTensor = None,
-        input_ids: Optional[torch.LongTensor] = None,
-        attention_mask: Optional[torch.LongTensor] = None,
-        isdecoder=True,
-        **generate_kwargs,
-    ) -> torch.LongTensor:
-        """
-        Overrides `generate` function to be able to use the model as a conditional generator.
-
-        Args:
-            pixel_values (`torch.FloatTensor` of shape (batch_size, num_channels, height, width)):
-                Input images to be processed.
-            input_ids (`torch.LongTensor` of shape (batch_size, sequence_length), *optional*):
-                The sequence used as a prompt for the generation.
-            attention_mask (`torch.LongTensor` of shape (batch_size, sequence_length), *optional*):
-                Mask to avoid performing attention on padding token indices
-
-        Returns:
-            captions (list): A list of strings of length batch_size * num_captions.
-        """
-        if pixel_values is not None:
-            pixel_values = pixel_values.to(self.vision_model.embeddings.cls_token.data.dtype)
-
-        if input_ids is None:
-            return self.language_model.generate(attention_mask=attention_mask, **generate_kwargs)
-
-        if attention_mask is None:
-            attention_mask = input_ids.new_ones(*input_ids.shape)
-        
-        batch_size = input_ids.size(0)
-        media_token_indices = [get_media_indices(input_ids[i]) for i in range(batch_size)]
-        num_images_per_sample = [len(x) for x in media_token_indices]
-        input_ids = input_ids.clone()  # prevent inplace modify
-        input_ids[input_ids < 0] = 0  # Not used
-
-        if hasattr(self, "hf_device_map"):
-            # preprocess for `accelerate`
-            self._preprocess_accelerate()
-        # batch_size = input_ids.shape[0]
-        # get text embedding
-        inputs_embeds = self.get_input_embeddings()(input_ids)
-        # get visual embedding
-        if pixel_values is not None:
-            pixel_values = pixel_values.to(input_ids.device)
-            with torch.no_grad():
-                image_embeds = self.vision_model(pixel_values, return_dict=True).last_hidden_state
-                image_attention_mask = torch.ones(
-                    image_embeds.size()[:-1], dtype=torch.long, device=image_embeds.device
-                )
-                query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
-                query_outputs = self.abstractor(
-                    query_embeds=query_tokens,
-                    encoder_hidden_states=image_embeds,
-                    encoder_attention_mask=image_attention_mask,
-                    return_dict=True,
-                )
-                query_output = query_outputs["last_hidden_state"]
-                image_embeds = query_output
-                # print(f'Check the shape of image embeds: {image_embeds.shape}')
-            img_seq_length = image_embeds.shape[1]
-
-            # concate ice_imgs_emb and image_embeds
-            if ice_imgs_emb is not None:
-                ice_num = len(ice_imgs_emb)
-                C = torch.empty((batch_size*(ice_num+1), image_embeds.shape[1], image_embeds.shape[2])).to(device=image_embeds.device, dtype=image_embeds.dtype)
-                for i in range(batch_size):
-                    start_index = i * (ice_num + 1)
-                    end_index = (i + 1) * (ice_num + 1)
-                    C[start_index:end_index] = torch.cat((ice_imgs_emb, image_embeds[i:i+1]), dim=0)
-                image_embeds = C
-            
-            # ===================
-            # Get actual input embeddings
-            # ===================
-            text_chunk_embeds = []
-            text_chunk_attns = []
-            img_idx = 0
-
-            for b in range(batch_size):
-                start = 0
-                result = []
-                result_attn = []
-                for i, pos in enumerate(media_token_indices[b]):
-                    if pos > start:
-                        result.append(inputs_embeds[b, start:pos])
-                        result_attn.append(attention_mask[b, start:pos])
-                    result.append(image_embeds[img_idx + i])
-                    result_attn.append(torch.ones(image_embeds[img_idx + i].shape[0], device=inputs_embeds.device))
-                    start = pos + img_seq_length
-                if start < inputs_embeds.shape[1]:
-                    result.append(inputs_embeds[b, start:])
-                    result_attn.append(attention_mask[b, start:])
-
-                img_idx += num_images_per_sample[b]
-                text_chunk_embeds.append(torch.cat(result, dim=0))
-                text_chunk_attns.append(torch.cat(result_attn, dim=0))
-            inputs_embeds = torch.stack(text_chunk_embeds, dim=0)
-            attention_mask = torch.stack(text_chunk_attns, dim=0)
-
-        outputs = self.language_model.generate(
-            inputs_embeds=inputs_embeds,
-            # input_ids=input_ids,
-            attention_mask=attention_mask,
-            **generate_kwargs,
-        )
-
-        return outputs
-
     def prepare_inputs_for_generation(
         self, input_ids, pixel_values=None, past_key_values=None, attention_mask=None, **model_kwargs
     ):
@@ -1843,87 +1589,3 @@ class MplugOwlForConditionalGeneration(MplugOwlPreTrainedModel):
             "is_decoder": True,
         }
 
-
-    @torch.no_grad()
-    def icl_ppl_generate(
-        self,
-        pixel_values: torch.FloatTensor,
-        input_ids: torch.FloatTensor,
-        num_images,
-        ice_imgs_emb: torch.FloatTensor = None,
-        attention_mask: Optional[torch.LongTensor] = None,
-        **generate_kwargs,
-    ):
-        pixel_values = pixel_values.to(self.vision_model.embeddings.cls_token.data.dtype)
-        text_tokens_ = input_ids.clone()
-        batch_size = input_ids.shape[0]
-        
-        # find the media start token
-        media_token_indices = [
-            # [:-1] since we would not use the last token for embedding
-            get_media_indices(text_tokens_[i][:-1])
-            for i in range(batch_size)
-        ]
-        text_tokens_[text_tokens_ < 0] = 1  # Not used
-        text_embeds = self.get_input_embeddings()(text_tokens_)  # Temporally Embedding
-
-        image_embeds = self.vision_model(pixel_values, return_dict=True).last_hidden_state
-        image_attention_mask = torch.ones(image_embeds.size()[:-1], dtype=torch.long, device=image_embeds.device)
-        query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
-        
-        query_features = self.abstractor(
-            query_embeds=query_tokens,
-            encoder_hidden_states=image_embeds,
-            encoder_attention_mask=image_attention_mask,
-        )["last_hidden_state"]
-        torch.ones(query_features.size()[:-1], dtype=torch.long).to(query_features.device)
-        
-        img_seq_length = query_features.shape[1]
-        image_embeds = query_features
-        
-        if ice_imgs_emb is not None:
-            ice_num = len(ice_imgs_emb)
-            C = torch.empty((batch_size*(ice_num+1), image_embeds.shape[1], image_embeds.shape[2])).to(device=image_embeds.device, dtype=image_embeds.dtype)
-            for i in range(batch_size):
-                start_index = i * (ice_num + 1)
-                end_index = (i + 1) * (ice_num + 1)
-                C[start_index:end_index] = torch.cat((ice_imgs_emb, image_embeds[i:i+1]), dim=0)
-            image_embeds = C
-
-        outputs = self.get_ppl_results(num_images, text_embeds, image_embeds, attention_mask, media_token_indices, batch_size, img_seq_length)
-        return outputs
-
-        
-    
-    @torch.no_grad()
-    def get_ppl_results(self, num_images, text_embeds, image_embeds, attention_mask, media_token_indices, batch_size, img_seq_length):
-        return_dict = True
-        num_images_per_sample = num_images.long().cpu().tolist()
-
-        text_chunk_embeds = []
-        img_idx = 0
-        for b in range(batch_size):
-            start = 0
-            result = []
-            if len(media_token_indices[b]) > 0:
-                for i, pos in enumerate(media_token_indices[b]):
-                    if pos > start:
-                        result.append(text_embeds[b, start:pos])
-                    result.append(image_embeds[img_idx + i])
-                    start = pos + img_seq_length
-            if start < text_embeds.shape[1]:
-                result.append(text_embeds[b, start:])
-
-            img_idx += num_images_per_sample[b]
-            text_chunk_embeds.append(torch.cat(result, dim=0))
-
-        # Actual Input Embeddings
-        input_embeds = torch.stack(text_chunk_embeds, dim=0)
-
-        # Forward into GPT
-        outputs = self.language_model(
-            inputs_embeds=input_embeds,
-            attention_mask=attention_mask,
-            return_dict=return_dict,
-        )
-        return outputs
