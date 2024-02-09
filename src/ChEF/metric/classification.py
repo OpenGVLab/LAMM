@@ -29,14 +29,15 @@ class CG_Classification(Base_Metric):
             pred = self.cleaner.clean(pred)
             if self.syn_check_func(gt, pred):
                 syn_correct += 1
-            if gt in pred.split():
-                correct += 1
+            result = gt in pred.split()
+            correct += int(result)
+            item['metric_result'] = int(result)
         acc = correct / len(answers) * 100
         syn_acc = syn_correct / len(answers) * 100
         return dict(
             ACC = acc,
             SYN_ACC = syn_acc,
-        )
+        ), answers
 
 class UCMerced_Classification(Base_Metric):
     def __init__(self, dataset_name, **kwargs):
