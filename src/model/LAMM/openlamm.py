@@ -44,14 +44,14 @@ VISION_TAGS = {
 
 
 class LAMMStoppingCriteria(StoppingCriteria):
-    def __init__(self, stops, input_ids):
+    def __init__(self, stops, input_ids, device):
         """intialize stopping criteria
 
         :param list stops: list of stop tokens
         :param list input_ids: input ids
         """
         super().__init__()
-        self.stops = [torch.tensor(stop).to('cuda') for stop in stops]
+        self.stops = [torch.tensor(stop).to(device) for stop in stops]
         self.stop_flag = [0] * input_ids.shape[0]
 
     def check_stop(self, input_ids):
@@ -373,7 +373,7 @@ class LAMMPEFTModel(nn.Module):
             inputs = self.load_and_transform_image_data_clip(
                 image_paths, self.device
             )  # bsz x 3 x 224 x 224
-            inputs = inputs.to(self.llama_model.dtype)  # clip requires torch.float32
+            inputs = inputs.to(dtype=self.llama_model.dtype, device=self.device)  # clip requires torch.float32
             inputs_llama = self.clip_encode_image(inputs)
             atts_llama = torch.ones(inputs_llama.size()[:-1], dtype=torch.long).to(
                 self.device
@@ -424,7 +424,7 @@ class LAMMPEFTModel(nn.Module):
         return inputs_llama, atts_llama
 
     def clip_encode_image(self, inputs):
-        inputs = inputs.to(self.llama_model.dtype)  # clip requires torch.float32
+        inputs = inputs.to(dtype=self.llama_model.dtype)  # clip requires torch.float32
     
         if self.vision_feature_type == "global":
             with torch.no_grad():
@@ -435,7 +435,7 @@ class LAMMPEFTModel(nn.Module):
             )  # bsz x 1 x llama_size
         elif self.vision_feature_type == "local":
             with torch.no_grad():
-                embeddings = self.visual_encoder.forward_patch_features(inputs)[
+                embeddings = self.visual_encoder.forward_patch_features(inputs.to(self.device))[
                     :, : self.num_vision_token
                 ]  # bsz x self.num_vision_token x 1024
             image_embeds = embeddings.reshape(-1, self.vision_hidden_size).to(
@@ -778,7 +778,7 @@ class LAMMPEFTModel(nn.Module):
         """
         input_embeds, input_masks = self.prepare_generation_embedding(inputs)
         stopping_criteria = StoppingCriteriaList(
-            [LAMMStoppingCriteria([[2277, 29937], [835], [1, 2]], input_embeds)]            # TODO: different template has corresponding end signal [sep2]
+            [LAMMStoppingCriteria([[2277, 29937], [835], [1, 2]], input_embeds, input_embeds.device)]            # TODO: different template has corresponding end signal [sep2]
         )
         outputs = self.llama_model.generate(
             inputs_embeds=input_embeds,

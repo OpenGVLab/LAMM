@@ -14,9 +14,6 @@ def get_model(cfg, device):
     elif model_name == 'LLaMA-Adapter-v2':
         from .test_llamaadapterv2 import TestLLamaAdapterV2
         return TestLLamaAdapterV2(**cfg)
-    elif model_name == 'LLaVA':
-        from .test_llava import TestLLaVA
-        return TestLLaVA(**cfg)
     elif model_name == 'MiniGPT-4':
         from .test_minigpt4 import TestMiniGPT4
         return TestMiniGPT4(device=device, **cfg)

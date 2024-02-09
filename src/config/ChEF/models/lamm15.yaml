@@ -1,6 +1,6 @@
 model_name: LAMM_SFT
-model_path: ../ckpt/LAMM15_stage2/pytorch_model.pt
-llm_ckpt_path: ../model_zoo/vicuna_ckpt/13b_v0
+model_path: ../model_zoo/LAMM/LAMM_v1.5/lamm_sft_finetune/pytorch_model.pt
+llm_ckpt_path: ../model_zoo/Vicuna/13b_v0
 encoder_ckpt_path: ../model_zoo/clip-vit-large-patch14
 task_type: noraml
 encoder_pretrain: clip

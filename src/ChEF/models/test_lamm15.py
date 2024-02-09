@@ -11,3 +11,4 @@ class TestLAMM15(TestLAMM):
         self.model = self.model.eval().half()
         self.task_type = task_type
         self.move_to_device(device)
+        self.model.device = device
