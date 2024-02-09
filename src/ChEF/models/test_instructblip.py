@@ -17,8 +17,7 @@ class TestInstructBLIP(TestBase):
         image_list, 
         prompt, 
         CoT_answer_list=None, 
-        batch_answers=None,
-        **kwargs,):
+        batch_answers=None):
         if CoT_answer_list is not None:
             prompt += CoT_answer_list[idx]
         if batch_answers is not None:
@@ -37,6 +36,8 @@ class TestInstructBLIP(TestBase):
         return image_tensors
 
     def do_generate(self, imgs, prompt, max_new_tokens, **kwargs):
+        import pdb
+        pdb.set_trace()
         imgs = imgs.unsqueeze(0)
         output = self.model.generate({"image": imgs, "prompt": prompt}, max_length=max_new_tokens)[0]
         return output
@@ -146,18 +147,18 @@ class TestInstructBLIP(TestBase):
         
 
     @torch.no_grad()
-    def ppl_inference(self, batch_images, batch_prompt, batch_options, batch_answers, CoT_list = None, calib = False, **kwargs):
+    def ppl_inference(self, batch_images, batch_prompt, batch_options, batch_answers, CoT_answer_list = None, calib = False, **kwargs):
         input_images, input_prompts = [], []
         for idx, (image_list, prompt) in \
                 enumerate(zip(batch_images, batch_prompt)):
-            input_prompt = self.build_conversation(idx, image_list, prompt, **kwargs)
+            input_prompt = self.build_conversation(idx, image_list, prompt, CoT_answer_list, batch_answers)
             input_image_list = self.build_input_image(image_list)
             input_prompts.append(input_prompt)
             input_images.append(input_image_list)
         input_images = torch.stack(input_images, dim=0).to(self.device)
         prompts = batch_prompt
-        if CoT_list is not None:
-            prompts = [prompt + '\n' + cot for prompt, cot in zip(batch_prompt, CoT_list)]
+        # if CoT_list is not None:
+        #     prompts = [prompt + '\n' + cot for prompt, cot in zip(batch_prompt, CoT_list)]
         results = self.do_ppl(input_images, prompts, batch_answers, batch_options, calib = calib)
         return results
     
