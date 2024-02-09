@@ -161,15 +161,19 @@ class FG_Classification(Base_Metric):
             gt = item['gt_answers']
             if self.inference_type == 'multiturn':
                 pred = item['turn_answer']
-                wcorrect += self.weighted_ACC_multi(pred, gt)
+                result = self.weighted_ACC_multi(pred, gt)
+                wcorrect += result
+                item['metric_result'] = result
             elif self.inference_type == 'singleturn':
                 pred = item['answer']
-                wcorrect += self.weighted_ACC_single(pred, gt)
+                result = self.weighted_ACC_single(pred, gt)
+                wcorrect += result
+                item['metric_result'] = result
             else:
                 raise NotImplementedError
 
         wacc = wcorrect / len(answers) * 100
-        return wacc
+        return wacc, answers
     
 class LAMM_Facial_Smile_Classification(Base_Metric):
 

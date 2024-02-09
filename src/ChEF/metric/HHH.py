@@ -7,4 +7,4 @@ class HHH_Metric(Base_Metric):
         super().__init__(dataset_name)
 
     def metric_func(self, answers):
-        return dict()
+        return dict(), answers

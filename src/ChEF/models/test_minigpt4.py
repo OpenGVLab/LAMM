@@ -8,11 +8,7 @@ from .minigpt4.conversation.conversation import Chat, CONV_VISION
 from .minigpt4.models import *
 from .minigpt4.processors import *
 from .test_base import TestBase
-
-
 from .utils import get_image
-
-
 class TestMiniGPT4(TestBase):
     def __init__(self, 
                  model_path,
