@@ -76,7 +76,6 @@ class TestBase:
     ):
         '''
             process a batch of images and questions, and then do_ppl
-            :param CoT_list: batch of CoT answers, the CoT is regarded as a part of ppl output
         '''
         input_images, input_prompts = [], []
         for idx, (image_list, prompt) in \
