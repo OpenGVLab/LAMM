@@ -46,7 +46,7 @@ class TestOtter(TestBase):
         return prompt
     
     def do_generate(self, image_list: torch.Tensor, prompt: str, max_new_tokens, **kwargs):
-        vision_x = torch.stack([image_list], dim=0)
+        vision_x=torch.stack([image_list], dim=0)
         vision_x=vision_x.to(self.model.device, dtype=self.dtype)
         lang_x = self.model.text_tokenizer([prompt], return_tensors="pt")
         generated_text = self.model.generate(

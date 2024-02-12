@@ -13,7 +13,7 @@ def get_model(cfg, device):
         return TestInstructBLIP(device=device)
     elif model_name == 'LLaMA-Adapter-v2':
         from .test_llamaadapterv2 import TestLLamaAdapterV2
-        return TestLLamaAdapterV2(**cfg)
+        return TestLLamaAdapterV2(device=device, **cfg)
     elif model_name == 'MiniGPT-4':
         from .test_minigpt4 import TestMiniGPT4
         return TestMiniGPT4(device=device, **cfg)
@@ -22,10 +22,10 @@ def get_model(cfg, device):
         return TestMplugOwl(device=device,**cfg)
     elif model_name == 'Otter':
         from .test_otter import TestOtter
-        return TestOtter(**cfg)
+        return TestOtter(device=device, **cfg)
     elif model_name == 'Kosmos2':
         from .test_kosmos import TestKOSMOS2
-        return TestKOSMOS2(**cfg)
+        return TestKOSMOS2(device=device,**cfg)
     elif model_name == 'LAMM':
         from .test_lamm import TestLAMM
         return TestLAMM(device=device, **cfg)
