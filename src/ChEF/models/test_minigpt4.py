@@ -14,7 +14,7 @@ class TestMiniGPT4(TestBase):
     def __init__(self, 
                  device, 
                  model_path,
-                 cfg_path = 'models/minigpt4/minigpt4_eval.yaml',
+                 cfg_path = 'ChEF/models/minigpt4/minigpt4_eval.yaml',
                  **kwargs
                  ):
         cfg = Config(cfg_path, model_path)
