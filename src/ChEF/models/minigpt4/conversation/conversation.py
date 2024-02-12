@@ -206,10 +206,7 @@ class Chat:
         # self.conv.append_message(self.conv.roles[1], msg)
         return msg
 
-    def get_context_emb(self, conv, img_list, answer = None):
-        prompt = conv.get_prompt()
-        if answer is not None:
-            prompt += answer
+    def get_context_emb(self, prompt, img_list):
         prompt_segs = prompt.split('<ImageHere>')
         assert len(prompt_segs) == len(img_list) + 1, "Unmatched numbers of image placeholders and images."
         seg_tokens = [
@@ -221,7 +218,10 @@ class Chat:
         seg_embs = [self.model.llama_model.model.embed_tokens(seg_t) for seg_t in seg_tokens]
         mixed_embs = [emb for pair in zip(seg_embs[:-1], img_list) for emb in pair] + [seg_embs[-1]]
         mixed_embs = torch.cat(mixed_embs, dim=1)
-        return mixed_embs
+        img_ids = [torch.zeros(1, img.shape[1]).to(self.device) for img in img_list]
+        token_ids = [token for pair in zip(seg_tokens[:-1], img_ids) for token in pair] + [seg_tokens[-1]]
+        token_ids = torch.cat(token_ids, dim=1)
+        return mixed_embs, token_ids
 
     def batch_answer(self, image_list, question_list, chat_list, max_new_tokens=300, num_beams=5, min_length=1, top_p=0.9, repetition_penalty=1.0, length_penalty=-1.0, temperature=1.0, max_length=2000):
         embs_list = []

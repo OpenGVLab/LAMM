@@ -49,7 +49,7 @@ class InsideBbox(Base_Metric):
                     correct_cnt += 1
         return dict(
             ACC = (correct_cnt / total_cnt) * 100
-        )
+        ), answers
 
 class InsideHumanBbox(Base_Metric):
     def __init__(self, dataset_name, **kwargs):
@@ -75,4 +75,4 @@ class InsideHumanBbox(Base_Metric):
                 correct_cnt += 1
         return dict(
             ACC = (correct_cnt / total_cnt) * 100
-        )
+        ), answers

@@ -50,10 +50,13 @@ class UCMerced_Classification(Base_Metric):
             pred = item['answer']
             if gt in pred:
                 correct += 1
+                item['metric_result'] = 1
+            else:
+                item['metric_result'] = 0
         acc = correct / len(answers) * 100
         return dict(
             ACC = acc,
-        )
+        ), answers
 
 class LAMM_Classification(Base_Metric):
     def __init__(self, dataset_name, **kwargs):
@@ -99,9 +102,12 @@ class LAMM_Classification(Base_Metric):
             pred_text = item['answer']
             if classification_acc_lamm(gt_label, pred_text):
                 score += 1.0
+                item['metric_result'] = 1
+            else:
+                item['metric_result'] = 0
         return dict(
             ACC = score/len(answers)
-        )
+        ), answers
 
 
 class FG_Classification(Base_Metric):
@@ -195,10 +201,13 @@ class LAMM_Facial_Smile_Classification(Base_Metric):
                 pred_label = '1'
             if pred_label == gt_label:
                 score += 1.0
+                item['metric_result'] = 1
+            else:
+                item['metric_result'] = 0
             
         return dict(
             ACC = score/len(answers),
-        )
+        ), answers
         
 class LAMM_Facial_Hair_Classification(Base_Metric):
 
@@ -245,9 +254,12 @@ class LAMM_Facial_Hair_Classification(Base_Metric):
             pred_text = item['answer']
             if classification_acc_lamm(gt_label, pred_text):
                 score += 1.0
+                item['metric_result'] = 1
+            else:
+                item['metric_result'] = 0
         return dict(
             ACC = score/len(answers)
-        )
+        ), answers
 
 class LAMM_3D_Classification(Base_Metric):
     def __init__(self, dataset_name, **kwargs):
@@ -261,6 +273,9 @@ class LAMM_3D_Classification(Base_Metric):
             text = pred_text.lower()
             if gt_label in text:
                 score += 1.0
+                item['metric_result'] = 1
+            else:
+                item['metric_result'] = 0
         return dict(
             ACC = score/len(answers)
-        )
+        ), answers

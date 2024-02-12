@@ -65,7 +65,7 @@ class Detection(Base_Metric):
         return {
             f"mAP@{self.threshold}": (score / pre_cnt) * 100,
             f"mAR@{self.threshold}": (score / rec_cnt) * 100,
-        }
+        }, answers
 
     def ppl_metric(self, answers):
         classification_score, grounding_score = 0, 0
@@ -108,7 +108,7 @@ class Detection(Base_Metric):
             "grounding_acc": (grounding_score / grounding_cnt) * 100,
             f"mAP@{self.threshold}": (grounding_score / grounding_cnt) * 100,
             f"mAR@{self.threshold}": (grounding_score / recall_cnt) * 100,
-        }
+        }, answers
 
     def metric_func(self, answers):
         if self.inference_type == 'direct':
@@ -258,7 +258,7 @@ class LAMM_Detection(Base_Metric):
                 f'recall_wocat@{iou_thres:.2f}': (tp[iou_i] / num_gt * 100).item(),
                 f'prec_wocat@{iou_thres:.2f}': (tp[iou_i] / (num_pred + 1e-7) * 100).item(),
             })
-        return metric_dict
+        return metric_dict, answers
 
 class LAMM_3D_Detection(Base_Metric):
 
@@ -288,7 +288,7 @@ class LAMM_3D_Detection(Base_Metric):
                         break
         return dict(
             mAR = score/cnt * 100,
-        )
+        ), answers
 
 class LAMM_3D_Grounding(Base_Metric):
 
@@ -315,4 +315,4 @@ class LAMM_3D_Grounding(Base_Metric):
                 score += 1
         return dict(
             mAR = score/cnt * 100,
-        )
+        ), answers

@@ -51,7 +51,7 @@ class Caption(Base_Metric):
         return dict(
             BLEU4 = bleu_score,
             Rouge = rouge_score,
-        )
+        ), answers
     
     def acc_metric_func(self, answers):
         score = 0
@@ -60,10 +60,13 @@ class Caption(Base_Metric):
             pred = item['answer']
             if pred in gt:
                 score += 1
+                item['metric_result'] = 1
+            else:
+                item['metric_result'] = 0
         score = score * 100 / len(answers)
         return dict(
             ACC = score
-        )
+        ), answers
 
     def top_acc_metric_func(self, answers):
         # top_acc calculates the percentage of the correct caption in the top50% of the results
@@ -82,7 +85,7 @@ class Caption(Base_Metric):
         score = score * 100 / len(answers)
         return dict(
             ACC = score
-        )
+        ), answers
 
     def metric_func(self, answers):
         if self.strategy == 'direct':
@@ -128,7 +131,7 @@ class LAMM_Caption(Base_Metric):
             else:
                 print("%s: %0.3f"%(method, score*100))
                 rlt[method]=score*100
-        return rlt
+        return rlt, answers
     
     
 class LAMM_3D_Caption(Base_Metric):
@@ -166,4 +169,4 @@ class LAMM_3D_Caption(Base_Metric):
             else:
                 print("%s: %0.3f"%(method, score*100))
                 rlt[method]=score*100
-        return rlt
+        return rlt, answers

@@ -32,4 +32,4 @@ class Counting(Base_Metric):
         if self.inference_type == 'direct':
             res_dict['MAE'] = self.mae_metric(answers)
         res_dict['ACC'] = self.acc_metric(answers)
-        return res_dict
+        return res_dict, answers

@@ -69,7 +69,7 @@ class ScienceQA_Calibration(Base_Metric):
             ECE = calib_res['ECE'],
             Acc_bins = calib_res['Acc_bins'],
             Prob_bins = calib_res['Prob_bins']
-        )
+        ), answers
 
 
 class MMBench_Calibration(Base_Metric):
@@ -152,7 +152,7 @@ class MMBench_Calibration(Base_Metric):
             ECE = calib_res['ECE'],
             Acc_bins = calib_res['Acc_bins'],
             Prob_bins = calib_res['Prob_bins']
-        )
+        ), answers
 
 
 
@@ -217,16 +217,7 @@ class POPE_Metric(Base_Metric):
             'F1 score': f1,
             'Yes ratio': yes_ratio
         }
-        return results
-
-    def metric(self, answer_path):
-        with open(answer_path, 'rb') as f:
-            answers = json.load(f)
-        results = self.metric_func(answers) 
-        print(f'{self.dataset_name}:')
-        for key, value in results.items():
-            print(f'{key}: {value}')
-        return results
+        return results, answers
 
 
 class Answer_Extractor_map(Answer_Extractor): # TODO 
@@ -307,7 +298,7 @@ class Instruct_Follow(Base_Metric):
                 score += 1.0
             result[main_idx]=1
         score = score/vanilla_cnt * 100
-        return score
+        return score, answers
 
 
 
