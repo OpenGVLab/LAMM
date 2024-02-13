@@ -15,7 +15,6 @@ from fairseq.models import FairseqIncrementalDecoder
 from torch import Tensor
 from fairseq.ngram_repeat_block import NGramRepeatBlock
 
-
 class SequenceGenerator(nn.Module):
     def __init__(
         self,
@@ -426,7 +425,7 @@ class SequenceGenerator(nn.Module):
                 lprobs += probs
 
             lprobs[lprobs != lprobs] = torch.tensor(-math.inf).to(lprobs)
-
+            
             lprobs[:, self.pad] = -math.inf  # never select pad
             lprobs[:, self.unk] -= self.unk_penalty  # apply unk penalty
 

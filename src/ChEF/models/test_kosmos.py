@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 from fairseq import checkpoint_utils, utils, options, tasks
 from fairseq.dataclass.utils import convert_namespace_to_omegaconf
 from collections import namedtuple
@@ -21,6 +22,7 @@ class TestKOSMOS2(TestBase): # TODO: batch_size = 1
                  if_grounding = True, 
                  device = 'cuda',
                  **kwargs):
+        print('Kosmos only supports single GPU evaluation.')
         parser = options.get_interactive_generation_parser()
         input_args = ['--local_rank=0', 'None', 
                       '--task', 'generation_obj', 
@@ -110,7 +112,7 @@ class TestKOSMOS2(TestBase): # TODO: batch_size = 1
     def do_generate(self, image_list: list, prompt: str, max_new_tokens, **kwargs):
         self.generator.ppl = False
         self.generator.max_len_b = max_new_tokens
-        sample = self.make_batches(image_list, [prompt])
+        sample = self.make_batches(image_list, [prompt])[0]
         translations = self.task.inference_step(
             self.generator, [self.model], sample, constraints=None
         )
@@ -141,7 +143,7 @@ class TestKOSMOS2(TestBase): # TODO: batch_size = 1
                 hypo_str = hypo_str.replace(src_str, '')
                 outputs.append(hypo_str)
         return outputs[0]
-
+    
     def make_batches(self, images, inputs):
         tokens, lengths, img_src_tokens, img_gpt_input_mask = \
             get_interactive_tokens_and_lengths(self.task, images, inputs, self.tokenizer ,self.special_tokens)
@@ -159,7 +161,7 @@ class TestKOSMOS2(TestBase): # TODO: batch_size = 1
             ids = batch["id"]
             src_tokens = batch["net_input"]["src_tokens"].to(self.device)
             src_lengths = batch["net_input"]["src_lengths"].to(self.device)
-            img_src_tokens = batch["net_input"]["img_src_tokens"].to(dtype = self.dtype)
+            img_src_tokens = batch["net_input"]["img_src_tokens"].to(dtype = self.dtype, device=self.device)
             img_gpt_input_mask = batch["net_input"]["img_gpt_input_mask"]
             res_list.append(dict(
                 ids = ids,
@@ -170,27 +172,34 @@ class TestKOSMOS2(TestBase): # TODO: batch_size = 1
                     img_gpt_input_mask = img_gpt_input_mask
                 )
             ))
-        assert len(res_list) == 1
-        return res_list[0]
+        return res_list
 
     def do_ppl(self, batch_images, batch_prompt, batch_options, **kwargs):
-        sample = self.make_batches(batch_images, batch_prompt)
-        probs = self.task.inference_step(
-            self.generator, [self.model], sample, constraints=None
-        )
-        logits = probs[:, :-1]
-        labels = sample['net_input']['src_tokens'][:, 1:]
+        self.generator.ppl = True
+        batch_images = [img for image_list in batch_images for img in image_list]
+        batch_samples = self.make_batches(batch_images, batch_prompt)
+        logits = []
+        labels = []
+        for sample in batch_samples:
+            probs = self.task.inference_step(
+                self.generator, [self.model], sample, constraints=None
+            )
+            sample_logits = probs[:, :-1]
+            sample_labels = sample['net_input']['src_tokens'][:, 1:]
+            logits.append(sample_logits[0])
+            labels.append(sample_labels[0])
+
         results = []
         batch_option_ids = []
         for option in batch_options:
             batch_option_ids.append(get_token_src(self.task, option, self.tokenizer, self.special_tokens))
-        import ipdb;ipdb.set_trace()
-        for idx in range(labels.shape[0]):
+
+        for idx in range(len(labels)):
             option_len = len(batch_option_ids[idx])
             non_zero_indices = torch.nonzero(labels[idx], as_tuple=False).squeeze()
             start_index = non_zero_indices.max() - option_len + 1
             end_index = start_index + option_len
-            if not np.all(labels[idx][start_index: end_index].detach().cpu().numpy() == batch_option_ids[idx].numpy()):
+            if not np.all(labels[idx][start_index: end_index].detach().cpu().numpy() == np.array(batch_option_ids[idx])):
                 import ipdb;ipdb.set_trace()
             prob = F.softmax(logits[idx][start_index: end_index], dim=-1)
             rows = torch.arange(0, option_len)

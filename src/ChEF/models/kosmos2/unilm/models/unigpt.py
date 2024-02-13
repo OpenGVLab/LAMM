@@ -258,6 +258,7 @@ class UniGPTmodel(BaseFairseqModel):
                 mlm_output = None
             
             if img_src_tokens is not None:
+                
                 img_output = self.get_image_representation(img_src_tokens)
             else:
                 img_output = None
@@ -284,6 +285,7 @@ class UniGPTmodel(BaseFairseqModel):
 
     def get_image_representation(self, img_src_tokens):
         # image
+        img_src_tokens = img_src_tokens.to(next(self.img_model.parameters()).device)
         img_output = self.img_model(img_src_tokens)
         src_len = img_output.size(0)
         img_output = img_output.transpose(0, 1) # T x B x C -> B x T x C
