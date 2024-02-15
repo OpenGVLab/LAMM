@@ -21,7 +21,8 @@ evaluation_protocol = {
         'FSC147': Counting,
         'MMBench': MMBenchVQA,
         'MME': MMEVQA,
-        'SEEDBench': VQA
+        'SEEDBench': VQA,
+        'SEEDBench2': VQA,
     },
     'Calibration':
     {

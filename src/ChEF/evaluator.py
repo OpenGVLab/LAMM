@@ -53,6 +53,7 @@ class Evaluator:
         while True:
             sleep(1.0)
             if self.check_all_rank_done():
+                sleep(1.0)
                 all_results = []
                 for i in range(self.dist_args['world_size']):
                     with open(os.path.join(self.save_base_dir, \

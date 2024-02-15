@@ -105,7 +105,6 @@ class TestLLaVA15(TestBase):
     def do_ppl(self, batch_images, batch_prompt, batch_options, **kwargs):
         batch_input_ids = batch_tokenizer_image_token(batch_prompt, self.tokenizer).to(self.device)
         batch_option_ids = batch_tokenizer_image_token(batch_options, self.tokenizer, add_special_tokens=False).to(self.device)
-
         (input_ids, position_ids, attention_mask, past_key_values, inputs_embeds, labels) = \
             self.model.prepare_inputs_labels_for_multimodal(
             batch_input_ids, None, None, None, batch_input_ids, batch_images)

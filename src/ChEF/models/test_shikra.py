@@ -120,6 +120,6 @@ class TestShikra(TestBase):
                 import ipdb;ipdb.set_trace()
             prob = F.softmax(logits[idx][start_index: end_index], dim=-1)
             rows = torch.arange(0, option_len)
-            score = torch.log(prob[rows, option_ids[idx][:option_len]]).mean().item()
+            score = torch.log(prob[rows, option_ids[idx][-option_len:]]).mean().item()
             results.append(score)
         return results

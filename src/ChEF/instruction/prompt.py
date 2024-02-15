@@ -91,7 +91,8 @@ counting_prompts = ['{question}']
 # detection
 # We provide both LAMM-style standard prompts and multi-turn prompts
 detection_lamm_prompts = [
-    'Identify all the objects in the image and provide their positions. Your answer needs to give the object name and the bounding box of the object. The bounding box should be represented as [x1, y1, x2, y2] with floating numbers ranging from 0 to 1. These values correspond to the top left x, top left y, bottom right x, and bottom right y.'
+    'Identify all the objects in the image and provide their positions. Your answer needs to give the object name and the bounding box of the object. The bounding box should be represented as [x1, y1, x2, y2] with floating numbers ranging from 0 to 1. These values correspond to the top left x, top left y, bottom right x, and bottom right y.',
+    'Detect all the objects in the image.',
 ]
 
 # Two-turn detection prompts, with the first turn prompt for the category and the second turn prompt for the bounding box.

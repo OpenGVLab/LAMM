@@ -95,7 +95,6 @@ def build_one_instance(tokenizer, conversation, vision_type="image", template=co
     """
     pos = VISION_TAGS["pos"][vision_type]
     eov = VISION_TAGS["eov"][vision_type]
-
     text_list = []
     turn_num = len(conversation)
     input_ids, target_ids = [], []
@@ -107,7 +106,7 @@ def build_one_instance(tokenizer, conversation, vision_type="image", template=co
             turn["value"] = (
                 turn["value"].replace(f"{pos}\n", "").replace(f"\n{pos}", "")
             )
-            text = f"{eov} " + turn["value"] + "\n{} {}: ".format(template.sep, template.roles[1])
+            text = f"{eov} " + turn["value"] + "\n{} {}:".format(template.sep, template.roles[1])
             one_input_id = tokenizer(text, add_special_tokens=False).input_ids
             input_ids += one_input_id
             target_ids += [-100] * len(
@@ -116,7 +115,7 @@ def build_one_instance(tokenizer, conversation, vision_type="image", template=co
         else:
             if role == "human":
                 # text = "{}: ".format(template.roles[0]) + turn["value"] + "\n### {}:".format(template.roles[1])
-                text = "{}: {}\n{} {}: ".format(template.roles[0], turn["value"], template.sep, template.roles[1])
+                text = "{}: {}\n{} {}:".format(template.roles[0], turn["value"], template.sep, template.roles[1])
                 one_input_id = tokenizer(text, add_special_tokens=False).input_ids
                 input_ids += one_input_id
                 target_ids += [-100] * len(one_input_id)
@@ -650,7 +649,6 @@ class LAMMPEFTModel(nn.Module):
             vision_embeds, _ = self.encode_pcl(vision_paths)  # Bsz x N token x C
         else:
             raise ValueError("vision type [{}] not supported".format(self.vision_type))
-
         output_texts = inputs["output_texts"]
         input_ids, target_ids, attention_mask = process_batch_instance(
             self.llama_tokenizer, output_texts, self.max_tgt_len, self.vision_type, self.conv_template

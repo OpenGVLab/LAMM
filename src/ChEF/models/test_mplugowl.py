@@ -30,9 +30,9 @@ class TestMplugOwl(TestBase):
 
     def build_conversation(self, idx, image_list, prompt, CoT_answer_list=None, batch_answers=None, **kwargs):
         lenimg = 1 if isinstance(image_list,str) else len(image_list)
-        prompt = prompt_template_multi + "Human: ".join(["<image>"] * lenimg) + f"\nHuman: {prompt}\nAI:"
+        prompt = prompt_template_multi + "\n".join(["Human: <image>"] * lenimg) + f"\nHuman: {prompt}\nAI:"
         if CoT_answer_list is not None:
-            prompt += ' ' + CoT_answer_list[idx]
+            prompt += CoT_answer_list[idx]
         if batch_answers is not None:
             prompt += ' ' + batch_answers[idx]
         return prompt
@@ -40,7 +40,7 @@ class TestMplugOwl(TestBase):
     def build_input_image(self, image_list):
         images = self.get_image_list(image_list)
         images = [self.image_processor(image, return_tensors='pt').pixel_values for image in images]
-        images = torch.cat([images[0], images[0]], dim=0).to(self.device, dtype=self.dtype)
+        images = torch.cat(images, dim=0).to(self.device, dtype=self.dtype)
         return images
 
     def do_generate(self, image_list: list, prompt: str, max_new_tokens, **kwargs):
@@ -63,7 +63,6 @@ class TestMplugOwl(TestBase):
         batch_images = torch.cat(batch_images, dim=0).to(self.device, dtype=self.dtype) # multi_len * bs, c, h, w
         inputs["pixel_values"] = batch_images
         labels = inputs['input_ids'].clone()[:,1:]
-
         outputs = self.model.generate(**inputs, ppl=True)
         
         logits = outputs['logits'][:,:-1]

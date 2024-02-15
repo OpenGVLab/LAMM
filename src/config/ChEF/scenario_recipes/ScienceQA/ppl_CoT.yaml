@@ -11,7 +11,7 @@ eval_cfg:
     template_assigned_ids: 0
   inferencer_cfg:
     inferencer_type: PPL
-    batch_size: 4
+    batch_size: 2
     CoT: True
     max_new_tokens: 128
   metric_cfg:

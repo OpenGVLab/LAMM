@@ -1,7 +1,6 @@
 import os
 import json
 from torch.utils.data import Dataset
-from .lamm_sysmsg import common_task2sysmsg
 
 
 OPTION=['A','B','C','D','E','F','G','H']
@@ -33,7 +32,7 @@ def clean_question(question, generative = False): # delete context
     if not generative:
         res = 'Question: ' + q[0] + 'Options:' + qlist[1] + "\n"
     else:
-        res = 'Question: ' + q[0] + "\n"
+        res = 'Question: ' + q[0]
     
     return res
 
@@ -120,3 +119,8 @@ class ScienceQADataset(Dataset):
             res_dict['options']=option_map[:len(res_dict['options'])]
 
         return res_dict
+    
+
+if __name__ == '__main__':
+    scienceqadata = ScienceQADataset(base_data_path='../../../data/LAMM/2D_Benchmark', ppl=True, generative=True)
+    import ipdb;ipdb.set_trace()

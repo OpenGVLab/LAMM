@@ -6,6 +6,7 @@ from .counting_dataset import *
 
 from .MMBench_dataset import *
 from .SEED_Bench_dataset import *
+from .SEED_Bench2_dataset import *
 from .MME_dataset import *
 
 from .POPE_dataset import *
@@ -56,6 +57,7 @@ dataset_dict = {
     'POPE_COCO_adversarial':POPE_COCO_Adversarial_Dataset,
     # SEEDBench
     'SEEDBench': SEEDBenchDataset,
+    'SEEDBench2': SEEDBench2Dataset,
     # MME
     'MME': MMEDataset,
     

@@ -2,6 +2,8 @@
 coarse_grained_classification_answer_templates = [
     'The object in the image is {option}',
     '{option}',
+    'The image features {option}',
+    'The image shows {option}',
 ]
 fine_grained_classification_answer_templates = [
     'The fine-grained category label for this image is {option}',

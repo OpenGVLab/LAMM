@@ -2,7 +2,8 @@ import os
 import json
 from torch.utils.data import Dataset
 import random
-
+import inflect
+inflect_engine = inflect.engine()
 
 class CIFAR10Dataset(Dataset):
     task_name = 'coarse_grained_classification'
@@ -15,6 +16,8 @@ class CIFAR10Dataset(Dataset):
         self.split = split.replace('_','')
         self.data = json.load(open(json_path,'rb'))
         self.ppl = ppl
+        # for i in range(len(self.cifar_classes)):
+        #     self.cifar_classes[i] = inflect_engine.a(self.cifar_classes[i])
     
     def __len__(self):
         return len(self.data)
@@ -165,9 +168,12 @@ class OmnibenchmarkDataset(Dataset):
 
 
 if __name__ == '__main__':
-    omnidata = OmnibenchmarkDataset(
-        bamboo_tree_path='../../../data/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json', 
-        base_data_path='../../../data/ChEF/OmniBenchmark_Bamboo',
-        multi_turn=False,
-        ppl_cfg={})
+    # omnidata = OmnibenchmarkDataset(
+    #     bamboo_tree_path='../../../data/Bamboo/sensexo_visual_add_academic_add_state_V4.visual.json', 
+    #     base_data_path='../../../data/ChEF/OmniBenchmark_Bamboo',
+    #     multi_turn=False,
+    #     ppl_cfg={})
+    cifardata = CIFAR10Dataset(
+        '../../../data/LAMM/2D_Benchmark'
+    )
     import ipdb;ipdb.set_trace()

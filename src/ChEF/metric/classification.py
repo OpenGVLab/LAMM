@@ -140,6 +140,7 @@ class FG_Classification(Base_Metric):
                 father = self.name2id[gt[i-1]] if i>0 else self.child2father[self.name2id[gt[i-1]]][0]
                 if self.share_father(father, pred[i]['answer']):
                     deep_idx = i
+            break
         return deep_idx/len(gt)
     
     def share_father(self, father_id, pred):

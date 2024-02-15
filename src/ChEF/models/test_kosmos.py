@@ -90,25 +90,6 @@ class TestKOSMOS2(TestBase): # TODO: batch_size = 1
         images = self.get_image_list(image_list)
         return images
 
-    @torch.no_grad()
-    def ppl_inference_multi_imgs(self, image_list, question_list, answer_list, answer_pool, CoT_list = None, calib = False):
-        self.generator.ppl = True
-        batch_size = len(images)
-        images = [get_multi_imgs(image) for image in image_list]
-        images = [item for sublist in images for item in sublist]
-        self.cfg.dataset.batch_size = batch_size
-        prefix = "[image]<image><tab><grounding>" if self.if_grounding else "[image]<image><tab>"
-        prompts = [" ".join([prefix] * len(images)) + {question} for question, images in zip(question_list, image_list)]
-        for i in range(batch_size):
-            answer = ''
-            if CoT_list is not None:
-                answer = CoT_list[i] + '\n'
-            answer += answer_list[i]
-            prompts[i] += ' ' + answer
-        sample = self.make_batches(images, prompts)
-        results = self.do_ppl(sample, answer_list, answer_pool, calib=calib)
-        return results
-
     def do_generate(self, image_list: list, prompt: str, max_new_tokens, **kwargs):
         self.generator.ppl = False
         self.generator.max_len_b = max_new_tokens
@@ -206,56 +187,4 @@ class TestKOSMOS2(TestBase): # TODO: batch_size = 1
             score = torch.log(prob[rows, batch_option_ids[idx][:option_len]]).mean().item()
             results.append(score)
         return results
-
-
-    def xx(self, sample, answer_list, answer_pool, calib=False):
-        answer_start_indices = []
-        answer_end_indices = []
-        template_token_list = []
-        answer_token_list = []
-        for template, option in zip(answer_list, answer_pool):
-            template_token = get_token_src(self.task, template, self.tokenizer, self.special_tokens)
-            template_token_list.append(template_token)
-            option_token = get_token_src(self.task, option, self.tokenizer, self.special_tokens)
-            token_len = len(option_token)
-            for index in range(len(template_token)):
-                if template_token[index: index + token_len] == option_token:
-                    answer_start_indices.append(index)
-                    answer_end_indices.append(index + token_len)
-                    answer_token_list.append(option_token)
-                    break
-            assert len(answer_start_indices) == len(template_token_list), "tokenizer encode answer in template different from answer only"
-        probs = self.task.inference_step(
-            self.generator, [self.model], sample, constraints=None
-        )
-        logits = probs[:, :-1]
-        target_ids = sample['net_input']['src_tokens'][:, 1:]
-        start_indices, end_indices = [], []
-        for i in range(len(answer_list)):
-            token_len = len(template_token_list[i])
-            for index in range(target_ids.shape[1] - token_len, 0, -1):
-                if target_ids[i,index: index+token_len].cpu().numpy().tolist() == template_token_list[i]:
-                    start_indices.append(index + answer_start_indices[i])
-                    end_indices.append(index + answer_end_indices[i])
-                    target_ids[i,:index] = -1
-                    break
-            assert len(start_indices) == (i+1), "tokenizer encode answer different from answer in conversation"
-        
-        
-        results = []
-        if calib:
-            for idx, item_logits in enumerate(logits):
-                score = 0.0
-                item_prob = F.softmax(item_logits[start_indices[idx]:end_indices[idx]], dim=-1)
-                for jdx in range(end_indices[idx]-start_indices[idx]):
-                    score += torch.log(item_prob[jdx, answer_token_list[idx][jdx]]).item()
-                score = score/len(answer_token_list[idx])
-                results.append(score)
-        else:
-            loss = F.cross_entropy(logits.reshape(-1,logits.shape[-1]), target_ids.reshape(-1),ignore_index=-1, reduction='none')
-            loss = loss.reshape(-1, target_ids.shape[1]).float()
-            for idx, item_loss in enumerate(loss):
-                results.append(item_loss[start_indices[idx]: end_indices[idx]].mean().item())
-        return results
-
     

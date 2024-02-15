@@ -21,7 +21,7 @@ class TestMiniGPT4(TestBase):
         model_config = cfg.model_cfg
         model_cls = registry.get_model_class(model_config.arch)
         model = model_cls.from_config(model_config).to(device)
-        vis_processor_cfg = cfg.preprocess_cfg.vis_processor.train
+        vis_processor_cfg = cfg.preprocess_cfg.vis_processor.eval
         vis_processor = registry.get_processor_class(vis_processor_cfg.name).from_config(vis_processor_cfg)
         self.model, self.vis_processor = model, vis_processor
         self.model.llama_model = self.model.llama_model.float().to(device)
@@ -47,7 +47,7 @@ class TestMiniGPT4(TestBase):
         if CoT_answer_list is not None:
             query += CoT_answer_list[idx]
         if batch_answers is not None:
-            query += '\n' + batch_answers[idx]
+            query += batch_answers[idx]
         return query
 
     @torch.no_grad()
@@ -109,16 +109,16 @@ class TestMiniGPT4(TestBase):
             embs, input_ids = self.chat.get_context_emb(question, img_embes_list)
             tokenid_list.append(input_ids.squeeze(0))
             embs_list.append(embs.squeeze(0))
+        # left padding
         embs_list = torch.nn.utils.rnn.pad_sequence(
-            embs_list,
+            [embs.flip(dims=[0]) for embs in embs_list],
             batch_first=True,
-            padding_value=0.).to(self.device)
-        attn_mask = embs_list.ne(0.)
+            padding_value=0.).to(self.device).flip(dims=[1])
+        attn_mask = torch.all(embs_list!=0, dim=-1)
         input_ids = torch.nn.utils.rnn.pad_sequence(
-            tokenid_list,
+            [token.flip(dims=[0]) for token in tokenid_list],
             batch_first=True,
-            padding_value=0.).to(self.device)
-        attn_mask = input_ids.ne(0.)
+            padding_value=0.).to(self.device).flip(dims=[1])
         outputs = self.model.llama_model(
             inputs_embeds = embs_list,
             attention_mask = attn_mask,

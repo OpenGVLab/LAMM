@@ -1,10 +1,6 @@
 scenario_cfg:
   dataset_name: VOC2012
   base_data_path: ../data/LAMM/2D_Benchmark
-  option_template: kosmos
-  ppl_cfg:
-    negative_opt_num: 3
-    random_seed: 0
    
 eval_cfg:
   instruction_cfg:
@@ -12,8 +8,8 @@ eval_cfg:
     prompt_assigned_ids: 2
     template_assigned_ids: 2
   inferencer_cfg:
-    inferencer_type: Multi_PPL
+    inferencer_type: Multi_Direct
+    max_new_tokens: 512
     batch_size: 8
   metric_cfg:
     metric_type: KOSMOS
-    inference_type: ppl
