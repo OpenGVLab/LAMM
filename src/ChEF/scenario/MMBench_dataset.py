@@ -48,6 +48,7 @@ class MMBenchDataset(Dataset):
                  data_c_path = '../data/ChEF/MMBench_C',
                  **kwargs
         ):
+        self.base_data_path = base_data_path
         self.df = pd.read_csv(os.path.join(base_data_path, f'mmbench_{split}_20230712.tsv'), sep='\t')
         self.ppl_cfg = ppl_cfg
         self.sys_prompts = sys_prompt
@@ -85,7 +86,8 @@ class MMBenchDataset(Dataset):
         if self.img_crp:
             image=os.path.join(self.img_c_path,f'{str(idx)}.png')
         else:
-            image = decode_base64_to_image(image)
+            # image = decode_base64_to_image(image)
+            image = os.path.join(self.base_data_path, f'images/mmbench_image_{index}.png')
         question = self.df.iloc[idx]['question']
         hint = self.load_from_df(idx, 'hint')
         answer = self.df.iloc[idx]['answer'] if 'answer' in self.df.iloc[0].keys() else None
@@ -113,19 +115,19 @@ class MMBenchDataset(Dataset):
             'id': str(index),
             'image_path': image,
             'question': question,
-            'gt_choices': [value for value in options.values()]
+            'choices': [value for value in options.values()]
         }
         
         data['gt_choice'] = option_candidate.index(answer) if answer is not None else None
         data['gt_answers'] = options[answer] if answer is not None else None
         if self.text_crp:
             data['question'] = self.txt_c[idx]["query"]
-            data['gt_choices'] = self.txt_c[idx]["gt_choices"]
+            data['choices'] = self.txt_c[idx]["gt_choices"]
             data['gt_choice'] = self.txt_c[idx]["gt_choice"]
             data['gt_answers'] = data['gt_answers'][data['gt_choice']]
             
             options = {
-                option_candidate[idx]: choice for idx,choice in enumerate(data['gt_choices'])
+                option_candidate[idx]: choice for idx,choice in enumerate(data['choices'])
             }
             for op in option_candidate:
                 data['question']=data['question'].replace(f' ({op})', f'\n({op})')

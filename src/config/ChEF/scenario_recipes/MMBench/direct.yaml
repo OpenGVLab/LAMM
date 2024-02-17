@@ -6,12 +6,12 @@ scenario_cfg:
 
 eval_cfg:
   instruction_cfg: 
-    query_type: query_pool
+    prompt_type: singleturn
     prompt_assigned_ids: 1
     template_assigned_ids: 1
   inferencer_cfg:
     inferencer_type: Direct
-    batch_size: 4
+    batch_size: 2
     CoT: False
     max_new_tokens: 256
   metric_cfg:

@@ -45,8 +45,8 @@ class TestQwenVL(TestBase):
             context_tokens += self.tokenizer.encode(CoT_answer_list[idx], 
                 allowed_special=set(self.tokenizer.IMAGE_ST))
         if batch_answers is not None:
-            raw_text += '\n' + batch_answers[idx]
-            context_tokens += self.tokenizer.encode("\n") + self.tokenizer.encode(batch_answers[idx], 
+            raw_text += '\n ' + batch_answers[idx]
+            context_tokens += self.tokenizer.encode("\n") + self.tokenizer.encode(' ' + batch_answers[idx], 
                 allowed_special=set(self.tokenizer.IMAGE_ST))
         return (raw_text, context_tokens)
     
@@ -100,10 +100,15 @@ class TestQwenVL(TestBase):
         for option in batch_options:
             batch_option_ids.append(self.tokenizer.encode(f' {option}', add_special_tokens=False, return_tensors='pt').squeeze(0))
         for idx in range(labels.shape[0]):
+            # qwen encodes "!" as 0
             option_len = len(batch_option_ids[idx])
             non_zero_indices = torch.nonzero(labels[idx], as_tuple=False).squeeze()
             start_index = non_zero_indices.max() - option_len + 1
             end_index = start_index + option_len
+            last_zero_num = option_len - torch.nonzero(batch_option_ids[idx], as_tuple=False).squeeze().max() - 1 
+            if last_zero_num > 0:
+                start_index += last_zero_num
+                end_index += last_zero_num
             if not np.all(labels[idx][start_index: end_index].detach().cpu().numpy() == batch_option_ids[idx].numpy()):
                 import ipdb;ipdb.set_trace()
             prob = F.softmax(logits[idx][start_index: end_index], dim=-1)

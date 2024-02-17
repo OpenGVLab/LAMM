@@ -31,11 +31,13 @@ class TestInternlmXcomposer(TestBase):
         if CoT_answer_list is not None:
             prompt += CoT_answer_list[idx]
         if batch_answers is not None:
-            prompt += '\n' + batch_answers[idx]
+            prompt += ' ' + batch_answers[idx]
         return prompt
     
     def build_input_image(self, image_list):
         image_list = self.get_image_list(image_list)
+        if len(image_list)>=4:
+            image_list = [self.horizontal_concat(image_list)]
         image_tensors = []
         for image in image_list:
             image_tensor = self.model.vis_processor(image).unsqueeze(0).to(self.device)
@@ -72,8 +74,14 @@ class TestInternlmXcomposer(TestBase):
         return response
     
     def do_ppl(self, batch_images, batch_prompt, batch_options, **kwargs):
+        results = []
+        batch_option_ids = []
+        for option in batch_options:
+            batch_option_ids.append(self.tokenizer.encode(f' {option}', add_special_tokens=False, return_tensors='pt').squeeze(0))
+
         to_regress_embeds, attention_mask, targets, im_mask, token_ids = self.model.interleav_wrap(batch_images, batch_prompt)
         im_mask = im_mask.bool()
+
         outputs = self.model.model(
             input_ids=None,
             attention_mask=attention_mask,
@@ -87,10 +95,7 @@ class TestInternlmXcomposer(TestBase):
         logits = logits.float()
         logits = logits[:, :-1]
         labels = token_ids[:, 1:]
-        results = []
-        batch_option_ids = []
-        for option in batch_options:
-            batch_option_ids.append(self.tokenizer.encode(f' {option}', add_special_tokens=False, return_tensors='pt').squeeze(0))
+        
         for idx in range(labels.shape[0]):
             option_len = len(batch_option_ids[idx])
             non_zero_indices = torch.nonzero(labels[idx], as_tuple=False).squeeze()

@@ -29,7 +29,8 @@ class FSC147Dataset(Dataset):
             'id': id,
             'image_path': os.path.join(self.base_data_path,self.data[index]['image']),
             'gt_answers': self.data[index]['num'],
-            'question': self.data[index]['query'] + ' Please answer an arabic number directly.'
+            'question': self.data[index]['query'] 
+            # + ' Please answer an arabic number directly.'
         }
         if self.ppl_cfg:
             gt_num = res_dict['gt_answers']

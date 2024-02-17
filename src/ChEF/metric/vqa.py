@@ -89,7 +89,7 @@ class VQA(Base_Metric):
             gt_choice = item['gt_choice']
             gt_char = self.CHOICE[gt_choice]
             pred_text = item['answer']
-            pred_option, _, _ = self.answer_extractor.fetch_answer(pred_text, item['gt_choices'])
+            pred_option, _, _ = self.answer_extractor.fetch_answer(pred_text, item['choices'])
             if pred_option:
                 self.match +=1
             result = pred_option == gt_char
@@ -117,7 +117,7 @@ class MMBenchVQA(Base_Metric):
             item = sub_data[i]
             idx = item['id']
             GT.append(self.choices[answer_map[idx]])
-            pred_answer, option_match, content_match = self.answer_extractor.fetch_answer(item['answer'], item['gt_choices'])
+            pred_answer, option_match, content_match = self.answer_extractor.fetch_answer(item['answer'], item['choices'])
             PRED.append(pred_answer)
             if pred_answer is not None:
                 self.match_content += content_match
@@ -144,7 +144,7 @@ class MMBenchVQA(Base_Metric):
                 continue
             ## vanilla
             vanilla_cnt += 1
-            pred_option, _, _ = self.answer_extractor.fetch_answer(answers[i]['answer'], answers[i]['gt_choices'])
+            pred_option, _, _ = self.answer_extractor.fetch_answer(answers[i]['answer'], answers[i]['choices'])
             if pred_option == self.choices[answer_map[answers[i]['id']]]:
                 vanilla_score += 1
             
@@ -283,7 +283,7 @@ class LAMM_VQA(Base_Metric):
                 pred_text = item['answer']
             gt_choice = item['gt_choice']
             gt_char = CHOICE[gt_choice]
-            gt_choices = item['gt_choices']
+            choices = item['choices']
             res_1 = pattern_1.findall(pred_text)
             res_2 = pattern_2.findall(pred_text)
             res_3 = pattern_3.findall(pred_text)
@@ -296,7 +296,7 @@ class LAMM_VQA(Base_Metric):
             elif len(res_3) != 0:
                 if check_option(res_3, gt_char):
                     tmp_score = 1.0
-            elif check_text(pred_text, gt_choices, gt_choice):
+            elif check_text(pred_text, choices, gt_choice):
                 tmp_score = 1.0
             score+=tmp_score
 

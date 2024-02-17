@@ -30,9 +30,9 @@ class SEEDBenchDataset(Dataset):
         question = item['question']
         question = f'Question: {question}\nAnswer:'
         img_path = os.path.join(self.img_base_path, item['data_id'])
-        gt_choices = [item['choice_a'], item['choice_b'], item['choice_c'], item['choice_d']]
+        choices = [item['choice_a'], item['choice_b'], item['choice_c'], item['choice_d']]
         gt_choice = self.choices.index(item['answer'])
-        gt_answers = gt_choices[gt_choice]
+        gt_answers = choices[gt_choice]
         id = str(item['question_id']) if 'question_id' in item else str(idx)
         res_dict = {
             'id': id,
@@ -40,8 +40,8 @@ class SEEDBenchDataset(Dataset):
             "question": question,
             "gt_answers": gt_answers,
             "gt_choice": gt_choice,
-            "gt_choices": gt_choices
+            "choices": choices
         }
         if self.ppl_cfg:
-            res_dict['options'] = gt_choices
+            res_dict['options'] = choices
         return res_dict

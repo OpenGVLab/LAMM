@@ -33,16 +33,16 @@ class TestOtter(TestBase):
 
     def build_input_image(self, image_list):
         imgs = self.get_image_list(image_list)
-        imgs = self.image_processor.preprocess(imgs*2, return_tensors="pt")["pixel_values"].unsqueeze(1) # chunk * 1 * c h w
+        imgs = self.image_processor.preprocess(imgs, return_tensors="pt")["pixel_values"].unsqueeze(1) # chunk * 1 * c h w
         return imgs
     
     def build_conversation(self, idx, image_list, prompt, CoT_answer_list=None, batch_answers=None, **kwargs):
         lenimg = 1 if isinstance(image_list,str) else len(image_list)
         prompt = " ".join(["<image>"] * lenimg) + f" User: {prompt} GPT: <answer>"
         if CoT_answer_list is not None:
-            prompt += ' ' + CoT_answer_list[idx]
+            prompt += ' ' + CoT_answer_list[idx] + '\n'
         if batch_answers is not None:
-            prompt += '\n ' + batch_answers[idx]
+            prompt += ' ' + batch_answers[idx]
         return prompt
     
     def do_generate(self, image_list: torch.Tensor, prompt: str, max_new_tokens, **kwargs):

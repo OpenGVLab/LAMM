@@ -42,7 +42,7 @@ class TestShikra(TestBase):
         if CoT_answer_list is not None:
             user_msg += CoT_answer_list[idx]
         if batch_answers is not None:
-            user_msg += '\n' + batch_answers[idx]
+            user_msg += '\n ' + batch_answers[idx]
         if user_msg != '':
             ds.append_message(role=ds.roles[1], message = user_msg, boxes = [], boxes_seq = [])
         return ds

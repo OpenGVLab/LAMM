@@ -5,17 +5,16 @@ scenario_cfg:
     content_only: False
   split: dev
   hint: True
-  generative: True
 
 eval_cfg:
   instruction_cfg: 
-    query_type: query_pool
-    query_assigned_ids: 0
-    template_assigned_ids: 0
+    prompt_type: singleturn
+    prompt_assigned_ids: 1 
+    template_assigned_ids: 1
   inferencer_cfg:
     inferencer_type: PPL
-    batch_size: 4
-    CoT: True
+    batch_size: 1
+    CoT: False
     max_new_tokens: 256
   metric_cfg:
     metric_type: basic

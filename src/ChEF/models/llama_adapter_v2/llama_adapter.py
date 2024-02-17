@@ -224,7 +224,7 @@ class LLaMA_adapter(nn.Module):
         with torch.cuda.amp.autocast():
             visual_query = self.forward_visual(imgs)
         prompts = [self.tokenizer.encode(x, bos=True, eos=False) for x in prompts]
-        answers = [self.tokenizer.encode('Response:'+ x, bos=False, eos=False)[2:] for x in answers]
+        answers = [self.tokenizer.encode('Response: '+ x, bos=False, eos=False)[2:] for x in answers]
         prompts = [prompt + answer for prompt, answer in zip(prompts, answers)]
         total_len = max([len(t) for t in prompts])
         input_ids = torch.full((bsz, total_len), self.tokenizer.pad_id).to(device).long()
