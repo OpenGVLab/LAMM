@@ -9,13 +9,8 @@ class HHHDataset(Dataset):
         self.base_data_path = base_data_path
         super().__init__()
         meta_base_dir = os.path.join(self.base_data_path, 'meta_file')
-        annot_list = os.listdir(meta_base_dir)
-        for annot_file in annot_list:
-            if annot_file.startswith(dimension):
-                self.data = json.load(open(os.path.join(meta_base_dir, annot_file)))
-                return
-        print(f"Dimension: {dimension} not found.")
-        exit()
+        self.data = json.load(open(os.path.join(meta_base_dir, f'{dimension}.json')))
+        
     
     def __len__(self):
         return len(self.data)
