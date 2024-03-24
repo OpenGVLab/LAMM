@@ -89,7 +89,7 @@ class TestLAMM(TestBase):
             vision_paths = batch_images,
             output_texts = conversations,
         ))
-        logits = logits[:,:-1]
+        logits = logits[:,:-1].float()
         labels = labels[:,1:]
         results = []
         for idx in range(labels.shape[0]):

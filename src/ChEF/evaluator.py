@@ -71,7 +71,11 @@ class Evaluator:
         self.inferencer.inference(model, self.dataset)
 
         if self.dist_args['world_size'] > 1 and self.dist_args['global_rank'] != 0:
-            return
+            while True:
+                if not os.path.exists(os.path.join(self.save_base_dir,'tmp')):
+                    break
+                sleep(1.0)
+            return None, None
         if self.dist_args['world_size'] > 1:
             results_path = self.merge_result_data()
         else:
@@ -83,6 +87,7 @@ class Evaluator:
                 answer_path = results_path,
                 result = result
             ), indent=4))
+        return results_path, result
 
 
 class CustomSubset(Subset):
@@ -94,6 +99,8 @@ class CustomSubset(Subset):
         self.data = dataset.data
         if hasattr(dataset, 'system_msg'):
             self.system_msg = dataset.system_msg
+        if hasattr(dataset, 'circularidx'):
+            self.circularidx = dataset.circularidx
 
 
 def load_yaml(cfg_path):

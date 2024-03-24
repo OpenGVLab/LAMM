@@ -91,7 +91,7 @@ class TestQwenVL(TestBase):
         hidden_states = transformer_outputs[0]
 
         logits = self.model.lm_head(hidden_states)
-        logits = logits[:, :-1]
+        logits = logits[:, :-1].float()
         labels = input_ids
         labels = labels[:, 1:]
         

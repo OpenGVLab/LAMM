@@ -62,6 +62,7 @@ class TestLLamaAdapterV2(TestBase):
         batch_answers = [item[1] for item in batch_prompt]
         images = torch.stack(batch_images, dim=0).to(self.device)
         logits, labels = self.model.ppl_generate(images, prompts, batch_answers, device=self.device)
+        logits = logits.float()
         batch_option_ids = []
         for option in batch_options:
             batch_option_ids.append(self.tokenizer.encode(option, bos=False, eos=False)) 

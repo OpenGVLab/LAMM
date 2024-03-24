@@ -10,6 +10,7 @@ from .ocr import SVT_OCR
 from .lamm_locating import InsideBbox, InsideHumanBbox
 from .winoground import Winoground_Metric, Winoground_Cap_Metric
 from .HHH import HHH_Metric
+from .mmmu import MMMU_Metric
 
 evaluation_protocol = {
     'basic':{
@@ -72,6 +73,9 @@ evaluation_protocol = {
     },
     'HHH':{
         'HHH': HHH_Metric,
+    },
+    'MMMU':{
+        'MMMU': MMMU_Metric,
     }
 }
 

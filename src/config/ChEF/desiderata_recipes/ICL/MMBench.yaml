@@ -8,18 +8,17 @@ scenario_cfg:
 
 eval_cfg:
   instruction_cfg: 
-    query_type: query_pool 
+    prompt_type: singleturn 
     prompt_assigned_ids: 1 # (kosmos: 5) (default: 1) 
     template_assigned_ids: 1 # (kosmos: 0) (default: 1) 
     incontext_cfg:
-      ice_with_image: False
       retriever_type: random
-      ice_num: 3
+      ice_num: 1
       random_seed: 1
   inferencer_cfg:
-    inferencer_type: ICL_PPL
-    batch_size: 4
-    CoT: True
+    inferencer_type: PPL
+    batch_size: 1
+    CoT: False
     max_new_tokens: 256
   metric_cfg:
     metric_type: basic

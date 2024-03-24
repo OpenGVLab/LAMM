@@ -165,7 +165,7 @@ class TestKOSMOS2(TestBase): # TODO: batch_size = 1
             probs = self.task.inference_step(
                 self.generator, [self.model], sample, constraints=None
             )
-            sample_logits = probs[:, :-1]
+            sample_logits = probs[:, :-1].float()
             sample_labels = sample['net_input']['src_tokens'][:, 1:]
             logits.append(sample_logits[0])
             labels.append(sample_labels[0])

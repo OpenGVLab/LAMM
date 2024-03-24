@@ -14,7 +14,8 @@ from model.llava.constants import (
     DEFAULT_IMAGE_TOKEN,
     DEFAULT_IM_START_TOKEN,
     DEFAULT_IM_END_TOKEN,
-    IGNORE_INDEX
+    IGNORE_INDEX,
+    DEFAULT_IMAGE_PATCH_TOKEN,
 )
 from model.llava.conversation import SeparatorStyle
 
@@ -122,7 +123,7 @@ class TestLLaVA15(TestBase):
         )
 
         logits = outputs.logits
-        logits = logits[:, :-1]
+        logits = logits[:, :-1].float()
         labels = labels[:, 1:]
         results = []
         for idx in range(labels.shape[0]):

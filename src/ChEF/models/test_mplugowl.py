@@ -65,7 +65,7 @@ class TestMplugOwl(TestBase):
         labels = inputs['input_ids'].clone()[:,1:]
         outputs = self.model.generate(**inputs, ppl=True)
         
-        logits = outputs['logits'][:,:-1]
+        logits = outputs['logits'][:,:-1].float()
         batch_option_ids = []
         for option in batch_options:
             batch_option_ids.append(self.tokenizer.encode(f'{option}', add_special_tokens=False, return_tensors='pt').squeeze(0)) 

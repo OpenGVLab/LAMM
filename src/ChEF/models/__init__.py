@@ -41,6 +41,9 @@ def get_model(cfg, device):
     elif model_name == 'LLaVA1.5':
         from .test_llava15 import TestLLaVA15
         return TestLLaVA15(device=device, **cfg)
+    elif model_name == 'LLaVARLHF':
+        from .test_llavarlhf import TestLLaVARLHF
+        return TestLLaVARLHF(device=device, **cfg)
     elif model_name == 'InternLMXComposer':
         from .test_internlmxcomposer import TestInternlmXcomposer
         return TestInternlmXcomposer(device=device, **cfg)
@@ -50,5 +53,14 @@ def get_model(cfg, device):
     elif model_name == 'Test':
         from .test_base import TestBase
         return TestBase(**cfg)
+    elif model_name == 'RLHFV':
+        from .test_rlhfv import TestRLHFV
+        return TestRLHFV(device=device, **cfg)
+    elif model_name == 'GPT':
+        from .test_gpt import TestGPT
+        return TestGPT(**cfg)
+    elif model_name == 'Gemini':
+        from .test_gemini import TestGemini
+        return TestGemini(**cfg)
     else:
         raise ValueError(f"Invalid model_name: {model_name}")

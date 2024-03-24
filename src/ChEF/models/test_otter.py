@@ -69,7 +69,7 @@ class TestOtter(TestBase):
         input_ids=lang_x["input_ids"].to(self.model.device)
         attention_mask=lang_x["attention_mask"].to(self.model.device, dtype=self.dtype)
         output = self.model(vision_x=vision_x, lang_x=input_ids, attention_mask=attention_mask)
-        logits = output['logits'][:,:-1]
+        logits = output['logits'][:,:-1].float()
         labels = input_ids[:,1:]
 
         batch_option_ids = []

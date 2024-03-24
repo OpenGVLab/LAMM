@@ -43,18 +43,18 @@ class Direct_Inferencer:
             dataset, batch_size=self.batch_size, collate_fn=self.get_collate_fn(dataset)
         )
         predictions = []
-        for batch in tqdm(dataloader, desc="Running inference"):
-            predictions.extend(self.batch_inference(model, batch, dataset=dataset))
+        for batch_idx, batch in tqdm(enumerate(dataloader), desc="Running inference"):
+            predictions.extend(self.batch_inference(model, batch, dataset=dataset, batch_idx=batch_idx))
         self._after_inference_step(predictions)
     
-    def generate_prompt(self, model, batch):
+    def generate_prompt(self, model, batch, batch_idx):
         if self.CoT:
             return self.instruction_handler.generate_CoT_prompt(model, batch)
-        return self.instruction_handler.generate_singleturn_prompt(batch), None
+        return self.instruction_handler.generate_singleturn_prompt(batch, batch_idx), None
 
-    def batch_inference(self, model, batch, dataset):
+    def batch_inference(self, model, batch, dataset, batch_idx):
         predictions = []
-        prompts, cot = self.generate_prompt(model, batch)
+        prompts, cot = self.generate_prompt(model, batch, batch_idx)
         # compatible with LAMM-style inference
         sys_msg = None if not hasattr(dataset, 'system_msg') else dataset.system_msg
         outputs = model.batch_generate(
@@ -71,6 +71,7 @@ class Direct_Inferencer:
             answer_dict['query'] = prompts[i]
             answer_dict['answer'] = cot[i] + outputs[i] if self.CoT else outputs[i]
             if self.CoT: answer_dict['CoT_answer'] = cot[i]
+            #if not isinstance(answer_dict['image_path'], str): answer_dict['image_path'] = ""
             predictions.append(answer_dict)
         return predictions
 
@@ -92,9 +93,9 @@ class PPL_Inferencer(Direct_Inferencer):
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
 
-    def batch_inference(self, model, batch, **kwargs):
+    def batch_inference(self, model, batch, batch_idx, **kwargs):
         predictions = []
-        prompts, cot = self.generate_prompt(model, batch)
+        prompts, cot = self.generate_prompt(model, batch, batch_idx)
         batch_options = batch['options']
         return_dict = self.instruction_handler.generate_singleturn_ppl_prompt(
             prompts, batch, batch_options, CoT_answer_list = cot)
@@ -126,7 +127,7 @@ class Direct3D_Inferencer(Direct_Inferencer):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def batch_inference(self, model, batch, dataset):
+    def batch_inference(self, model, batch, dataset, **kwargs):
         predictions = []
         prompts = self.instruction_handler.generate_basic_query(batch)
         # compatible with LAMM-style inference

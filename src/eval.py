@@ -23,7 +23,10 @@ def main(dist_args):
 
     # model
     devices = get_useable_cuda()
-    model = get_model(model_cfg, device=devices[dist_args['global_rank']])
+    if model_cfg['model_name'] in ['GPT', 'Gemini']:
+        model = get_model(model_cfg,device='cpu')
+    else:
+        model = get_model(model_cfg, device=devices[dist_args['global_rank']])
     # dataset
     scenario_cfg = recipe_cfg['scenario_cfg']
     dataset_name = scenario_cfg['dataset_name']

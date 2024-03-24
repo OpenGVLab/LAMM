@@ -48,7 +48,7 @@ class TestInstructBLIP(TestBase):
             batch_option_ids.append(self.tokenizer.encode(f'{option}', add_special_tokens=False, return_tensors='pt').squeeze(0)) 
         output, labels = self.model.forward_multiple(
             {"image": batch_images, "text_input": batch_prompt, "text_output": batch_answers})
-        logits = output['logits'][:,:-1]
+        logits = output['logits'][:,:-1].float()
         labels = labels[:, 1:]
         results = []
         for idx in range(labels.shape[0]):

@@ -24,6 +24,10 @@ class InstructionHandler:
         self.answer_template = answer_template
         self.incontext_cfg = incontext_cfg
         if incontext_cfg:
+            self.ice_num = incontext_cfg.get('ice_num', 1)
+            if self.ice_num == 0:
+                self.incontext_cfg = None
+                return
             self.retriever = build_retriever(dataset, dataset, **incontext_cfg)
             self.retriever.seed = incontext_cfg['random_seed']
             self.ice_idx_list = self.retriever.retrieve()
@@ -34,13 +38,23 @@ class InstructionHandler:
         assert question == '', f'Need question formatted in prompt, but \"{prompt}\" does not support.'
         return prompt
             
-    def generate_singleturn_prompt(self, batch):
+    def generate_singleturn_prompt(self, batch, batch_idx=0):
         prompt = self.prompt
         cur_batch_len = get_cur_batch_len(batch)
-
+        
         question_list = batch['question'] if 'question' in batch \
             else [''] * cur_batch_len
         query = [self._query_format(prompt, question) for question in question_list]
+        if self.incontext_cfg:
+            batch_ices = self.generate_ices(query, batch_idx, cur_batch_len)
+            for idx, ices in enumerate(batch_ices):
+                ice_image_path = [ice['image_path'] for ice in ices]
+                query_image_path = batch['image_path'][idx]
+                if isinstance(query_image_path, str):
+                    query_image_path = [query_image_path]
+                batch['image_path'][idx] = ice_image_path + query_image_path
+                ice_query = '\n'.join([ice['question']+'\n'+self.answer_template.format(option=ice['gt_answers']) for ice in ices])
+                query[idx] = ice_query + query[idx]
         return query
     
     def generate_CoT_prompt(self, model, batch, max_new_tokens=256):

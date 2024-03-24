@@ -124,7 +124,7 @@ class TestMiniGPT4(TestBase):
             attention_mask = attn_mask,
             return_dict = True
         )
-        logits = outputs['logits'][:,:-1]
+        logits = outputs['logits'][:,:-1].float()
         labels = input_ids[:,1:]
         batch_option_ids = []
         for option in batch_options:

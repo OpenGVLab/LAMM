@@ -17,6 +17,7 @@ from .LAMM_dataset import *
 from .Winoground_dataset import *
 
 from .HHH_dataset import *
+from .MMMU_dataset import *
 
 dataset_dict = {
     # Caption 
@@ -67,5 +68,6 @@ dataset_dict = {
     'Winoground': WinogroundDataset,
     'Winoground_Cap': Winoground_Cap_Dataset,
 
-    'HHH': HHHDataset
+    'HHH': HHHDataset,
+    'MMMU': MMMUDataset,
 }
