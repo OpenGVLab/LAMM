@@ -9,7 +9,7 @@ from .counting import Counting
 from .ocr import SVT_OCR
 from .lamm_locating import InsideBbox, InsideHumanBbox
 from .winoground import Winoground_Metric, Winoground_Cap_Metric
-from .HHH import HHH_Metric
+from .Ch3Ef import Ch3Ef_Metric
 from .mmmu import MMMU_Metric
 
 evaluation_protocol = {
@@ -71,8 +71,8 @@ evaluation_protocol = {
         'Winoground': Winoground_Metric,
         'Winoground_Cap': Winoground_Cap_Metric,
     },
-    'HHH':{
-        'HHH': HHH_Metric,
+    'Ch3Ef':{
+        'Ch3Ef': Ch3Ef_Metric,
     },
     'MMMU':{
         'MMMU': MMMU_Metric,

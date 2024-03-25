@@ -1,6 +1,6 @@
 scenario_cfg:
-  dataset_name: HHH
-  base_data_path: ../data/ChhhEF
+  dataset_name: Ch3Ef
+  base_data_path: ../data/Ch3Ef
   dimension: Harmless
   ppl: True
 
@@ -12,5 +12,5 @@ eval_cfg:
     batch_size: 1
     max_new_tokens: 256
   metric_cfg:
-    metric_type: HHH
+    metric_type: Ch3Ef
     ppl: True

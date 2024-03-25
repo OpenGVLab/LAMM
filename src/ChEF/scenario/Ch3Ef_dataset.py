@@ -2,14 +2,15 @@ import os
 import json
 from torch.utils.data import Dataset
 
-class HHHDataset(Dataset):
-    task_name = 'HHH'
-    dataset_name = 'HHH'
+class Ch3EfDataset(Dataset):
+    task_name = 'Ch3Ef'
+    dataset_name = 'Ch3Ef'
     def __init__(self, base_data_path, dimension, ppl=False, **kwargs):
         self.base_data_path = base_data_path
         super().__init__()
         meta_base_dir = os.path.join(self.base_data_path, 'meta_file')
         self.data = json.load(open(os.path.join(meta_base_dir, f'{dimension}.json')))
+        self.data = self.data['items']
         self.ppl = ppl
         
     

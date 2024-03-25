@@ -8,7 +8,7 @@ LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a
     </font>
 </p>
 
-## Updates
+## Updates 
 📆 [**2023-11**] 
 1. ChEF and Octavius are available!
 2. [ChEF](https://arxiv.org/abs/2311.02692) and [Octavius](https://arxiv.org/abs/2311.02684) released on Arxiv!
@@ -35,11 +35,12 @@ LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a
 **Publications**
 
 - [x] [LAMM](https://openlamm.github.io/paper_list/LAMM)
-
+- [x] [Octavius](https://openlamm.github.io/paper_list/Octavius)
 
 **Preprints**
+- [x] [Assessment of Multimodal Large Language Models in Alignment with Human Values](https://coach257.github.io/ch3ef/)
 - [x] [ChEF](https://openlamm.github.io/paper_list/ChEF)
-- [x] [Octavius](https://openlamm.github.io/paper_list/Octavius)
+
 
 ## Citation
 **LAMM**
@@ -51,6 +52,12 @@ LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a
     journal={arXiv preprint arXiv:2306.06687},
     year={2023}
 }
+```
+
+**Assessment of Multimodal Large Language Models in Alignment with Human Values**
+
+```
+TODO
 ```
 
 **ChEF**

@@ -1,0 +1,14 @@
+scenario_cfg:
+  dataset_name: Ch3Ef
+  base_data_path: ../data/Ch3Ef
+  dimension: Harmless
+
+eval_cfg:
+  instruction_cfg:
+    prompt_type: singleturn
+  inferencer_cfg:
+    inferencer_type: Direct
+    batch_size: 8
+    max_new_tokens: 256
+  metric_cfg:
+    metric_type: Ch3Ef

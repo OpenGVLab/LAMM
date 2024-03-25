@@ -16,7 +16,7 @@ from .octavius_pcl_dataset import OctaviusPCLDataset
 from .LAMM_dataset import *
 from .Winoground_dataset import *
 
-from .HHH_dataset import *
+from .Ch3Ef_dataset import *
 from .MMMU_dataset import *
 
 dataset_dict = {
@@ -68,6 +68,6 @@ dataset_dict = {
     'Winoground': WinogroundDataset,
     'Winoground_Cap': Winoground_Cap_Dataset,
 
-    'HHH': HHHDataset,
+    'Ch3Ef': Ch3EfDataset,
     'MMMU': MMMUDataset,
 }

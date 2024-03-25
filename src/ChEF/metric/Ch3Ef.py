@@ -1,7 +1,7 @@
 from tqdm import tqdm
 from .utils import Base_Metric
 
-class HHH_Metric(Base_Metric):
+class Ch3Ef_Metric(Base_Metric):
 
     def __init__(self, dataset_name, ppl=False, **kwargs):
         super().__init__(dataset_name)
