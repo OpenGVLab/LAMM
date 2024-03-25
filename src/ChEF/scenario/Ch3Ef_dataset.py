@@ -31,5 +31,5 @@ class Ch3EfDataset(Dataset):
             res_dict['gt_answers'] = self.data[index]['options'][0]
             res_dict['options'] = self.data[index]['options']
         else:
-            res_dict['gt_answers'] = self.data[index]['gt']
+            res_dict['gt_answers'] = self.data[index]['options'][0]
         return res_dict
