@@ -36,8 +36,8 @@
 <p align="center" style={{paddingTop: '0.75rem'}}>
     <font size='4'>
     <a href="https://arxiv.org/abs/2311.02692" target="_blank">📄 Paper</a>
-    <a href="https://coach257.github.io/ch3ef/" target="_blank">🌐 Project Page</a>
-    <a href="https://coach257.github.io/ch3ef/leaderboard.html" target="_blank">🏆 Leaderboard</a>
+    <a href="https://openlamm.github.io/ch3ef/" target="_blank">🌐 Project Page</a>
+    <a href="https://openlamm.github.io/ch3ef/leaderboard.html" target="_blank">🏆 Leaderboard</a>
     <a href="https://huggingface.co/datasets/openlamm/Ch3Ef" target="_blank">🤗 Dataset</a>
     </font>
 </p>
