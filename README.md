@@ -9,6 +9,11 @@ LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a
 </p>
 
 ## Updates 
+📆 [**2024-03**] 
+1. [Ch3Ef](https://openlamm.github.io/ch3ef/) is available!
+2. [Ch3Ef](https://arxiv.org/abs/2403.17830) released on Arxiv!
+3. [Dataset](https://huggingface.co/datasets/openlamm/Ch3Ef) and [leaderboard](https://openlamm.github.io/ch3ef/leaderboard.html) are available!
+
 📆 [**2023-11**] 
 1. ChEF and Octavius are available!
 2. [ChEF](https://arxiv.org/abs/2311.02692) and [Octavius](https://arxiv.org/abs/2311.02684) released on Arxiv!
@@ -38,7 +43,7 @@ LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a
 - [x] [Octavius](https://openlamm.github.io/paper_list/Octavius)
 
 **Preprints**
-- [x] [Assessment of Multimodal Large Language Models in Alignment with Human Values](https://coach257.github.io/ch3ef/)
+- [x] [Assessment of Multimodal Large Language Models in Alignment with Human Values](https://openlamm.github.io/ch3ef/)
 - [x] [ChEF](https://openlamm.github.io/paper_list/ChEF)
 
 
@@ -57,7 +62,14 @@ LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a
 **Assessment of Multimodal Large Language Models in Alignment with Human Values**
 
 ```
-TODO
+@misc{shi2024assessment,
+      title={Assessment of Multimodal Large Language Models in Alignment with Human Values}, 
+      author={Zhelun Shi and Zhipin Wang and Hongxing Fan and Zaibin Zhang and Lijun Li and Yongting Zhang and Zhenfei Yin and Lu Sheng and Yu Qiao and Jing Shao},
+      year={2024},
+      eprint={2403.17830},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
 
 **ChEF**

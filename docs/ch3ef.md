@@ -35,7 +35,7 @@
 
 <p align="center" style={{paddingTop: '0.75rem'}}>
     <font size='4'>
-    <a href="https://arxiv.org/abs/2311.02692" target="_blank">📄 Paper</a>
+    <a href="https://arxiv.org/abs/2403.17830" target="_blank">📄 Paper</a>
     <a href="https://openlamm.github.io/ch3ef/" target="_blank">🌐 Project Page</a>
     <a href="https://openlamm.github.io/ch3ef/leaderboard.html" target="_blank">🏆 Leaderboard</a>
     <a href="https://huggingface.co/datasets/openlamm/Ch3Ef" target="_blank">🤗 Dataset</a>
@@ -84,7 +84,7 @@ C$h^3$Ef dataset contains 1002 human-annotated data samples, covering 12 domains
 
 ## Usage
 1. Environment [installation](https://openlamm.github.io/tutorial/installation#benchmarking).
-2. Prepare the [benchmark](https://openlamm.github.io/tutorial/datasets/benchmark#chef-benchmark-dataset) dataset and [evalauted MLLMs](https://openlamm.github.io/tutorial/benchmark/default#download-evaluated-mllms).
+2. Prepare the [Ch3Ef](https://huggingface.co/datasets/openlamm/Ch3Ef) dataset and [evalauted MLLMs](https://openlamm.github.io/tutorial/benchmark/default#download-evaluated-mllms).
 3. Evaluation
 
    `sh slurm_eval.sh parition_name gpu_num config/ChEF/models/model_name.yaml config/ChEF/scenario_recipes/Ch3Ef/dataset_name.yaml`
@@ -96,7 +96,14 @@ C$h^3$Ef dataset contains 1002 human-annotated data samples, covering 12 domains
 ## Citation
 
 ```bibtex
-TODO
+@misc{shi2024assessment,
+      title={Assessment of Multimodal Large Language Models in Alignment with Human Values}, 
+      author={Zhelun Shi and Zhipin Wang and Hongxing Fan and Zaibin Zhang and Lijun Li and Yongting Zhang and Zhenfei Yin and Lu Sheng and Yu Qiao and Jing Shao},
+      year={2024},
+      eprint={2403.17830},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
 
 ## License 
