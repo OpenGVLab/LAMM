@@ -57,16 +57,7 @@ class Winoground_Metric(Base_Metric):
         }
         #print(f'results for Winoground:\n{results}')
 
-        return results
-
-    def metric(self, answer_path):
-        with open(answer_path, 'rb') as f:
-            answers = json.load(f)
-        results = self.metric_func(answers) 
-        print(f'{self.dataset_name}:')
-        for key, value in results.items():
-            print(f'{key}: {value}')
-        return results
+        return results, answers
 
 class Winoground_Cap_Metric(Base_Metric):
     def __init__(self, dataset_name, **kwargs):
@@ -96,13 +87,4 @@ class Winoground_Cap_Metric(Base_Metric):
         }
         #print(f'results for Winoground:\n{results}')
 
-        return results
-
-    def metric(self, answer_path):
-        with open(answer_path, 'rb') as f:
-            answers = json.load(f)
-        results = self.metric_func(answers) 
-        print(f'{self.dataset_name}:')
-        for key, value in results.items():
-            print(f'{key}: {value}')
-        return results
+        return results, answers

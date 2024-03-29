@@ -1,3 +1,0 @@
-model_name: LLaVA
-model_path: ../model_zoo/LLaVA/LLaVA-Lightning-MPT-7B-preview
-vis_processor_path: ../model_zoo/clip-vit-large-patch14

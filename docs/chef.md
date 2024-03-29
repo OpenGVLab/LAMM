@@ -8,19 +8,20 @@
 
 <div align="center">
     Zhelun Shi<sup>*,1,2</sup>&emsp;
-    Zhipin Wang<sup>*,1</sup>&emsp;
-    Hongxing Fan<sup>*,1</sup>&emsp;
-    Zhenfei Yin<sup>2</sup>&emsp;
+    Zhipin Wang<sup>*,2</sup>&emsp;
+    Hongxing Fan<sup>*,2</sup>&emsp;
+    Zhenfei Yin<sup>1,3</sup>&emsp;
     <br/>
-    Lu Sheng<sup>†,1</sup>&emsp;
-    Yu Qiao<sup>2</sup>&emsp;
-    Jing Shao<sup>†,2</sup>
+    Lu Sheng<sup>†,2</sup>&emsp;
+    Yu Qiao<sup>1</sup>&emsp;
+    Jing Shao<sup>†,1</sup>
 </div>
 
 
 <div align="center">
-    <sup>1</sup>Beihang University&emsp;
-    <sup>2</sup>Shanghai AI Laboratory
+    <sup>1</sup>Shanghai AI Laboratory&emsp;
+    <sup>2</sup>Beihang University&emsp;
+    <sup>3</sup>The University of Sydney
     <br/>
     <sup>*</sup> Equal Contribution&emsp;
     <sup>†</sup> Corresponding Author

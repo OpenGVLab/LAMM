@@ -1,5 +1,5 @@
 import copy
-from typing import Optional
+from typing import Optional, Dict, List, Any
 
 from PIL import Image
 

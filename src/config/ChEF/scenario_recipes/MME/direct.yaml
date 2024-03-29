@@ -1,10 +1,10 @@
 scenario_cfg:
   dataset_name: MME
-  base_data_path: ../data/MME_Benchmark_release_version
+  base_data_path: ../data/MME
 
 eval_cfg:
   instruction_cfg: 
-    query_type: query_pool
+    prompt_type: singleturn
     prompt_assigned_ids: 2
     template_assigned_ids: 0
   inferencer_cfg:

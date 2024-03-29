@@ -5,7 +5,8 @@ import random
 from tqdm import tqdm
 import numpy as np
 import copy
-
+import inflect
+inflect_engine = inflect.engine()
 
 def cal_iou(bbox1, bbox2):
     ixmin = np.maximum(bbox1[0], bbox2[0])
@@ -74,9 +75,10 @@ class VOC2012Dataset(Dataset):
     task_name = 'detection'
     dataset_name = 'VOC2012'
     def __init__(self, 
-                 base_data_path = 'data/LAMM/LAMM/LAMM-Dataset/2D_Benchmark/',
+                 base_data_path,
                  ppl_cfg = None,
                  option_template = 'default',
+                 multi_turn = True,
                  **kwargs):
         self.base_data_path = base_data_path
         super().__init__()
@@ -85,11 +87,13 @@ class VOC2012Dataset(Dataset):
         self.ppl_cfg = ppl_cfg
         assert option_template in ['default', 'shikra', 'kosmos']
         self.option_template = option_template
-        if self.ppl_cfg:
-            self.negative_opt_num = self.ppl_cfg.get('negative_opt_num', 3)
-            self.random_seed = self.ppl_cfg.get('random_seed', 0)
-            random.seed(self.random_seed)
-            self.load_ppl_options()
+        self.multi_turn = multi_turn
+        if self.ppl_cfg is None:
+            return 
+        self.negative_opt_num = self.ppl_cfg.get('negative_opt_num', 3)
+        self.random_seed = self.ppl_cfg.get('random_seed', 0)
+        random.seed(self.random_seed)
+        self.load_ppl_options()
     
     def generate_negative_bbox(self, gt_bboxes, other_class_bboxes):
         bboxes = gt_bboxes + other_class_bboxes
@@ -135,10 +139,15 @@ class VOC2012Dataset(Dataset):
             y = int(y * 32)
             index = y * 32 + x
             return str(index).zfill(4)
+        def format_value(value):
+            formatted = f"{value:.2f}"
+            if formatted[-1] == '0':
+                formatted = formatted[:-1]
+            return formatted
         if self.option_template == 'shikra':
             return  f'{class_name}[{bbox[0]:.3f},{bbox[1]:.3f},{bbox[2]:.3f},{bbox[3]:.3f}]'
         elif self.option_template == 'default':
-            return f'[{bbox[0]:.2f}, {bbox[1]:.2f}, {bbox[2]:.2f}, {bbox[3]:.2f}]'
+            return f'[{format_value(bbox[0])}, {format_value(bbox[1])}, {format_value(bbox[2])}, {format_value(bbox[3])}]'
         elif self.option_template == 'kosmos':
             return f'<object><patch_index_{point2index(bbox[0],bbox[1])}><patch_index_{point2index(bbox[2], bbox[3])}></object>'
 
@@ -147,44 +156,85 @@ class VOC2012Dataset(Dataset):
         id = str(item['id']) if 'id' in item else str(index)
         res_dict = {
             'id': id,
-            'image_path': os.path.join(self.base_data_path,self.data[index]['image']),
-            'gt_answers': self.data[index]['object']
+            'image_path': os.path.join(self.base_data_path,item['image']),
+            'gt_answers': item['object']
         }
-        if self.ppl_cfg:
-            data_item = self.new_data_list[index]
-            gt_answers = []
-            classification_options = []
-            gt_classes = [key for key in data_item.keys()]
-            tmp = copy.deepcopy(self.all_class_names)
-            for gt_class in gt_classes:
-                tmp.remove(gt_class)
-            for gt_class in gt_classes:
-                random.shuffle(tmp)
-                classification_options.append([gt_class] + tmp[:self.negative_opt_num])
 
-            grounding_options = []
-            for key in data_item.keys():
-                gt_bboxes = data_item[key]
-                tmp = copy.deepcopy(data_item)
-                del tmp[key]
-                other_class_bboxes = [bbox for value in data_item.values() for bbox in value]
-                candidates = self.generate_negative_bbox(gt_bboxes, other_class_bboxes)
-                random_candidates = self.generate_random_bbox(gt_bboxes, self.negative_opt_num - len(candidates))
-                candidates += random_candidates
-                assert len(candidates) >= self.negative_opt_num
-                candidates = [self.bbox2pploption(bbox, key) for bbox in candidates]
-                for gt_bbox in gt_bboxes:
-                    gt_answers.append(dict(
-                        label = key,
-                        bbox = gt_bbox
-                    ))
-                    random.shuffle(candidates)
-                    grounding_options.append(dict(
-                        fore_label = key,
-                        options = [self.bbox2pploption(gt_bbox, key)] + candidates[:self.negative_opt_num]
-                    ))
-            res_dict['gt_answers'] = gt_answers
-            res_dict['classification_options'] = classification_options
-            res_dict['grounding_options'] = grounding_options
-            
+        if self.multi_turn:
+            # multiturn direct inference
+            multi_turn_prefix = [dict(
+                prompt_idx = 0,
+                prefix = None
+            )]
+            gt_classes = set([object['label'] for object in item['object']])
+            for object_label in gt_classes:
+                multi_turn_prefix.append(dict(
+                    prompt_idx = 1,
+                    prefix = object_label
+                ))
+            res_dict['multi_turn_prefix'] = multi_turn_prefix
+
+        if self.ppl_cfg is None:
+            return res_dict
+        
+        if not self.multi_turn:
+            raise NotImplementedError("Dectection dataset only supports multiturn ppl.")
+        
+        data_item = self.new_data_list[index]
+        gt_answers = []
+        classification_options = []
+        gt_classes = [key for key in data_item.keys()]
+        tmp = copy.deepcopy(self.all_class_names)
+        for gt_class in gt_classes:
+            tmp.remove(gt_class)
+        for gt_class in gt_classes:
+            random.shuffle(tmp)
+            classification_options.append(dict(
+                prompt_idx = 0,
+                prefix = None,
+                options = [f'{inflect_engine.a(option)}' for option in ([gt_class] + tmp[:self.negative_opt_num])],
+            ))
+
+        grounding_options = []
+        for key in data_item.keys():
+            gt_bboxes = data_item[key]
+            tmp = copy.deepcopy(data_item)
+            del tmp[key]
+            other_class_bboxes = [bbox for value in data_item.values() for bbox in value]
+            candidates = self.generate_negative_bbox(gt_bboxes, other_class_bboxes)
+            random_candidates = self.generate_random_bbox(gt_bboxes, self.negative_opt_num - len(candidates))
+            candidates += random_candidates
+            assert len(candidates) >= self.negative_opt_num
+            candidates = [self.bbox2pploption(bbox, key) for bbox in candidates]
+            for gt_bbox in gt_bboxes:
+                gt_answers.append(dict(
+                    label = key,
+                    bbox = gt_bbox
+                ))
+                random.shuffle(candidates)
+                grounding_options.append(dict(
+                    prompt_idx = 1,
+                    prefix = key,
+                    options = [self.bbox2pploption(gt_bbox, key)] + candidates[:self.negative_opt_num],
+                ))
+        res_dict['gt_answers'] = gt_answers
+        res_dict['options'] = classification_options + grounding_options
+
+        # replace multi_turn_prefix
+        multi_turn_prefix = []
+        for option in res_dict['options']:
+            multi_turn_prefix.append(dict(
+                prompt_idx = option['prompt_idx'],
+                prefix = option['prefix'],
+            ))
+        res_dict['multi_turn_prefix'] = multi_turn_prefix
+
         return res_dict
+
+if __name__ == '__main__':
+    detdata = VOC2012Dataset(
+        base_data_path='../../../data/LAMM/2D_Benchmark',
+        ppl_cfg={}
+    )
+    data = detdata[0]
+    import ipdb;ipdb.set_trace()

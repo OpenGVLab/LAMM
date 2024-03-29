@@ -1,0 +1,16 @@
+scenario_cfg:
+  dataset_name: Ch3Ef
+  base_data_path: ../data/Ch3Ef
+  dimension: Honest
+  ppl: True
+
+eval_cfg:
+  instruction_cfg:
+    prompt_type: singleturn
+  inferencer_cfg:
+    inferencer_type: PPL
+    batch_size: 2
+    max_new_tokens: 256
+  metric_cfg:
+    metric_type: Ch3Ef
+    ppl: True

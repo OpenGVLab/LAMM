@@ -19,7 +19,8 @@ class SVT_OCR(Base_Metric):
                     correct += 1
             tmp_score = correct / len(gt_word_list)
             score += tmp_score
+            item['metric_result'] = tmp_score
 
         return dict(
             ACC = score/len(answers),
-        )
+        ), answers

@@ -9,6 +9,8 @@ from .counting import Counting
 from .ocr import SVT_OCR
 from .lamm_locating import InsideBbox, InsideHumanBbox
 from .winoground import Winoground_Metric, Winoground_Cap_Metric
+from .Ch3Ef import Ch3Ef_Metric
+from .mmmu import MMMU_Metric
 
 evaluation_protocol = {
     'basic':{
@@ -20,7 +22,8 @@ evaluation_protocol = {
         'FSC147': Counting,
         'MMBench': MMBenchVQA,
         'MME': MMEVQA,
-        'SEEDBench': VQA
+        'SEEDBench': VQA,
+        'SEEDBench2': VQA,
     },
     'Calibration':
     {
@@ -67,6 +70,12 @@ evaluation_protocol = {
     'Winoground': {
         'Winoground': Winoground_Metric,
         'Winoground_Cap': Winoground_Cap_Metric,
+    },
+    'Ch3Ef':{
+        'Ch3Ef': Ch3Ef_Metric,
+    },
+    'MMMU':{
+        'MMMU': MMMU_Metric,
     }
 }
 

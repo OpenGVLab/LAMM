@@ -1,7 +1,12 @@
 from tqdm import tqdm
 import numpy as np
-from .utils import Base_Metric, parse_keypoints, classification_acc, check_inside_bbox
-from ..models.utils import get_image
+from .utils import (
+    Base_Metric, 
+    parse_keypoints, 
+    classification_acc, 
+    check_inside_bbox,
+    get_image
+)
 
 def inside_human_bbox_eval(dataset, pred_data):
     correct_cnt, total_cnt = 0,0
@@ -44,7 +49,7 @@ class InsideBbox(Base_Metric):
                     correct_cnt += 1
         return dict(
             ACC = (correct_cnt / total_cnt) * 100
-        )
+        ), answers
 
 class InsideHumanBbox(Base_Metric):
     def __init__(self, dataset_name, **kwargs):
@@ -70,4 +75,4 @@ class InsideHumanBbox(Base_Metric):
                 correct_cnt += 1
         return dict(
             ACC = (correct_cnt / total_cnt) * 100
-        )
+        ), answers

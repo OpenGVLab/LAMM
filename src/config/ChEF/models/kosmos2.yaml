@@ -1,4 +1,3 @@
 model_name: Kosmos2
-model_path: ../model_zoo/kosmos/kosmos-2.pt
+model_path: ../model_zoo/Kosmos/kosmos-2.pt
 if_grounding: False # set True for detection and grounding evaluation
-ppl: False

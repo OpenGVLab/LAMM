@@ -1,0 +1,4 @@
+model_name: Gemini
+api_key: 
+gpt_name: gemini-pro-vision
+safety_block_none: True

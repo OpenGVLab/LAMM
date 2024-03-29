@@ -214,7 +214,7 @@ class LLaMA_adapter(nn.Module):
 
     @torch.inference_mode()
     def ppl_generate(
-        self, imgs, prompts, answers
+        self, imgs, prompts, answers, device='cuda'
     ):
         bsz = len(imgs)
         params = self.llama.params
@@ -224,14 +224,14 @@ class LLaMA_adapter(nn.Module):
         with torch.cuda.amp.autocast():
             visual_query = self.forward_visual(imgs)
         prompts = [self.tokenizer.encode(x, bos=True, eos=False) for x in prompts]
-        answers = [self.tokenizer.encode('Response:'+ x, bos=False, eos=False)[2:] for x in answers]
+        answers = [self.tokenizer.encode('Response: '+ x, bos=False, eos=False)[2:] for x in answers]
         prompts = [prompt + answer for prompt, answer in zip(prompts, answers)]
         total_len = max([len(t) for t in prompts])
-        input_ids = torch.full((bsz, total_len), self.tokenizer.pad_id).cuda().long()
-        target_ids = torch.full((bsz, total_len), -100).cuda().long()
+        input_ids = torch.full((bsz, total_len), self.tokenizer.pad_id).to(device).long()
+        target_ids = torch.full((bsz, total_len), -100).to(device).long()
         for k, (t, a) in enumerate(zip(prompts, answers)):
-            input_ids[k, :len(t)] = torch.tensor(t).cuda().long()
-            target_ids[k, len(t)-len(a):len(t)] = torch.tensor(a).cuda().long()
+            input_ids[k, :len(t)] = torch.tensor(t).to(device).long()
+            target_ids[k, len(t)-len(a):len(t)] = torch.tensor(a).to(device).long()
         min_prompt_size = min([len(t) for t in prompts])
         input_text_mask = input_ids != self.tokenizer.pad_id
         start_pos = min_prompt_size
@@ -260,6 +260,7 @@ class LLaMA_adapter(nn.Module):
         max_gen_len: int = 256,
         temperature: float = 0.1,
         top_p: float = 0.75,
+        device = 'cuda'
     ):
         bsz = len(imgs)
         params = self.llama.params
@@ -276,10 +277,10 @@ class LLaMA_adapter(nn.Module):
 
         total_len = min(params.max_seq_len, max_gen_len + max_prompt_size)
 
-        tokens = torch.full((bsz, total_len), self.tokenizer.pad_id).cuda().long()
+        tokens = torch.full((bsz, total_len), self.tokenizer.pad_id).to(device).long()
 
         for k, t in enumerate(prompts):
-            tokens[k, : len(t)] = torch.tensor(t).cuda().long()
+            tokens[k, : len(t)] = torch.tensor(t).to(device).long()
         input_text_mask = tokens != self.tokenizer.pad_id
         start_pos = min_prompt_size
         prev_pos = 0

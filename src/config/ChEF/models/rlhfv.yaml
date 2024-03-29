@@ -1,0 +1,2 @@
+model_name: RLHFV
+model_path: ../model_zoo/RLHF-V

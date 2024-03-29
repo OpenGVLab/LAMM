@@ -1,0 +1,14 @@
+scenario_cfg:
+  dataset_name: SEEDBench2
+  base_data_path: ../data/SEEDBench2
+
+eval_cfg:
+  instruction_cfg: 
+    prompt_type: singleturn
+    prompt_assigned_ids: 2
+    template_assigned_ids: 0
+  inferencer_cfg:
+    inferencer_type: PPL
+    batch_size: 1
+  metric_cfg:
+    metric_type: basic

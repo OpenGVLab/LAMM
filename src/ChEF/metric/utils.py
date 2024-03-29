@@ -9,6 +9,7 @@ import numpy as np
 from nltk.corpus import wordnet as wn
 import re
 import json
+from PIL import Image
 
 
 voc_syndict = {
@@ -44,10 +45,11 @@ class Base_Metric:
         pass
 
     def metric(self, answer_path):
-        with open(answer_path, 'rb') as f:
+        with open(answer_path, 'r', encoding='utf8') as f:
             answers = json.load(f)
-        results = self.metric_func(answers) 
-
+        results, metric_answers = self.metric_func(answers) 
+        with open(answer_path, 'w', encoding='utf8') as f:
+            f.write(json.dumps(metric_answers, indent=4, ensure_ascii=False))
         if isinstance(results, dict):
             print(f'{self.dataset_name}:')
             for key, value in results.items():
@@ -464,6 +466,20 @@ def parse_bbox_3d(text):
         bbox_list.append(cur_bbox)
     return bbox_list
 
+def get_image(image):
+    if type(image) is str:
+        try:
+            return Image.open(image).convert("RGB")
+        except Exception as e:
+            print(f"Fail to read image: {image}")
+            exit(-1)
+    
+    elif isinstance(image, Image.Image):
+        return image
+    elif type(image) is np.ndarray:
+        return Image.fromarray(image)
+    else:
+        raise NotImplementedError(f"Invalid type of Image: {type(image)}")
 
 if __name__ == "__main__":
     test = '<object><patch_index_0035><patch_index_1023></object> at the station <object><patch_index_0035><patch_index_1023></object> at the station'

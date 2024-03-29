@@ -1,2 +1,2 @@
 model_name: Otter
-model_path: luodian/OTTER-9B-LA-InContext
+model_path: ../model_zoo/Otter/otter-9b-hf

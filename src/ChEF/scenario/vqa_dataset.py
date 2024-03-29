@@ -1,7 +1,6 @@
 import os
 import json
 from torch.utils.data import Dataset
-from .lamm_sysmsg import common_task2sysmsg
 
 
 OPTION=['A','B','C','D','E','F','G','H']
@@ -33,7 +32,7 @@ def clean_question(question, generative = False): # delete context
     if not generative:
         res = 'Question: ' + q[0] + 'Options:' + qlist[1] + "\n"
     else:
-        res = 'Question: ' + q[0] + "\n"
+        res = 'Question: ' + q[0]
     
     return res
 
@@ -82,7 +81,7 @@ class ScienceQADataset(Dataset):
         img_path = os.path.join(self.base_data_path,item['image'])
         gt_choice = item['gt_choice']
         gt_answers = item['gt_choices'][gt_choice]
-        gt_choices = item['gt_choices']
+        choices = item['gt_choices']
         
         id = str(item['id']) if 'id' in item else str(idx)
         res_dict = {
@@ -91,14 +90,14 @@ class ScienceQADataset(Dataset):
             "question": question,
             "gt_answers": gt_answers,
             "gt_choice": gt_choice,
-            "gt_choices": gt_choices
+            "choices": choices
         }
 
         if self.generative:
-            res_dict['options'] = gt_choices
-            res_dict['gt_answers'] = gt_choices[res_dict['gt_choice']]
+            res_dict['options'] = choices
+            res_dict['gt_answers'] = choices[res_dict['gt_choice']]
         else:
-            res_dict['options'] = get_options(gt_choices, self.option_content)
+            res_dict['options'] = get_options(choices, self.option_content)
             res_dict['gt_answers'] = '(' + OPTION[res_dict['gt_choice']] + ')'
         
         if self.map_type!=None:
@@ -120,3 +119,8 @@ class ScienceQADataset(Dataset):
             res_dict['options']=option_map[:len(res_dict['options'])]
 
         return res_dict
+    
+
+if __name__ == '__main__':
+    scienceqadata = ScienceQADataset(base_data_path='../../../data/LAMM/2D_Benchmark', ppl=True, generative=True)
+    import ipdb;ipdb.set_trace()

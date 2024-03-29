@@ -8,7 +8,12 @@ LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a
     </font>
 </p>
 
-## Updates
+## Updates 
+📆 [**2024-03**] 
+1. [Ch3Ef](https://openlamm.github.io/ch3ef/) is available!
+2. [Ch3Ef](https://arxiv.org/abs/2403.17830) released on Arxiv!
+3. [Dataset](https://huggingface.co/datasets/openlamm/Ch3Ef) and [leaderboard](https://openlamm.github.io/ch3ef/leaderboard.html) are available!
+
 📆 [**2023-12**] 
 1. [DepictQA](https://arxiv.org/abs/2312.08962): Depicted Image Quality Assessment based on Multi-modal Language Models released on Arxiv!
 2. [MP5](https://arxiv.org/abs/2312.07472): A Multi-modal LLM based Open-ended Embodied System in Minecraft released on Arxiv!
@@ -45,8 +50,8 @@ LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a
 - [x] [LAMM](https://openlamm.github.io/paper_list/LAMM)
 - [x] [Octavius](https://openlamm.github.io/paper_list/Octavius)
 
-
 **Preprints**
+- [x] [Assessment of Multimodal Large Language Models in Alignment with Human Values](https://openlamm.github.io/ch3ef/)
 - [x] [ChEF](https://openlamm.github.io/paper_list/ChEF)
 
 ## Citation
@@ -58,6 +63,19 @@ LAMM (pronounced as /læm/, means cute lamb to show appreciation to LLaMA), is a
     author={Yin, Zhenfei and Wang, Jiong and Cao, Jianjian and Shi, Zhelun and Liu, Dingning and Li, Mukai and Sheng, Lu and Bai, Lei and Huang, Xiaoshui and Wang, Zhiyong and others},
     journal={arXiv preprint arXiv:2306.06687},
     year={2023}
+}
+```
+
+**Assessment of Multimodal Large Language Models in Alignment with Human Values**
+
+```
+@misc{shi2024assessment,
+      title={Assessment of Multimodal Large Language Models in Alignment with Human Values}, 
+      author={Zhelun Shi and Zhipin Wang and Hongxing Fan and Zaibin Zhang and Lijun Li and Yongting Zhang and Zhenfei Yin and Lu Sheng and Yu Qiao and Jing Shao},
+      year={2024},
+      eprint={2403.17830},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
 ```
 

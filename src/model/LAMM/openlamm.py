@@ -44,14 +44,14 @@ VISION_TAGS = {
 
 
 class LAMMStoppingCriteria(StoppingCriteria):
-    def __init__(self, stops, input_ids):
+    def __init__(self, stops, input_ids, device):
         """intialize stopping criteria
 
         :param list stops: list of stop tokens
         :param list input_ids: input ids
         """
         super().__init__()
-        self.stops = [torch.tensor(stop).to('cuda') for stop in stops]
+        self.stops = [torch.tensor(stop).to(device) for stop in stops]
         self.stop_flag = [0] * input_ids.shape[0]
 
     def check_stop(self, input_ids):
@@ -95,7 +95,6 @@ def build_one_instance(tokenizer, conversation, vision_type="image", template=co
     """
     pos = VISION_TAGS["pos"][vision_type]
     eov = VISION_TAGS["eov"][vision_type]
-
     text_list = []
     turn_num = len(conversation)
     input_ids, target_ids = [], []
@@ -107,7 +106,7 @@ def build_one_instance(tokenizer, conversation, vision_type="image", template=co
             turn["value"] = (
                 turn["value"].replace(f"{pos}\n", "").replace(f"\n{pos}", "")
             )
-            text = f"{eov} " + turn["value"] + "\n{} {}: ".format(template.sep, template.roles[1])
+            text = f"{eov} " + turn["value"] + "\n{} {}:".format(template.sep, template.roles[1])
             one_input_id = tokenizer(text, add_special_tokens=False).input_ids
             input_ids += one_input_id
             target_ids += [-100] * len(
@@ -116,7 +115,7 @@ def build_one_instance(tokenizer, conversation, vision_type="image", template=co
         else:
             if role == "human":
                 # text = "{}: ".format(template.roles[0]) + turn["value"] + "\n### {}:".format(template.roles[1])
-                text = "{}: {}\n{} {}: ".format(template.roles[0], turn["value"], template.sep, template.roles[1])
+                text = "{}: {}\n{} {}:".format(template.roles[0], turn["value"], template.sep, template.roles[1])
                 one_input_id = tokenizer(text, add_special_tokens=False).input_ids
                 input_ids += one_input_id
                 target_ids += [-100] * len(one_input_id)
@@ -373,7 +372,7 @@ class LAMMPEFTModel(nn.Module):
             inputs = self.load_and_transform_image_data_clip(
                 image_paths, self.device
             )  # bsz x 3 x 224 x 224
-            inputs = inputs.to(self.llama_model.dtype)  # clip requires torch.float32
+            inputs = inputs.to(dtype=self.llama_model.dtype, device=self.device)  # clip requires torch.float32
             inputs_llama = self.clip_encode_image(inputs)
             atts_llama = torch.ones(inputs_llama.size()[:-1], dtype=torch.long).to(
                 self.device
@@ -424,7 +423,7 @@ class LAMMPEFTModel(nn.Module):
         return inputs_llama, atts_llama
 
     def clip_encode_image(self, inputs):
-        inputs = inputs.to(self.llama_model.dtype)  # clip requires torch.float32
+        inputs = inputs.to(dtype=self.llama_model.dtype)  # clip requires torch.float32
     
         if self.vision_feature_type == "global":
             with torch.no_grad():
@@ -435,7 +434,7 @@ class LAMMPEFTModel(nn.Module):
             )  # bsz x 1 x llama_size
         elif self.vision_feature_type == "local":
             with torch.no_grad():
-                embeddings = self.visual_encoder.forward_patch_features(inputs)[
+                embeddings = self.visual_encoder.forward_patch_features(inputs.to(self.device))[
                     :, : self.num_vision_token
                 ]  # bsz x self.num_vision_token x 1024
             image_embeds = embeddings.reshape(-1, self.vision_hidden_size).to(
@@ -650,7 +649,6 @@ class LAMMPEFTModel(nn.Module):
             vision_embeds, _ = self.encode_pcl(vision_paths)  # Bsz x N token x C
         else:
             raise ValueError("vision type [{}] not supported".format(self.vision_type))
-
         output_texts = inputs["output_texts"]
         input_ids, target_ids, attention_mask = process_batch_instance(
             self.llama_tokenizer, output_texts, self.max_tgt_len, self.vision_type, self.conv_template
@@ -778,7 +776,7 @@ class LAMMPEFTModel(nn.Module):
         """
         input_embeds, input_masks = self.prepare_generation_embedding(inputs)
         stopping_criteria = StoppingCriteriaList(
-            [LAMMStoppingCriteria([[2277, 29937], [835], [1, 2]], input_embeds)]            # TODO: different template has corresponding end signal [sep2]
+            [LAMMStoppingCriteria([[2277, 29937], [835], [1, 2]], input_embeds, input_embeds.device)]            # TODO: different template has corresponding end signal [sep2]
         )
         outputs = self.llama_model.generate(
             inputs_embeds=input_embeds,

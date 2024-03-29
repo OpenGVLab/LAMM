@@ -3,7 +3,9 @@ scenario_cfg:
   base_data_path: ../data/LAMM/2D_Benchmark
 eval_cfg:
   instruction_cfg: 
-    query_type: standard_query
+    prompt_type: singleturn
+    prompt_assigned_ids: 0 # (mplug: 6, llava15, lamm15: 1) (default:0) 
+    template_assigned_ids: 0 # (otter, lamm, minigpt4 :1, llava15, lamm15: 3) (default:0) 
   inferencer_cfg:
     inferencer_type: Direct
     max_new_tokens: 16

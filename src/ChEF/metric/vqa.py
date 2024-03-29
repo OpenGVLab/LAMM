@@ -89,16 +89,17 @@ class VQA(Base_Metric):
             gt_choice = item['gt_choice']
             gt_char = self.CHOICE[gt_choice]
             pred_text = item['answer']
-            pred_option, _, _ = self.answer_extractor.fetch_answer(pred_text, item['gt_choices'])
+            pred_option, _, _ = self.answer_extractor.fetch_answer(pred_text, item['choices'])
             if pred_option:
                 self.match +=1
-            if pred_option == gt_char:
-                score += 1.0
+            result = pred_option == gt_char
+            score += result
+            item['metric_result'] = result
         score = score/len(answers) * 100
         return dict(
             ACC = score, 
             match_ratio = self.match /(len(answers)) * 100
-        )
+        ), answers
 
 class MMBenchVQA(Base_Metric):
     def __init__(self, dataset_name, content_only = False):
@@ -116,7 +117,7 @@ class MMBenchVQA(Base_Metric):
             item = sub_data[i]
             idx = item['id']
             GT.append(self.choices[answer_map[idx]])
-            pred_answer, option_match, content_match = self.answer_extractor.fetch_answer(item['answer'], item['gt_choices'])
+            pred_answer, option_match, content_match = self.answer_extractor.fetch_answer(item['answer'], item['choices'])
             PRED.append(pred_answer)
             if pred_answer is not None:
                 self.match_content += content_match
@@ -143,7 +144,7 @@ class MMBenchVQA(Base_Metric):
                 continue
             ## vanilla
             vanilla_cnt += 1
-            pred_option, _, _ = self.answer_extractor.fetch_answer(answers[i]['answer'], answers[i]['gt_choices'])
+            pred_option, _, _ = self.answer_extractor.fetch_answer(answers[i]['answer'], answers[i]['choices'])
             if pred_option == self.choices[answer_map[answers[i]['id']]]:
                 vanilla_score += 1
             
@@ -154,13 +155,14 @@ class MMBenchVQA(Base_Metric):
             out = self.eval_sub_data(sub_data, answer_map)
             circular_score += out
             result[main_idx] = out
+            answers[i]['metric_result'] = out
 
         return dict(
             vanilla_acc = vanilla_score / vanilla_cnt * 100,
             circular_acc = circular_score / vanilla_cnt * 100,
             option_match = self.match_option / cnt * 100,
             content_match = self.match_content /cnt *100,
-        )
+        ), answers
     
 class MMEVQA(Base_Metric):
     def __init__(self, dataset_name):
@@ -218,10 +220,13 @@ class MMEVQA(Base_Metric):
             pred_label = self.parse_pred_ans(pred_text)
             cnt_dict[item['task_type']] += 1
             if pred_label == gt_label:
+                item['metric_result'] = 1
                 acc_dict[item['task_type']] += 1
                 accplus[image_path] += 1
                 if accplus[image_path] == 2:
                     acc_plus_dict[item['task_type']] += 1
+            else:
+                item['metric_result'] = 0
 
         results_dict = dict()
         acc_overall = 0
@@ -236,7 +241,7 @@ class MMEVQA(Base_Metric):
             acc_plus_overall += acc_plus_dict[key]
             cnt_plus_overall += acc_plus_cnt_dict[key]
         results_dict.update(overall = acc_overall/cnt_overall * 100, overall_plus = acc_plus_overall / cnt_plus_overall * 100)
-        return results_dict
+        return results_dict, answers
 
 
 class LAMM_VQA(Base_Metric):
@@ -278,7 +283,7 @@ class LAMM_VQA(Base_Metric):
                 pred_text = item['answer']
             gt_choice = item['gt_choice']
             gt_char = CHOICE[gt_choice]
-            gt_choices = item['gt_choices']
+            choices = item['choices']
             res_1 = pattern_1.findall(pred_text)
             res_2 = pattern_2.findall(pred_text)
             res_3 = pattern_3.findall(pred_text)
@@ -291,10 +296,10 @@ class LAMM_VQA(Base_Metric):
             elif len(res_3) != 0:
                 if check_option(res_3, gt_char):
                     tmp_score = 1.0
-            elif check_text(pred_text, gt_choices, gt_choice):
+            elif check_text(pred_text, choices, gt_choice):
                 tmp_score = 1.0
             score+=tmp_score
 
         return dict(
             vision_acc = score/len(answers)
-        )
+        ), answers
