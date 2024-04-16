@@ -23,10 +23,17 @@ def main(dist_args):
 
     # model
     devices = get_useable_cuda()
+    metric_device_num = recipe_cfg['eval_cfg']['metric_cfg'].get('gpu_num', 0) # used for LLM-based metrics
+    if metric_device_num > 0:
+        dist_args['world_size'] -= metric_device_num
+        if dist_args['global_rank'] >= dist_args['world_size']:
+            exit()
     if model_cfg['model_name'] in ['GPT', 'Gemini']:
         model = get_model(model_cfg,device='cpu')
     else:
         model = get_model(model_cfg, device=devices[dist_args['global_rank']])
+
+    metric_devices = [i for i in devices[-metric_device_num:]]
     # dataset
     scenario_cfg = recipe_cfg['scenario_cfg']
     dataset_name = scenario_cfg['dataset_name']
@@ -43,7 +50,7 @@ def main(dist_args):
 
     # evaluate
     eval_cfg = recipe_cfg['eval_cfg']
-    evaluater = Evaluator(dataset, save_base_dir, eval_cfg, dist_args=dist_args)
+    evaluater = Evaluator(dataset, save_base_dir, eval_cfg, dist_args=dist_args, metric_devices=metric_devices)
     evaluater.evaluate(model)
 
 if __name__ == '__main__':

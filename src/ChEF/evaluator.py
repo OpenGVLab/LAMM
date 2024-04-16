@@ -18,6 +18,7 @@ class Evaluator:
         save_base_dir,
         cfg,
         dist_args,
+        metric_devices,
         **kwargs) -> None:
         self.dataset = dataset
         self.dataset_name = self.dataset.dataset_name
@@ -38,7 +39,8 @@ class Evaluator:
         
         metric_cfg = cfg['metric_cfg']
         self.metric = build_metric(
-            dataset_name=self.dataset_name, 
+            dataset_name=self.dataset_name,
+            metric_devices=metric_devices, 
             **metric_cfg)
         self.dist_args = dist_args
 

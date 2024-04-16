@@ -11,6 +11,7 @@ from .lamm_locating import InsideBbox, InsideHumanBbox
 from .winoground import Winoground_Metric, Winoground_Cap_Metric
 from .Ch3Ef import Ch3Ef_Metric
 from .mmmu import MMMU_Metric
+from .md_judge import MDJudge_Metric
 
 evaluation_protocol = {
     'basic':{
@@ -73,6 +74,9 @@ evaluation_protocol = {
     },
     'Ch3Ef':{
         'Ch3Ef': Ch3Ef_Metric,
+    },
+    'MD-Judge': {
+        'Ch3Ef': MDJudge_Metric,
     },
     'MMMU':{
         'MMMU': MMMU_Metric,
